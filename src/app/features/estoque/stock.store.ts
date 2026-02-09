@@ -30,17 +30,18 @@ export class StockStore {
   readonly selectedItem = signal<StockItem | null>(null);
 
   readonly filteredItems = computed(() => {
-    const category = this.selectedCategory();
-    const allItems = this.items();
-
-    if (category === 'Todas') return allItems;
-    return allItems.filter((item) => item.category === category);
+    const query = this.filterText().toLowerCase();
+    return this.items().filter(
+      (item) => item.name.toLowerCase().includes(query) || item.code.toLowerCase().includes(query),
+    );
   });
 
   readonly categories = computed(() => {
     const cats = this.items().map((i) => i.category);
     return ['Todas', ...new Set(cats)];
   });
+
+  readonly filterText = signal<string>('');
 
   loadAll() {
     this.loading.set(true);
@@ -85,5 +86,9 @@ export class StockStore {
       },
       error: (err) => alert('Erro ao atualizar: ' + err.message),
     });
+  }
+
+  setFilter(text: string) {
+    this.filterText.set(text);
   }
 }

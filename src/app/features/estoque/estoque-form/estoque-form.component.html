@@ -1,38 +1,57 @@
 <div
-  class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+  class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-0 md:p-4 animate-in fade-in duration-200"
 >
   <div
-    class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200"
+    class="bg-white w-full h-full md:h-auto md:max-w-2xl md:rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
   >
-    <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-      <h2 class="text-xl font-bold text-slate-800 mb-6">
-        {{ isEditMode ? 'Editar Peça' : 'Cadastrar Nova Peça' }}
-      </h2>
+    <div
+      class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 sticky top-0 z-10"
+    >
+      <div>
+        <h2 class="text-xl font-bold text-slate-800">
+          {{ isEditMode ? 'Editar Peça' : 'Cadastrar Nova Peça' }}
+        </h2>
+        <p class="text-xs text-slate-500 md:hidden italic">Preencha os campos abaixo</p>
+      </div>
 
       <button
-        type="submit"
-        [disabled]="stockForm.invalid"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold transition-all shadow-lg"
+        type="button"
+        (click)="close.emit()"
+        class="p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-400"
       >
-        {{ isEditMode ? 'Salvar Alterações' : 'Cadastrar Item' }}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
       </button>
     </div>
 
-    <form [formGroup]="stockForm" (ngSubmit)="onSubmit()" class="p-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="mb-6">
-          <label class="block text-sm font-bold text-slate-700 mb-2">Imagem do Produto</label>
-
-          <div class="flex items-center gap-4 p-3 bg-slate-50 rounded-xl border border-slate-100">
+    <div class="flex-1 overflow-y-auto overflow-x-hidden p-6 bg-white">
+      <form [formGroup]="stockForm" (ngSubmit)="onSubmit()" id="stockForm">
+        <div class="mb-8">
+          <label class="block text-sm font-bold text-slate-700 mb-3">Imagem do Produto</label>
+          <div
+            class="flex flex-col sm:flex-row items-center gap-6 p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200"
+          >
             <div
-              class="relative group flex-shrink-0 w-20 h-20 rounded-lg border-2 border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden"
+              class="relative group w-32 h-32 rounded-xl border-2 border-white shadow-md bg-white flex items-center justify-center overflow-hidden"
             >
               @if (imagePreview) {
                 <img [src]="imagePreview" class="w-full h-full object-cover" />
                 <button
                   type="button"
                   (click)="removeImage()"
-                  class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  class="absolute inset-0 bg-red-600/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +59,7 @@
                     viewBox="0 0 24 24"
                     stroke-width="2"
                     stroke="white"
-                    class="w-6 h-6"
+                    class="w-8 h-8"
                   >
                     <path
                       stroke-linecap="round"
@@ -52,135 +71,124 @@
               } @else {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
+                  class="w-12 h-12 text-slate-200"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
                   stroke="currentColor"
-                  class="w-8 h-8 text-slate-300"
                 >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
+                    stroke-width="1.5"
                     d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
                   />
                 </svg>
               }
             </div>
 
-            <div class="flex flex-col gap-1">
+            <div class="flex-1 w-full">
               <input
                 type="file"
-                #fileInput
                 (change)="onFileSelected($event)"
                 accept="image/*"
-                class="text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer"
+                class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer"
               />
-              @if (imagePreview) {
-                <p class="text-[10px] text-emerald-600 font-bold px-1">✓ Imagem selecionada</p>
-              } @else {
-                <p class="text-[10px] text-slate-400 px-1">Recomendado: JPG ou PNG quadrado</p>
-              }
+              <p class="mt-2 text-[11px] text-slate-400">
+                Tamanho máximo recomendado: 1MB (JPG ou PNG)
+              </p>
             </div>
           </div>
         </div>
-        <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-slate-700 mb-1">Nome da Peça *</label>
-          <input
-            type="text"
-            formControlName="name"
-            placeholder="Ex: Cabo de Tração 8mm"
-            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-          />
-        </div>
 
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Código (Code/SKU) *</label>
-          <input
-            type="text"
-            formControlName="code"
-            placeholder="Ex: CAB-001"
-            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+          <div class="md:col-span-2">
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Nome da Peça *</label>
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="Ex: Motor Tração 5HP"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+            />
+          </div>
 
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Unidade *</label>
-          <select
-            formControlName="unit"
-            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
-          >
-            <option value="un">Unidade (un)</option>
-            <option value="mt">Metros (mt)</option>
-            <option value="kg">Quilos (kg)</option>
-            <option value="cj">Conjunto (cj)</option>
-          </select>
-        </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Código (SKU) *</label>
+            <input
+              type="text"
+              formControlName="code"
+              placeholder="Ex: MOT-001"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all uppercase"
+            />
+          </div>
 
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Preço de Custo (R$) *</label>
-          <input
-            type="number"
-            formControlName="costPrice"
-            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-        </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Categoria *</label>
+            <input
+              type="text"
+              formControlName="category"
+              placeholder="Ex: Elétrica"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            />
+          </div>
 
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Categoria *</label>
-          <input
-            type="text"
-            formControlName="category"
-            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-        </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Qtd Atual *</label>
+            <div class="relative">
+              <input
+                type="number"
+                formControlName="currentQuantity"
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+              />
+              <span
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400"
+                >UN</span
+              >
+            </div>
+          </div>
 
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Qtd em Estoque *</label>
-          <input
-            type="number"
-            formControlName="currentQuantity"
-            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-        </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1"
+              >Qtd Mínima (Alerta) *</label
+            >
+            <input
+              type="number"
+              formControlName="minQuantity"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            />
+          </div>
 
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Aviso de Qtd Mínima *</label>
-          <input
-            type="number"
-            formControlName="minQuantity"
-            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-        </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1"
+              >Preço de Custo (R$) *</label
+            >
+            <input
+              type="number"
+              formControlName="costPrice"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            />
+          </div>
 
-        <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-slate-700 mb-1"
-            >Localização (Prateleira/Corredor)</label
-          >
-          <input
-            type="text"
-            formControlName="location"
-            placeholder="Ex: A-12"
-            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
-          />
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Localização</label>
+            <input
+              type="text"
+              formControlName="location"
+              placeholder="Ex: Prateleira A2"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            />
+          </div>
         </div>
-      </div>
+      </form>
+    </div>
 
-      <div class="mt-8 flex gap-3 justify-end">
-        <button
-          type="button"
-          (click)="close.emit()"
-          class="px-6 py-2 rounded-lg font-medium text-slate-600 hover:bg-slate-100 transition-colors"
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          [disabled]="stockForm.invalid"
-          class="px-6 py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-200 transition-all"
-        >
-          Salvar Peça
-        </button>
-      </div>
-    </form>
+    <div class="p-6 border-t border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row gap-3">
+      <button
+        type="button"
+        (click)="close.emit()"
+        class="order-2 sm:order-1 px-6 py-3 rounded-xl font-medium text-slate-600 hover:bg-slate-200 transition-colors"
+      >
+        Cancelar
+      </button>
+    </div>
   </div>
 </div>

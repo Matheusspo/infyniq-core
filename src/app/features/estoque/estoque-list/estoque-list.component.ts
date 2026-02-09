@@ -1,19 +1,35 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { Component, LOCALE_ID, OnInit, computed, inject, signal } from '@angular/core';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { StockStore } from '../stock.store';
 import { EstoqueFormComponent } from '../estoque-form/estoque-form.component';
 import { StockItem } from '../../../core/models/stock.interfaces';
+import localePt from '@angular/common/locales/pt';
+import { ToastService } from '../../../services/toast.service';
+
+registerLocaleData(localePt);
 
 @Component({
   selector: 'app-estoque-list',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, EstoqueFormComponent],
+  imports: [CommonModule, EstoqueFormComponent],
+  providers: [{ provide: LOCALE_ID, useValue: 'pt-BR' }],
   templateUrl: './estoque-list.component.html',
 })
 export class EstoqueListComponent implements OnInit {
   protected readonly store = inject(StockStore);
+  private readonly toast = inject(ToastService);
+  searchTerm = signal<string>('');
 
   isModalOpen = signal(false);
+
+  totalItens = computed(() => this.store.items().length);
+
+  itensAbaixoMinimo = computed(
+    () => this.store.items().filter((i) => i.currentQuantity <= i.minQuantity).length,
+  );
+  valorTotalEstoque = computed(() =>
+    this.store.items().reduce((acc, item) => acc + item.costPrice * item.currentQuantity, 0),
+  );
 
   ngOnInit() {
     this.store.loadAll();
@@ -30,5 +46,31 @@ export class EstoqueListComponent implements OnInit {
     this.isModalOpen.set(false);
     // Limpa a seleção ao fechar para não abrir o lixo na próxima vez
     this.store.selectedItem.set(null);
+  }
+
+  onSearch(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchTerm.set(value);
+
+    // 3. Opcional: Se sua store tiver um método de filtro interno, use-o:
+    this.store.setFilter(value);
+  }
+
+  updateQuantity(item: any, amount: number) {
+    const newQuantity = item.currentQuantity + amount;
+
+    if (newQuantity < 0) return;
+
+    // Criamos o objeto com a nova quantidade
+    const updatedData = {
+      ...item,
+      currentQuantity: newQuantity,
+    };
+
+    // Passamos o ID como 1º argumento e o OBJETO como 2º argumento
+    this.store.updateItem(item.id, updatedData);
+
+    const acao = amount > 0 ? 'Entrada' : 'Saída';
+    this.toast.showToast(`${acao} de ${item.name} realizada!`, 'success');
   }
 }
