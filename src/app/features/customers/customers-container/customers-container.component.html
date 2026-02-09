@@ -1,0 +1,41 @@
+<div class="container mx-auto p-6">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Gestão de Unidades</h1>
+    <p class="text-gray-500 text-sm">Gerencie condomínios e os prontuários dos elevadores.</p>
+  </header>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-1">
+      <app-customer-list></app-customer-list>
+    </div>
+
+    <div class="lg:col-span-2 space-y-6">
+      @if (store.selectedCustomer()) {
+        <div
+          class="bg-blue-600 text-white p-4 rounded-lg shadow-lg flex justify-between items-center"
+        >
+          <div>
+            <p class="text-xs opacity-80 uppercase font-bold tracking-widest">
+              Unidade Selecionada
+            </p>
+            <h2 class="text-xl font-bold">{{ store.selectedCustomer()?.name }}</h2>
+          </div>
+          <button
+            (click)="store.clearSelection()"
+            class="text-sm bg-blue-500 hover:bg-blue-400 px-3 py-1 rounded"
+          >
+            Trocar
+          </button>
+        </div>
+
+        <app-equipment-form></app-equipment-form>
+      } @else {
+        <div
+          class="h-64 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-400"
+        >
+          Selecione um cliente para gerenciar os equipamentos.
+        </div>
+      }
+    </div>
+  </div>
+</div>

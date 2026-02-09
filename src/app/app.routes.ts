@@ -8,8 +8,15 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'estoque', // Mudamos para estoque pois o dashboard não existe
+        redirectTo: 'clientes', // Alterado para clientes como foco inicial do MVP
         pathMatch: 'full',
+      },
+      {
+        path: 'clientes',
+        loadComponent: () =>
+          import('./features/customers/customers-container/customers-container.component').then(
+            (m) => m.CustomersContainerComponent,
+          ),
       },
       {
         path: 'estoque',
@@ -18,29 +25,15 @@ export const routes: Routes = [
             (m) => m.EstoqueListComponent,
           ),
       },
-      // Comentamos as rotas abaixo para o build passar
       {
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
       },
-      // {
-      //   path: 'cadastro',
-      //   loadComponent: () =>
-      //     import('./features/cadastro/cadastro-base/cadastro-base.component').then(
-      //       (m) => m.CadastroBaseComponent,
-      //     ),
-      // },
     ],
   },
-  /*
-  {
-    path: 'login',
-    loadComponent: () => import('./features/auth/login/login.component').then((m) => m.LoginComponent),
-  },
-  */
   {
     path: '**',
-    redirectTo: 'estoque',
+    redirectTo: 'clientes',
   },
 ];

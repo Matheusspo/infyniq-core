@@ -1,0 +1,69 @@
+<div class="p-4 bg-white rounded-lg shadow">
+  <h2 class="text-xl font-bold mb-4 text-gray-800">Prontuário do Equipamento</h2>
+
+  <form
+    [formGroup]="equipmentForm"
+    (ngSubmit)="onSubmit()"
+    class="grid grid-cols-1 md:grid-cols-2 gap-4"
+  >
+    <div class="col-span-2 border-b pb-2">
+      <h3 class="font-semibold text-blue-600">Identificação</h3>
+    </div>
+
+    <div class="flex flex-col">
+      <label class="text-sm font-medium">Nome/Apelido (ex: Social 01)</label>
+      <input
+        formControlName="name"
+        type="text"
+        class="border p-2 rounded"
+        placeholder="Ex: Elevador Social Torre A"
+      />
+    </div>
+
+    <div class="flex flex-col">
+      <label class="text-sm font-medium">Marca</label>
+      <select formControlName="brand" class="border p-2 rounded">
+        <option value="Otis">Otis</option>
+        <option value="Atlas Schindler">Atlas Schindler</option>
+        <option value="Thyssenkrupp">Thyssenkrupp</option>
+        <option value="Outra">Outra</option>
+      </select>
+    </div>
+
+    <div class="col-span-2 border-b pb-2 mt-4">
+      <h3 class="font-semibold text-blue-600">Especificações Técnicas</h3>
+    </div>
+
+    <div formGroupName="technicalSpecs" class="col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="flex flex-col">
+        <label class="text-sm font-medium">Nº de Paradas</label>
+        <input formControlName="stops" type="number" class="border p-2 rounded" />
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-sm font-medium">Capacidade (Pessoas)</label>
+        <input formControlName="capacityPersons" type="number" class="border p-2 rounded" />
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-sm font-medium">Tipo de Tração</label>
+        <select formControlName="driveType" class="border p-2 rounded">
+          <option value="GEARED">Com Engrenagem (Geared)</option>
+          <option value="GEARLESS">Sem Engrenagem (Gearless)</option>
+          <option value="HYDRAULIC">Hidráulico</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-span-2 flex justify-end gap-2 mt-6">
+      <button type="button" class="px-4 py-2 border rounded text-gray-600">Cancelar</button>
+      <button
+        type="submit"
+        [disabled]="equipmentForm.invalid"
+        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+      >
+        Salvar no Prontuário
+      </button>
+    </div>
+  </form>
+</div>

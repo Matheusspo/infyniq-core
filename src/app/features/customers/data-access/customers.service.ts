@@ -1,0 +1,30 @@
+// src/app/features/customers/data-access/customers.service.ts
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Customer } from '../models/customer.model';
+import { Equipment } from '../models/equipment.model';
+
+@Injectable({ providedIn: 'root' })
+export class CustomersService {
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:3000/api'; // Ajuste conforme seu env
+
+  // Clientes
+  getCustomers(): Observable<Customer[]> {
+    return this.http.get<Customer[]>(`${this.apiUrl}/customers`);
+  }
+
+  createCustomer(data: Partial<Customer>): Observable<Customer> {
+    return this.http.post<Customer>(`${this.apiUrl}/customers`, data);
+  }
+
+  // Equipamentos (Prontuário)
+  getEquipmentsByCustomer(customerId: string): Observable<Equipment[]> {
+    return this.http.get<Equipment[]>(`${this.apiUrl}/customers/${customerId}/equipments`);
+  }
+
+  addEquipment(equipment: Partial<Equipment>): Observable<Equipment> {
+    return this.http.post<Equipment>(`${this.apiUrl}/equipments`, equipment);
+  }
+}

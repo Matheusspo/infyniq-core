@@ -1,0 +1,92 @@
+<aside
+  [class.w-64]="isExpanded()"
+  [class.w-20]="!isExpanded()"
+  class="bg-[#0a0f1c] h-screen flex flex-col border-r border-slate-800 transition-all duration-300 relative"
+>
+  <button
+    (click)="toggleSidebar()"
+    class="absolute -right-3 top-10 bg-blue-600 text-white rounded-full p-1 shadow-lg hover:bg-blue-700 transition-colors z-50"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-4 h-4 transition-transform"
+      [class.rotate-180]="!isExpanded()"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <div class="p-6 flex flex-col items-center border-b border-slate-800/50 overflow-hidden">
+    <div class="relative w-12 h-12 flex items-center justify-center shrink-0">
+      <img src="logo-infyniq-icon.png" alt="Logo" class="w-full h-auto object-contain" />
+    </div>
+
+    @if (isExpanded()) {
+      <div class="text-center mt-2">
+        <h2 class="text-white font-bold text-lg tracking-[0.15em]">INFYNIQ</h2>
+        <p
+          class="text-[9px] text-blue-400/70 uppercase tracking-[0.2em] font-medium whitespace-nowrap"
+        >
+          Tecnologia sem limites
+        </p>
+      </div>
+    }
+  </div>
+
+  <nav class="flex-1 mt-6 px-4 space-y-2">
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="bg-blue-600 text-white"
+      class="flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition-all group"
+    >
+      <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z"
+        />
+      </svg>
+      @if (isExpanded()) {
+        <span class="font-medium">Dashboard</span>
+      }
+    </a>
+    <a
+      routerLink="/clientes"
+      routerLinkActive="bg-blue-600 text-white"
+      class="flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition-all group"
+    >
+      <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+        />
+      </svg>
+      @if (isExpanded()) {
+        <span class="font-medium">Clientes & Elevadores</span>
+      }
+    </a>
+    <a
+      routerLink="/estoque"
+      routerLinkActive="bg-blue-600 text-white"
+      class="flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition-all group"
+    >
+      <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"
+        />
+      </svg>
+      @if (isExpanded()) {
+        <span class="font-medium">Estoque</span>
+      }
+    </a>
+  </nav>
+</aside>
