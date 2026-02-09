@@ -11,6 +11,7 @@ export interface StockItem {
   supplier?: string;
   location?: string;
   updatedAt: string; // ISO String vinda do JSON
+  imageUrl?: string;
 }
 
 export interface CreateStockItemDto {
@@ -23,4 +24,5 @@ export interface CreateStockItemDto {
   costPrice: number;
   location?: string;
   description?: string;
+  imageUrl?: string;
 }

@@ -25,6 +25,23 @@ export class StockStore {
     () => this.items().filter((item) => item.currentQuantity <= item.minQuantity).length,
   );
 
+  readonly selectedCategory = signal<string>('Todas');
+
+  readonly selectedItem = signal<StockItem | null>(null);
+
+  readonly filteredItems = computed(() => {
+    const category = this.selectedCategory();
+    const allItems = this.items();
+
+    if (category === 'Todas') return allItems;
+    return allItems.filter((item) => item.category === category);
+  });
+
+  readonly categories = computed(() => {
+    const cats = this.items().map((i) => i.category);
+    return ['Todas', ...new Set(cats)];
+  });
+
   loadAll() {
     this.loading.set(true);
     this.stockService.findAll().subscribe({
@@ -42,9 +59,9 @@ export class StockStore {
 
   createItem(newItem: CreateStockItemDto) {
     this.stockService.create(newItem).subscribe({
-      next: () => {
-        this.loadAll(); // Recarrega a lista para mostrar o novo item
-        console.log('Item criado com sucesso na Repair Elevadores!');
+      next: (createdItem: StockItem) => {
+        this.items.update((currentItems) => [...currentItems, createdItem]);
+        console.log('Item criado com sucesso!');
       },
       error: (err) => console.error('Erro ao criar item:', err),
     });
@@ -57,5 +74,16 @@ export class StockStore {
         error: (err) => console.error('Erro ao deletar', err),
       });
     }
+  }
+
+  updateItem(id: string, changes: Partial<CreateStockItemDto>) {
+    this.stockService.update(id, changes).subscribe({
+      next: () => {
+        this.loadAll(); // Atualiza a lista
+        this.selectedItem.set(null); // Limpa a seleção
+        // O fechamento do modal será controlado pelo componente
+      },
+      error: (err) => alert('Erro ao atualizar: ' + err.message),
+    });
   }
 }

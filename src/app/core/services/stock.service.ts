@@ -27,4 +27,8 @@ export class StockService {
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/items/${id}`);
   }
+
+  update(id: string, item: Partial<StockItem>): Observable<StockItem> {
+    return this.http.put<StockItem>(`${this.API_URL}/items/${id}`, item);
+  }
 }

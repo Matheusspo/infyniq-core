@@ -19,15 +19,18 @@ export const routes: Routes = [
           ),
       },
       // Comentamos as rotas abaixo para o build passar
-      /* {
-        path: 'dashboard',
-        loadComponent: () => import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
-      },
       {
-        path: 'cadastro',
-        loadComponent: () => import('./features/cadastro/cadastro-base/cadastro-base.component').then((m) => m.CadastroBaseComponent),
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
       },
-      */
+      // {
+      //   path: 'cadastro',
+      //   loadComponent: () =>
+      //     import('./features/cadastro/cadastro-base/cadastro-base.component').then(
+      //       (m) => m.CadastroBaseComponent,
+      //     ),
+      // },
     ],
   },
   /*

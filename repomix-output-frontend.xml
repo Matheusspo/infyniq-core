@@ -46,6 +46,336 @@ angular.json
 package.json
 public/favicon.ico
 README.md
+repomix-output-frontend.xml
+src/app/app.component.ts
+src/app/app.config.ts
+src/app/app.html
+src/app/app.routes.ts
+src/app/app.scss
+src/app/app.spec.ts
+src/app/core/components/header/header.component.ts
+src/app/core/components/header/header.html
+src/app/core/components/header/header.scss
+src/app/core/components/header/header.spec.ts
+src/app/core/components/sidebar/sidebar.component.ts
+src/app/core/components/sidebar/sidebar.html
+src/app/core/components/sidebar/sidebar.scss
+src/app/core/components/sidebar/sidebar.spec.ts
+src/app/core/interceptors/error-interceptor.spec.ts
+src/app/core/interceptors/error-interceptor.ts
+src/app/core/layouts/main-layout/main-layout.component.ts
+src/app/core/layouts/main-layout/main-layout.html
+src/app/core/layouts/main-layout/main-layout.scss
+src/app/core/layouts/main-layout/main-layout.spec.ts
+src/app/core/models/stock.interfaces.ts
+src/app/core/services/stock.service.ts
+src/app/features/cadastro/cadastro-base/cadastro-base.html
+src/app/features/cadastro/cadastro-base/cadastro-base.scss
+src/app/features/cadastro/cadastro-base/cadastro-base.spec.ts
+src/app/features/cadastro/cadastro-base/cadastro-base.ts
+src/app/features/dashboard/dashboard.html
+src/app/features/dashboard/dashboard.scss
+src/app/features/dashboard/dashboard.spec.ts
+src/app/features/dashboard/dashboard.ts
+src/app/features/estoque/estoque-form/estoque-form.component.html
+src/app/features/estoque/estoque-form/estoque-form.component.ts
+src/app/features/estoque/estoque-form/estoque-form.scss
+src/app/features/estoque/estoque-form/estoque-form.spec.ts
+src/app/features/estoque/estoque-list/estoque-list.component.html
+src/app/features/estoque/estoque-list/estoque-list.component.ts
+src/app/features/estoque/estoque-list/estoque-list.scss
+src/app/features/estoque/estoque-list/estoque-list.spec.ts
+src/app/features/estoque/stock.store.ts
+src/app/layout/app-shell/app-shell.html
+src/app/layout/app-shell/app-shell.scss
+src/app/layout/app-shell/app-shell.ts
+src/environments/environment.ts
+src/index.html
+src/main.ts
+src/styles.scss
+tailwind.config.js
+tsconfig.app.json
+tsconfig.json
+tsconfig.spec.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".editorconfig">
+# Editor configuration, see https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.ts]
+quote_type = single
+ij_typescript_use_double_quotes = false
+
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
+</file>
+
+<file path=".gitignore">
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# System files
+.DS_Store
+Thumbs.db
+</file>
+
+<file path="angular.json">
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "infyniq-core": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "src/main.ts",
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "src/styles.scss"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "infyniq-core:build:production"
+            },
+            "development": {
+              "buildTarget": "infyniq-core:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "src/styles.scss"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": false
+  }
+}
+</file>
+
+<file path="README.md">
+# InfyniqCore
+
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.9.
+
+## Development server
+
+To start a local development server, run:
+
+```bash
+ng serve
+```
+
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+## Code scaffolding
+
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+
+```bash
+ng generate component component-name
+```
+
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+
+```bash
+ng generate --help
+```
+
+## Building
+
+To build the project run:
+
+```bash
+ng build
+```
+
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+
+## Running unit tests
+
+To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+
+```bash
+ng test
+```
+
+## Running end-to-end tests
+
+For end-to-end (e2e) testing, run:
+
+```bash
+ng e2e
+```
+
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Additional Resources
+
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+</file>
+
+<file path="repomix-output-frontend.xml">
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.editorconfig
+.gitignore
+angular.json
+package.json
+public/favicon.ico
+README.md
 repomix-output-frontend-output.xml
 src/app/app.component.ts
 src/app/app.config.ts
@@ -2647,6 +2977,1494 @@ bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err))
   "include": [
     "src/**/*.ts"
   ]
+}
+</file>
+
+</files>
+</file>
+
+<file path="src/app/app.component.ts">
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+
+@Component({
+  selector: 'app-root', // O index.html procura por isso
+  standalone: true,
+  imports: [RouterOutlet], // Precisa do RouterOutlet para as rotas funcionarem
+  template: `<router-outlet></router-outlet>` 
+})
+export class AppComponent { }
+</file>
+
+<file path="src/app/app.html">
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
+<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
+<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * Delete the template below * * * * * * * * * -->
+<!-- * * * * * * * to get started with your project! * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+
+<style>
+  :host {
+    --bright-blue: oklch(51.01% 0.274 263.83);
+    --electric-violet: oklch(53.18% 0.28 296.97);
+    --french-violet: oklch(47.66% 0.246 305.88);
+    --vivid-pink: oklch(69.02% 0.277 332.77);
+    --hot-red: oklch(61.42% 0.238 15.34);
+    --orange-red: oklch(63.32% 0.24 31.68);
+
+    --gray-900: oklch(19.37% 0.006 300.98);
+    --gray-700: oklch(36.98% 0.014 302.71);
+    --gray-400: oklch(70.9% 0.015 304.04);
+
+    --red-to-pink-to-purple-vertical-gradient: linear-gradient(
+      180deg,
+      var(--orange-red) 0%,
+      var(--vivid-pink) 50%,
+      var(--electric-violet) 100%
+    );
+
+    --red-to-pink-to-purple-horizontal-gradient: linear-gradient(
+      90deg,
+      var(--orange-red) 0%,
+      var(--vivid-pink) 50%,
+      var(--electric-violet) 100%
+    );
+
+    --pill-accent: var(--bright-blue);
+
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol";
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1 {
+    font-size: 3.125rem;
+    color: var(--gray-900);
+    font-weight: 500;
+    line-height: 100%;
+    letter-spacing: -0.125rem;
+    margin: 0;
+    font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol";
+  }
+
+  p {
+    margin: 0;
+    color: var(--gray-700);
+  }
+
+  main {
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    box-sizing: inherit;
+    position: relative;
+  }
+
+  .angular-logo {
+    max-width: 9.2rem;
+  }
+
+  .content {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 700px;
+    margin-bottom: 3rem;
+  }
+
+  .content h1 {
+    margin-top: 1.75rem;
+  }
+
+  .content p {
+    margin-top: 1.5rem;
+  }
+
+  .divider {
+    width: 1px;
+    background: var(--red-to-pink-to-purple-vertical-gradient);
+    margin-inline: 0.5rem;
+  }
+
+  .pill-group {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+
+  .pill {
+    display: flex;
+    align-items: center;
+    --pill-accent: var(--bright-blue);
+    background: color-mix(in srgb, var(--pill-accent) 5%, transparent);
+    color: var(--pill-accent);
+    padding-inline: 0.75rem;
+    padding-block: 0.375rem;
+    border-radius: 2.75rem;
+    border: 0;
+    transition: background 0.3s ease;
+    font-family: var(--inter-font);
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.4rem;
+    letter-spacing: -0.00875rem;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .pill:hover {
+    background: color-mix(in srgb, var(--pill-accent) 15%, transparent);
+  }
+
+  .pill-group .pill:nth-child(6n + 1) {
+    --pill-accent: var(--bright-blue);
+  }
+  .pill-group .pill:nth-child(6n + 2) {
+    --pill-accent: var(--electric-violet);
+  }
+  .pill-group .pill:nth-child(6n + 3) {
+    --pill-accent: var(--french-violet);
+  }
+
+  .pill-group .pill:nth-child(6n + 4),
+  .pill-group .pill:nth-child(6n + 5),
+  .pill-group .pill:nth-child(6n + 6) {
+    --pill-accent: var(--hot-red);
+  }
+
+  .pill-group svg {
+    margin-inline-start: 0.25rem;
+  }
+
+  .social-links {
+    display: flex;
+    align-items: center;
+    gap: 0.73rem;
+    margin-top: 1.5rem;
+  }
+
+  .social-links path {
+    transition: fill 0.3s ease;
+    fill: var(--gray-400);
+  }
+
+  .social-links a:hover svg path {
+    fill: var(--gray-900);
+  }
+
+  @media screen and (max-width: 650px) {
+    .content {
+      flex-direction: column;
+      width: max-content;
+    }
+
+    .divider {
+      height: 1px;
+      width: 100%;
+      background: var(--red-to-pink-to-purple-horizontal-gradient);
+      margin-block: 1.5rem;
+    }
+  }
+</style>
+
+<main class="main">
+  <div class="content">
+    <div class="left-side">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 982 239"
+        fill="none"
+        class="angular-logo"
+      >
+        <g clip-path="url(#a)">
+          <path
+            fill="url(#b)"
+            d="M388.676 191.625h30.849L363.31 31.828h-35.758l-56.215 159.797h30.848l13.174-39.356h60.061l13.256 39.356Zm-65.461-62.675 21.602-64.311h1.227l21.602 64.311h-44.431Zm126.831-7.527v70.202h-28.23V71.839h27.002v20.374h1.392c2.782-6.71 7.2-12.028 13.255-15.956 6.056-3.927 13.584-5.89 22.503-5.89 8.264 0 15.465 1.8 21.684 5.318 6.137 3.518 10.964 8.673 14.319 15.382 3.437 6.71 5.074 14.81 4.992 24.383v76.175h-28.23v-71.92c0-8.019-2.046-14.237-6.219-18.819-4.173-4.5-9.819-6.791-17.102-6.791-4.91 0-9.328 1.063-13.174 3.272-3.846 2.128-6.792 5.237-9.001 9.328-2.046 4.009-3.191 8.918-3.191 14.728ZM589.233 239c-10.147 0-18.82-1.391-26.103-4.091-7.282-2.7-13.092-6.382-17.511-10.964-4.418-4.582-7.528-9.655-9.164-15.219l25.448-6.136c1.145 2.372 2.782 4.663 4.991 6.954 2.209 2.291 5.155 4.255 8.837 5.81 3.683 1.554 8.428 2.291 14.074 2.291 8.019 0 14.647-1.964 19.884-5.81 5.237-3.845 7.856-10.227 7.856-19.064v-22.665h-1.391c-1.473 2.946-3.601 5.892-6.383 9.001-2.782 3.109-6.464 5.645-10.965 7.691-4.582 2.046-10.228 3.109-17.101 3.109-9.165 0-17.511-2.209-25.039-6.545-7.446-4.337-13.42-10.883-17.757-19.474-4.418-8.673-6.628-19.473-6.628-32.565 0-13.091 2.21-24.301 6.628-33.383 4.419-9.082 10.311-15.955 17.839-20.7 7.528-4.746 15.874-7.037 25.039-7.037 7.037 0 12.846 1.145 17.347 3.518 4.582 2.373 8.182 5.236 10.883 8.51 2.7 3.272 4.746 6.382 6.137 9.327h1.554v-19.8h27.821v121.749c0 10.228-2.454 18.737-7.364 25.447-4.91 6.709-11.538 11.7-20.048 15.055-8.509 3.355-18.165 4.991-28.884 4.991Zm.245-71.266c5.974 0 11.047-1.473 15.302-4.337 4.173-2.945 7.446-7.118 9.573-12.519 2.21-5.482 3.274-12.027 3.274-19.637 0-7.609-1.064-14.155-3.274-19.8-2.127-5.646-5.318-10.064-9.491-13.255-4.174-3.11-9.329-4.746-15.384-4.746s-11.537 1.636-15.792 4.91c-4.173 3.272-7.365 7.772-9.492 13.418-2.128 5.727-3.191 12.191-3.191 19.392 0 7.2 1.063 13.745 3.273 19.228 2.127 5.482 5.318 9.736 9.573 12.764 4.174 3.027 9.41 4.582 15.629 4.582Zm141.56-26.51V71.839h28.23v119.786h-27.412v-21.273h-1.227c-2.7 6.709-7.119 12.191-13.338 16.446-6.137 4.255-13.747 6.382-22.748 6.382-7.855 0-14.81-1.718-20.783-5.237-5.974-3.518-10.72-8.591-14.075-15.382-3.355-6.709-5.073-14.891-5.073-24.464V71.839h28.312v71.921c0 7.609 2.046 13.664 6.219 18.083 4.173 4.5 9.655 6.709 16.365 6.709 4.173 0 8.183-.982 12.111-3.028 3.927-2.045 7.118-5.072 9.655-9.082 2.537-4.091 3.764-9.164 3.764-15.218Zm65.707-109.395v159.796h-28.23V31.828h28.23Zm44.841 162.169c-7.61 0-14.402-1.391-20.457-4.091-6.055-2.7-10.883-6.791-14.32-12.109-3.518-5.319-5.237-11.946-5.237-19.801 0-6.791 1.228-12.355 3.765-16.773 2.536-4.419 5.891-7.937 10.228-10.637 4.337-2.618 9.164-4.664 14.647-6.055 5.4-1.391 11.046-2.373 16.856-3.027 7.037-.737 12.683-1.391 17.102-1.964 4.337-.573 7.528-1.555 9.574-2.782 1.963-1.309 3.027-3.273 3.027-5.973v-.491c0-5.891-1.718-10.391-5.237-13.664-3.518-3.191-8.51-4.828-15.056-4.828-6.955 0-12.356 1.473-16.447 4.5-4.009 3.028-6.71 6.546-8.183 10.719l-26.348-3.764c2.046-7.282 5.483-13.336 10.31-18.328 4.746-4.909 10.638-8.59 17.511-11.045 6.955-2.455 14.565-3.682 22.912-3.682 5.809 0 11.537.654 17.265 2.045s10.965 3.6 15.711 6.71c4.746 3.109 8.51 7.282 11.455 12.6 2.864 5.318 4.337 11.946 4.337 19.883v80.184h-27.166v-16.446h-.9c-1.719 3.355-4.092 6.464-7.201 9.328-3.109 2.864-6.955 5.237-11.619 6.955-4.828 1.718-10.229 2.536-16.529 2.536Zm7.364-20.701c5.646 0 10.556-1.145 14.729-3.354 4.173-2.291 7.364-5.237 9.655-9.001 2.292-3.763 3.355-7.854 3.355-12.273v-14.155c-.9.737-2.373 1.391-4.5 2.046-2.128.654-4.419 1.145-7.037 1.636-2.619.491-5.155.9-7.692 1.227-2.537.328-4.746.655-6.628.901-4.173.572-8.019 1.472-11.292 2.781-3.355 1.31-5.973 3.11-7.855 5.401-1.964 2.291-2.864 5.318-2.864 8.918 0 5.237 1.882 9.164 5.728 11.782 3.682 2.782 8.51 4.091 14.401 4.091Zm64.643 18.328V71.839h27.412v19.965h1.227c2.21-6.955 5.974-12.274 11.292-16.038 5.319-3.763 11.456-5.645 18.329-5.645 1.555 0 3.355.082 5.237.163 1.964.164 3.601.328 4.91.573v25.938c-1.227-.41-3.109-.819-5.646-1.146a58.814 58.814 0 0 0-7.446-.49c-5.155 0-9.738 1.145-13.829 3.354-4.091 2.209-7.282 5.236-9.655 9.164-2.373 3.927-3.519 8.427-3.519 13.5v70.448h-28.312ZM222.077 39.192l-8.019 125.923L137.387 0l84.69 39.192Zm-53.105 162.825-57.933 33.056-57.934-33.056 11.783-28.556h92.301l11.783 28.556ZM111.039 62.675l30.357 73.803H80.681l30.358-73.803ZM7.937 165.115 0 39.192 84.69 0 7.937 165.115Z"
+          />
+          <path
+            fill="url(#c)"
+            d="M388.676 191.625h30.849L363.31 31.828h-35.758l-56.215 159.797h30.848l13.174-39.356h60.061l13.256 39.356Zm-65.461-62.675 21.602-64.311h1.227l21.602 64.311h-44.431Zm126.831-7.527v70.202h-28.23V71.839h27.002v20.374h1.392c2.782-6.71 7.2-12.028 13.255-15.956 6.056-3.927 13.584-5.89 22.503-5.89 8.264 0 15.465 1.8 21.684 5.318 6.137 3.518 10.964 8.673 14.319 15.382 3.437 6.71 5.074 14.81 4.992 24.383v76.175h-28.23v-71.92c0-8.019-2.046-14.237-6.219-18.819-4.173-4.5-9.819-6.791-17.102-6.791-4.91 0-9.328 1.063-13.174 3.272-3.846 2.128-6.792 5.237-9.001 9.328-2.046 4.009-3.191 8.918-3.191 14.728ZM589.233 239c-10.147 0-18.82-1.391-26.103-4.091-7.282-2.7-13.092-6.382-17.511-10.964-4.418-4.582-7.528-9.655-9.164-15.219l25.448-6.136c1.145 2.372 2.782 4.663 4.991 6.954 2.209 2.291 5.155 4.255 8.837 5.81 3.683 1.554 8.428 2.291 14.074 2.291 8.019 0 14.647-1.964 19.884-5.81 5.237-3.845 7.856-10.227 7.856-19.064v-22.665h-1.391c-1.473 2.946-3.601 5.892-6.383 9.001-2.782 3.109-6.464 5.645-10.965 7.691-4.582 2.046-10.228 3.109-17.101 3.109-9.165 0-17.511-2.209-25.039-6.545-7.446-4.337-13.42-10.883-17.757-19.474-4.418-8.673-6.628-19.473-6.628-32.565 0-13.091 2.21-24.301 6.628-33.383 4.419-9.082 10.311-15.955 17.839-20.7 7.528-4.746 15.874-7.037 25.039-7.037 7.037 0 12.846 1.145 17.347 3.518 4.582 2.373 8.182 5.236 10.883 8.51 2.7 3.272 4.746 6.382 6.137 9.327h1.554v-19.8h27.821v121.749c0 10.228-2.454 18.737-7.364 25.447-4.91 6.709-11.538 11.7-20.048 15.055-8.509 3.355-18.165 4.991-28.884 4.991Zm.245-71.266c5.974 0 11.047-1.473 15.302-4.337 4.173-2.945 7.446-7.118 9.573-12.519 2.21-5.482 3.274-12.027 3.274-19.637 0-7.609-1.064-14.155-3.274-19.8-2.127-5.646-5.318-10.064-9.491-13.255-4.174-3.11-9.329-4.746-15.384-4.746s-11.537 1.636-15.792 4.91c-4.173 3.272-7.365 7.772-9.492 13.418-2.128 5.727-3.191 12.191-3.191 19.392 0 7.2 1.063 13.745 3.273 19.228 2.127 5.482 5.318 9.736 9.573 12.764 4.174 3.027 9.41 4.582 15.629 4.582Zm141.56-26.51V71.839h28.23v119.786h-27.412v-21.273h-1.227c-2.7 6.709-7.119 12.191-13.338 16.446-6.137 4.255-13.747 6.382-22.748 6.382-7.855 0-14.81-1.718-20.783-5.237-5.974-3.518-10.72-8.591-14.075-15.382-3.355-6.709-5.073-14.891-5.073-24.464V71.839h28.312v71.921c0 7.609 2.046 13.664 6.219 18.083 4.173 4.5 9.655 6.709 16.365 6.709 4.173 0 8.183-.982 12.111-3.028 3.927-2.045 7.118-5.072 9.655-9.082 2.537-4.091 3.764-9.164 3.764-15.218Zm65.707-109.395v159.796h-28.23V31.828h28.23Zm44.841 162.169c-7.61 0-14.402-1.391-20.457-4.091-6.055-2.7-10.883-6.791-14.32-12.109-3.518-5.319-5.237-11.946-5.237-19.801 0-6.791 1.228-12.355 3.765-16.773 2.536-4.419 5.891-7.937 10.228-10.637 4.337-2.618 9.164-4.664 14.647-6.055 5.4-1.391 11.046-2.373 16.856-3.027 7.037-.737 12.683-1.391 17.102-1.964 4.337-.573 7.528-1.555 9.574-2.782 1.963-1.309 3.027-3.273 3.027-5.973v-.491c0-5.891-1.718-10.391-5.237-13.664-3.518-3.191-8.51-4.828-15.056-4.828-6.955 0-12.356 1.473-16.447 4.5-4.009 3.028-6.71 6.546-8.183 10.719l-26.348-3.764c2.046-7.282 5.483-13.336 10.31-18.328 4.746-4.909 10.638-8.59 17.511-11.045 6.955-2.455 14.565-3.682 22.912-3.682 5.809 0 11.537.654 17.265 2.045s10.965 3.6 15.711 6.71c4.746 3.109 8.51 7.282 11.455 12.6 2.864 5.318 4.337 11.946 4.337 19.883v80.184h-27.166v-16.446h-.9c-1.719 3.355-4.092 6.464-7.201 9.328-3.109 2.864-6.955 5.237-11.619 6.955-4.828 1.718-10.229 2.536-16.529 2.536Zm7.364-20.701c5.646 0 10.556-1.145 14.729-3.354 4.173-2.291 7.364-5.237 9.655-9.001 2.292-3.763 3.355-7.854 3.355-12.273v-14.155c-.9.737-2.373 1.391-4.5 2.046-2.128.654-4.419 1.145-7.037 1.636-2.619.491-5.155.9-7.692 1.227-2.537.328-4.746.655-6.628.901-4.173.572-8.019 1.472-11.292 2.781-3.355 1.31-5.973 3.11-7.855 5.401-1.964 2.291-2.864 5.318-2.864 8.918 0 5.237 1.882 9.164 5.728 11.782 3.682 2.782 8.51 4.091 14.401 4.091Zm64.643 18.328V71.839h27.412v19.965h1.227c2.21-6.955 5.974-12.274 11.292-16.038 5.319-3.763 11.456-5.645 18.329-5.645 1.555 0 3.355.082 5.237.163 1.964.164 3.601.328 4.91.573v25.938c-1.227-.41-3.109-.819-5.646-1.146a58.814 58.814 0 0 0-7.446-.49c-5.155 0-9.738 1.145-13.829 3.354-4.091 2.209-7.282 5.236-9.655 9.164-2.373 3.927-3.519 8.427-3.519 13.5v70.448h-28.312ZM222.077 39.192l-8.019 125.923L137.387 0l84.69 39.192Zm-53.105 162.825-57.933 33.056-57.934-33.056 11.783-28.556h92.301l11.783 28.556ZM111.039 62.675l30.357 73.803H80.681l30.358-73.803ZM7.937 165.115 0 39.192 84.69 0 7.937 165.115Z"
+          />
+        </g>
+        <defs>
+          <radialGradient
+            id="c"
+            cx="0"
+            cy="0"
+            r="1"
+            gradientTransform="rotate(118.122 171.182 60.81) scale(205.794)"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stop-color="#FF41F8" />
+            <stop offset=".707" stop-color="#FF41F8" stop-opacity=".5" />
+            <stop offset="1" stop-color="#FF41F8" stop-opacity="0" />
+          </radialGradient>
+          <linearGradient
+            id="b"
+            x1="0"
+            x2="982"
+            y1="192"
+            y2="192"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stop-color="#F0060B" />
+            <stop offset="0" stop-color="#F0070C" />
+            <stop offset=".526" stop-color="#CC26D5" />
+            <stop offset="1" stop-color="#7702FF" />
+          </linearGradient>
+          <clipPath id="a"><path fill="#fff" d="M0 0h982v239H0z" /></clipPath>
+        </defs>
+      </svg>
+      <h1>Hello, {{ title() }}</h1>
+      <p>Congratulations! Your app is running. 🎉</p>
+    </div>
+    <div class="divider" role="separator" aria-label="Divider"></div>
+    <div class="right-side">
+      <div class="pill-group">
+        @for (item of [
+          { title: 'Explore the Docs', link: 'https://angular.dev' },
+          { title: 'Learn with Tutorials', link: 'https://angular.dev/tutorials' },
+          { title: 'Prompt and best practices for AI', link: 'https://angular.dev/ai/develop-with-ai'},
+          { title: 'CLI Docs', link: 'https://angular.dev/tools/cli' },
+          { title: 'Angular Language Service', link: 'https://angular.dev/tools/language-service' },
+          { title: 'Angular DevTools', link: 'https://angular.dev/tools/devtools' },
+        ]; track item.title) {
+          <a
+            class="pill"
+            [href]="item.link"
+            target="_blank"
+            rel="noopener"
+          >
+            <span>{{ item.title }}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="14"
+              viewBox="0 -960 960 960"
+              width="14"
+              fill="currentColor"
+            >
+              <path
+                d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"
+              />
+            </svg>
+          </a>
+        }
+      </div>
+      <div class="social-links">
+        <a
+          href="https://github.com/angular/angular"
+          aria-label="Github"
+          target="_blank"
+          rel="noopener"
+        >
+          <svg
+            width="25"
+            height="24"
+            viewBox="0 0 25 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            alt="Github"
+          >
+            <path
+              d="M12.3047 0C5.50634 0 0 5.50942 0 12.3047C0 17.7423 3.52529 22.3535 8.41332 23.9787C9.02856 24.0946 9.25414 23.7142 9.25414 23.3871C9.25414 23.0949 9.24389 22.3207 9.23876 21.2953C5.81601 22.0377 5.09414 19.6444 5.09414 19.6444C4.53427 18.2243 3.72524 17.8449 3.72524 17.8449C2.61064 17.082 3.81137 17.0973 3.81137 17.0973C5.04697 17.1835 5.69604 18.3647 5.69604 18.3647C6.79321 20.2463 8.57636 19.7029 9.27978 19.3881C9.39052 18.5924 9.70736 18.0499 10.0591 17.7423C7.32641 17.4347 4.45429 16.3765 4.45429 11.6618C4.45429 10.3185 4.9311 9.22133 5.72065 8.36C5.58222 8.04931 5.16694 6.79833 5.82831 5.10337C5.82831 5.10337 6.85883 4.77319 9.2121 6.36459C10.1965 6.09082 11.2424 5.95546 12.2883 5.94931C13.3342 5.95546 14.3801 6.09082 15.3644 6.36459C17.7023 4.77319 18.7328 5.10337 18.7328 5.10337C19.3942 6.79833 18.9789 8.04931 18.8559 8.36C19.6403 9.22133 20.1171 10.3185 20.1171 11.6618C20.1171 16.3888 17.2409 17.4296 14.5031 17.7321C14.9338 18.1012 15.3337 18.8559 15.3337 20.0084C15.3337 21.6552 15.3183 22.978 15.3183 23.3779C15.3183 23.7009 15.5336 24.0854 16.1642 23.9623C21.0871 22.3484 24.6094 17.7341 24.6094 12.3047C24.6094 5.50942 19.0999 0 12.3047 0Z"
+            />
+          </svg>
+        </a>
+        <a
+          href="https://twitter.com/angular"
+          aria-label="Twitter"
+          target="_blank"
+          rel="noopener"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            alt="Twitter"
+          >
+            <path
+              d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+            />
+          </svg>
+        </a>
+        <a
+          href="https://www.youtube.com/channel/UCbn1OgGei-DV7aSRo_HaAiw"
+          aria-label="Youtube"
+          target="_blank"
+          rel="noopener"
+        >
+          <svg
+            width="29"
+            height="20"
+            viewBox="0 0 29 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            alt="Youtube"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M27.4896 1.52422C27.9301 1.96749 28.2463 2.51866 28.4068 3.12258C29.0004 5.35161 29.0004 10 29.0004 10C29.0004 10 29.0004 14.6484 28.4068 16.8774C28.2463 17.4813 27.9301 18.0325 27.4896 18.4758C27.0492 18.9191 26.5 19.2389 25.8972 19.4032C23.6778 20 14.8068 20 14.8068 20C14.8068 20 5.93586 20 3.71651 19.4032C3.11363 19.2389 2.56449 18.9191 2.12405 18.4758C1.68361 18.0325 1.36732 17.4813 1.20683 16.8774C0.613281 14.6484 0.613281 10 0.613281 10C0.613281 10 0.613281 5.35161 1.20683 3.12258C1.36732 2.51866 1.68361 1.96749 2.12405 1.52422C2.56449 1.08095 3.11363 0.76113 3.71651 0.596774C5.93586 0 14.8068 0 14.8068 0C14.8068 0 23.6778 0 25.8972 0.596774C26.5 0.76113 27.0492 1.08095 27.4896 1.52422ZM19.3229 10L11.9036 5.77905V14.221L19.3229 10Z"
+            />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * The content above * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * * -->
+<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * End of Placeholder  * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+
+
+<router-outlet />
+</file>
+
+<file path="src/app/app.scss">
+
+</file>
+
+<file path="src/app/core/components/header/header.component.ts">
+import { Component, signal } from '@angular/core';
+
+@Component({
+  selector: 'app-header',
+  standalone: true,
+  template: `
+    <header
+      class="h-16 bg-white shadow-sm border-b flex items-center justify-between px-8 fixed top-0 right-0 left-0 z-10"
+      [style.margin-left]="sidebarWidth()"
+    >
+      <h1 class="text-slate-700 font-medium">Gestão de Elevadores</h1>
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-slate-500 italic">Unidade: São Paulo</span>
+        <div class="w-8 h-8 rounded-full bg-slate-200"></div>
+      </div>
+    </header>
+  `,
+})
+export class HeaderComponent {
+  // Aqui poderíamos injetar um serviço para saber a largura da sidebar
+  sidebarWidth = signal('256px');
+}
+</file>
+
+<file path="src/app/core/components/header/header.html">
+<p>header works!</p>
+</file>
+
+<file path="src/app/core/components/header/header.scss">
+
+</file>
+
+<file path="src/app/core/components/header/header.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { Header } from './header';
+
+describe('Header', () => {
+  let component: Header;
+  let fixture: ComponentFixture<Header>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [Header]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(Header);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/core/components/sidebar/sidebar.component.ts">
+import { Component } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+
+@Component({
+  selector: 'app-sidebar',
+  standalone: true,
+  imports: [RouterLink, RouterLinkActive],
+  template: `
+    <aside class="w-64 bg-slate-900 text-white h-screen flex flex-col transition-all">
+      <div class="p-6 text-2xl font-bold border-b border-slate-800 flex items-center gap-2">
+        <span class="text-blue-500">🛠️</span> Repair Elevadores
+      </div>
+
+      <nav class="flex-1 mt-6 px-4 space-y-2">
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="bg-blue-600 text-white"
+          class="flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition-colors"
+        >
+          <span>📊</span> Dashboard
+        </a>
+        <a
+          routerLink="/estoque"
+          routerLinkActive="bg-blue-600 text-white"
+          class="flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition-colors"
+        >
+          <span>📦</span> Estoque
+        </a>
+        <a
+          routerLink="/cadastro"
+          routerLinkActive="bg-blue-600 text-white"
+          class="flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition-colors"
+        >
+          <span>➕</span> Cadastros
+        </a>
+      </nav>
+
+      <div class="p-4 border-t border-slate-800 text-xs text-slate-500">v1.0.0-infyniq</div>
+    </aside>
+  `,
+})
+export class SidebarComponent {}
+</file>
+
+<file path="src/app/core/components/sidebar/sidebar.html">
+<p>sidebar works!</p>
+</file>
+
+<file path="src/app/core/components/sidebar/sidebar.scss">
+
+</file>
+
+<file path="src/app/core/components/sidebar/sidebar.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { Sidebar } from './sidebar.component';
+
+describe('Sidebar', () => {
+  let component: Sidebar;
+  let fixture: ComponentFixture<Sidebar>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [Sidebar],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(Sidebar);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/core/interceptors/error-interceptor.spec.ts">
+import { TestBed } from '@angular/core/testing';
+import { HttpInterceptorFn } from '@angular/common/http';
+
+import { errorInterceptor } from './error-interceptor';
+
+describe('errorInterceptor', () => {
+  const interceptor: HttpInterceptorFn = (req, next) => 
+    TestBed.runInInjectionContext(() => errorInterceptor(req, next));
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+  });
+
+  it('should be created', () => {
+    expect(interceptor).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/core/interceptors/error-interceptor.ts">
+import { HttpInterceptorFn } from '@angular/common/http';
+import { catchError, throwError } from 'rxjs';
+
+export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+  return next(req).pipe(
+    catchError((error) => {
+      let errorMsg = 'Ocorreu um erro inesperado.';
+
+      if (error.status === 0) {
+        errorMsg =
+          'Não foi possível conectar ao servidor da Repair Elevadores. Verifique se o Backend está rodando.';
+      } else if (error.status === 400) {
+        errorMsg = 'Dados inválidos. Verifique os campos do formulário.';
+      }
+
+      // Aqui você poderia usar um Toast/Notificação em vez de alert
+      alert(errorMsg);
+      return throwError(() => error);
+    }),
+  );
+};
+</file>
+
+<file path="src/app/core/layouts/main-layout/main-layout.component.ts">
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { HeaderComponent } from '../../components/header/header.component';
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
+
+@Component({
+  selector: 'app-main-layout',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent],
+  template: `
+    <div class="flex min-h-screen bg-slate-50">
+      <app-sidebar />
+
+      <div class="flex-1 flex flex-col transition-all duration-300" [style.margin-left]="'256px'">
+        <app-header />
+
+        <main class="mt-16 p-6">
+          <router-outlet />
+        </main>
+      </div>
+    </div>
+  `,
+})
+export class MainLayoutComponent {}
+</file>
+
+<file path="src/app/core/layouts/main-layout/main-layout.html">
+<p>main-layout works!</p>
+</file>
+
+<file path="src/app/core/layouts/main-layout/main-layout.scss">
+
+</file>
+
+<file path="src/app/core/layouts/main-layout/main-layout.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { MainLayout } from './main-layout.component';
+
+describe('MainLayout', () => {
+  let component: MainLayout;
+  let fixture: ComponentFixture<MainLayout>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MainLayout],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(MainLayout);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/core/models/stock.interfaces.ts">
+export interface StockItem {
+  id: string; // ID gerado pelo banco (NestJS/TypeORM/Prisma)
+  code: string; // O que era SKU agora é code
+  name: string;
+  description?: string;
+  category: string;
+  currentQuantity: number;
+  minQuantity: number;
+  unit: string; // Unidade de medida (un, mt, kg)
+  costPrice: number; // O que era unitPrice agora é costPrice
+  supplier?: string;
+  location?: string;
+  updatedAt: string; // ISO String vinda do JSON
+}
+
+export interface CreateStockItemDto {
+  name: string;
+  code: string;
+  category: string;
+  currentQuantity: number;
+  minQuantity: number;
+  unit: string;
+  costPrice: number;
+  location?: string;
+  description?: string;
+}
+</file>
+
+<file path="src/app/core/services/stock.service.ts">
+// 1. O Injectable e o inject vêm do @angular/core
+import { Injectable, inject } from '@angular/core';
+
+// 2. O HttpClient e outros utilitários de rede vêm do @angular/common/http
+import { HttpClient } from '@angular/common/http';
+
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { StockItem, CreateStockItemDto } from '../models/stock.interfaces';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class StockService {
+  // Agora o inject vai funcionar corretamente aqui
+  private http = inject(HttpClient);
+  private readonly API_URL = `${environment.apiUrl}/stock`;
+
+  findAll(): Observable<StockItem[]> {
+    return this.http.get<StockItem[]>(`${this.API_URL}/items`);
+  }
+
+  create(item: CreateStockItemDto): Observable<StockItem> {
+    return this.http.post<StockItem>(`${this.API_URL}/items`, item);
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/items/${id}`);
+  }
+}
+</file>
+
+<file path="src/app/features/cadastro/cadastro-base/cadastro-base.html">
+<p>cadastro-base works!</p>
+</file>
+
+<file path="src/app/features/cadastro/cadastro-base/cadastro-base.scss">
+
+</file>
+
+<file path="src/app/features/cadastro/cadastro-base/cadastro-base.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { CadastroBase } from './cadastro-base';
+
+describe('CadastroBase', () => {
+  let component: CadastroBase;
+  let fixture: ComponentFixture<CadastroBase>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [CadastroBase]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(CadastroBase);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/features/cadastro/cadastro-base/cadastro-base.ts">
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-cadastro-base',
+  imports: [],
+  templateUrl: './cadastro-base.html',
+  styleUrl: './cadastro-base.scss',
+})
+export class CadastroBase {
+
+}
+</file>
+
+<file path="src/app/features/dashboard/dashboard.html">
+<p>dashboard works!</p>
+</file>
+
+<file path="src/app/features/dashboard/dashboard.scss">
+
+</file>
+
+<file path="src/app/features/dashboard/dashboard.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { Dashboard } from './dashboard';
+
+describe('Dashboard', () => {
+  let component: Dashboard;
+  let fixture: ComponentFixture<Dashboard>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [Dashboard]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(Dashboard);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/features/dashboard/dashboard.ts">
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-dashboard',
+  imports: [],
+  templateUrl: './dashboard.html',
+  styleUrl: './dashboard.scss',
+})
+export class Dashboard {
+
+}
+</file>
+
+<file path="src/app/features/estoque/estoque-form/estoque-form.component.html">
+<div
+  class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+>
+  <div
+    class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200"
+  >
+    <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+      <h3 class="text-xl font-bold text-slate-800">Cadastrar Nova Peça</h3>
+      <button (click)="close.emit()" class="text-slate-400 hover:text-slate-600 transition-colors">
+        <span class="text-2xl">&times;</span>
+      </button>
+    </div>
+
+    <form [formGroup]="stockForm" (ngSubmit)="onSubmit()" class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-slate-700 mb-1">Nome da Peça *</label>
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Ex: Cabo de Tração 8mm"
+            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Código (Code/SKU) *</label>
+          <input
+            type="text"
+            formControlName="code"
+            placeholder="Ex: CAB-001"
+            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Unidade *</label>
+          <select
+            formControlName="unit"
+            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
+          >
+            <option value="un">Unidade (un)</option>
+            <option value="mt">Metros (mt)</option>
+            <option value="kg">Quilos (kg)</option>
+            <option value="cj">Conjunto (cj)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Preço de Custo (R$) *</label>
+          <input
+            type="number"
+            formControlName="costPrice"
+            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Categoria *</label>
+          <input
+            type="text"
+            formControlName="category"
+            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Qtd em Estoque *</label>
+          <input
+            type="number"
+            formControlName="currentQuantity"
+            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Aviso de Qtd Mínima *</label>
+          <input
+            type="number"
+            formControlName="minQuantity"
+            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-slate-700 mb-1"
+            >Localização (Prateleira/Corredor)</label
+          >
+          <input
+            type="text"
+            formControlName="location"
+            placeholder="Ex: A-12"
+            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+        </div>
+      </div>
+
+      <div class="mt-8 flex gap-3 justify-end">
+        <button
+          type="button"
+          (click)="close.emit()"
+          class="px-6 py-2 rounded-lg font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          [disabled]="stockForm.invalid"
+          class="px-6 py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-200 transition-all"
+        >
+          Salvar Peça
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+</file>
+
+<file path="src/app/features/estoque/estoque-form/estoque-form.component.ts">
+import { Component, inject, output } from '@angular/core';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { StockStore } from '../stock.store';
+
+@Component({
+  selector: 'app-estoque-form',
+  standalone: true,
+  imports: [ReactiveFormsModule],
+  templateUrl: './estoque-form.component.html',
+})
+export class EstoqueFormComponent {
+  private fb = inject(NonNullableFormBuilder);
+  protected store = inject(StockStore);
+
+  close = output<void>();
+
+  stockForm = this.fb.group({
+    name: ['', [Validators.required]],
+    code: ['', [Validators.required]], // Match com DTO 'code'
+    category: ['Peças', [Validators.required]],
+    currentQuantity: [0, [Validators.required, Validators.min(0)]],
+    minQuantity: [5, [Validators.required, Validators.min(0)]],
+    unit: ['un', [Validators.required]], // Match com DTO 'unit'
+    costPrice: [0, [Validators.required, Validators.min(0)]], // Match com DTO 'costPrice'
+    location: [''],
+    description: [''],
+  });
+
+  onSubmit() {
+    if (this.stockForm.valid) {
+      // getRawValue() envia o objeto pronto para o NestJS
+      this.store.createItem(this.stockForm.getRawValue());
+      this.close.emit();
+    }
+  }
+}
+</file>
+
+<file path="src/app/features/estoque/estoque-form/estoque-form.scss">
+
+</file>
+
+<file path="src/app/features/estoque/estoque-form/estoque-form.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { EstoqueFormComponent } from './estoque-form.component';
+
+describe('EstoqueFormComponent', () => {
+  let component: EstoqueFormComponent;
+  let fixture: ComponentFixture<EstoqueFormComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [EstoqueFormComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(EstoqueFormComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/features/estoque/estoque-list/estoque-list.component.html">
+<div class="p-8">
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="p-6 border-b border-slate-200 flex justify-between items-center bg-white">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Controle de Estoque</h1>
+        <p class="text-sm text-slate-500">Gerencie peças e componentes da Repair Elevadores</p>
+      </div>
+      <button
+        (click)="toggleForm()"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium transition-all shadow-md active:scale-95"
+      >
+        + Nova Peça
+      </button>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-slate-50 border-b border-slate-200">
+          <tr>
+            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Peça</th>
+            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Código</th>
+            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-center">Qtd</th>
+            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Preço Custo</th>
+            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Status</th>
+            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Ações</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          @for (item of store.items(); track item.id) {
+            <tr class="hover:bg-slate-50 transition-colors group">
+              <td class="px-6 py-4 text-sm font-medium text-slate-700">{{ item.name || '---' }}</td>
+              <td class="px-6 py-4 text-sm text-slate-500 font-mono">{{ item.code }}</td>
+              <td class="px-6 py-4 text-sm text-center font-semibold text-slate-700">
+                {{ item.currentQuantity }}
+              </td>
+              <td class="px-6 py-4 text-sm text-slate-900 font-bold">
+                {{ item.costPrice > 0 ? (item.costPrice | currency: 'BRL') : '---' }}
+              </td>
+              <td class="px-6 py-4">
+                <span
+                  [class]="
+                    item.currentQuantity <= item.minQuantity
+                      ? 'px-2 py-1 rounded-full text-[10px] font-black bg-red-100 text-red-600'
+                      : 'px-2 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-600'
+                  "
+                >
+                  {{ item.currentQuantity <= item.minQuantity ? 'CRÍTICO' : 'NORMAL' }}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <button
+                  (click)="store.deleteItem(item.id)"
+                  class="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                >
+                  <span class="text-lg">🗑️</span>
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="px-6 py-12 text-center text-slate-500">
+                <div class="flex flex-col items-center gap-2">
+                  <span class="text-4xl">📦</span>
+                  <p>Nenhum item encontrado no almoxarifado.</p>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+@if (showForm()) {
+  <app-estoque-form (close)="toggleForm()" />
+}
+</file>
+
+<file path="src/app/features/estoque/estoque-list/estoque-list.component.ts">
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import { StockStore } from '../stock.store';
+import { EstoqueFormComponent } from '../estoque-form/estoque-form.component';
+
+@Component({
+  selector: 'app-estoque-list',
+  standalone: true,
+  imports: [CommonModule, CurrencyPipe, EstoqueFormComponent],
+  templateUrl: './estoque-list.component.html',
+})
+export class EstoqueListComponent implements OnInit {
+  // Injetamos o Store que gerencia o estado do estoque
+  protected readonly store = inject(StockStore);
+
+  ngOnInit() {
+    // Ao iniciar a tela, carregamos os dados do backend
+    this.store.loadAll();
+  }
+
+  // No estoque-list.component.ts
+  showForm = signal(false);
+
+  toggleForm() {
+    this.showForm.update((v) => !v);
+  }
+}
+</file>
+
+<file path="src/app/features/estoque/estoque-list/estoque-list.scss">
+
+</file>
+
+<file path="src/app/features/estoque/estoque-list/estoque-list.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { EstoqueListComponent } from './estoque-list.component';
+
+describe('EstoqueList', () => {
+  let component: EstoqueListComponent;
+  let fixture: ComponentFixture<EstoqueListComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [EstoqueListComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(EstoqueListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/features/estoque/stock.store.ts">
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { StockService } from '../../core/services/stock.service';
+import { CreateStockItemDto, StockItem } from '../../core/models/stock.interfaces';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class StockStore {
+  private stockService = inject(StockService);
+
+  // State (Signals)
+  readonly items = signal<StockItem[]>([]);
+  readonly loading = signal<boolean>(false);
+
+  // Computed (Derivados do estado)
+  readonly criticalItems = computed(() =>
+    this.items().filter((item) => item.currentQuantity <= item.minQuantity),
+  );
+
+  readonly totalStockValue = computed(() =>
+    this.items().reduce((acc, item) => acc + item.currentQuantity * item.costPrice, 0),
+  );
+
+  readonly criticalItemsCount = computed(
+    () => this.items().filter((item) => item.currentQuantity <= item.minQuantity).length,
+  );
+
+  loadAll() {
+    this.loading.set(true);
+    this.stockService.findAll().subscribe({
+      next: (data: StockItem[]) => {
+        // Agora o tipo vai bater perfeitamente
+        this.items.set(data);
+      },
+      error: (err: any) => {
+        console.error('Erro ao carregar estoque da Repair Elevadores', err);
+        this.loading.set(false);
+      },
+      complete: () => this.loading.set(false),
+    });
+  }
+
+  createItem(newItem: CreateStockItemDto) {
+    this.stockService.create(newItem).subscribe({
+      next: () => {
+        this.loadAll(); // Recarrega a lista para mostrar o novo item
+        console.log('Item criado com sucesso na Repair Elevadores!');
+      },
+      error: (err) => console.error('Erro ao criar item:', err),
+    });
+  }
+
+  deleteItem(id: string) {
+    if (confirm('Deseja realmente excluir esta peça?')) {
+      this.stockService.delete(id).subscribe({
+        next: () => this.loadAll(), // Recarrega a lista após deletar
+        error: (err) => console.error('Erro ao deletar', err),
+      });
+    }
+  }
+}
+</file>
+
+<file path="src/app/layout/app-shell/app-shell.scss">
+
+</file>
+
+<file path="src/environments/environment.ts">
+export const environment = {
+  production: false,
+  // URL onde seu NestJS está rodando (geralmente porta 3000)
+  apiUrl: 'http://localhost:3000',
+};
+</file>
+
+<file path="src/index.html">
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>InfyniqCore</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>
+</file>
+
+<file path="tailwind.config.js">
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './src/**/*.{html,ts}', // Isso diz ao Tailwind para ler seus componentes Angular
+  ],
+  theme: {
+    extend: {
+      colors: {
+        // Cores personalizadas para a Repair Elevadores
+        primary: '#1e40af',
+        secondary: '#64748b',
+        critical: '#ef4444',
+      },
+    },
+  },
+  plugins: [],
+};
+</file>
+
+<file path="tsconfig.json">
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "preserve"
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "typeCheckHostBindings": true,
+    "strictTemplates": true
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}
+</file>
+
+<file path="tsconfig.spec.json">
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    "types": [
+      "jasmine"
+    ]
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+}
+</file>
+
+<file path="package.json">
+{
+  "name": "infyniq-core",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/common": "^20.3.0",
+    "@angular/compiler": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "@angular/forms": "^20.3.0",
+    "@angular/platform-browser": "^20.3.0",
+    "@angular/router": "^20.3.0",
+    "@primeuix/themes": "^1.2.5",
+    "primeicons": "^7.0.0",
+    "primeng": "^20.3.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.3.9",
+    "@angular/cli": "^20.3.9",
+    "@angular/compiler-cli": "^20.3.0",
+    "@types/jasmine": "~5.1.0",
+    "autoprefixer": "^10.4.24",
+    "jasmine-core": "~5.9.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
+    "typescript": "~5.9.2"
+  }
+}
+</file>
+
+<file path="src/app/app.config.ts">
+import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core'; // Nome atualizado
+import { provideRouter } from '@angular/router';
+import { provideHttpClient, withFetch } from '@angular/common/http';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZonelessChangeDetection(), // Sem o "Experimental"
+    provideRouter(routes),
+    provideHttpClient(withFetch()),
+  ],
+};
+</file>
+
+<file path="src/app/app.routes.ts">
+import { Routes } from '@angular/router';
+import { AppShellComponent } from './layout/app-shell/app-shell';
+
+export const routes: Routes = [
+  {
+    path: '',
+    component: AppShellComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'estoque', // Mudamos para estoque pois o dashboard não existe
+        pathMatch: 'full',
+      },
+      {
+        path: 'estoque',
+        loadComponent: () =>
+          import('./features/estoque/estoque-list/estoque-list.component').then(
+            (m) => m.EstoqueListComponent,
+          ),
+      },
+      // Comentamos as rotas abaixo para o build passar
+      /* {
+        path: 'dashboard',
+        loadComponent: () => import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+      },
+      {
+        path: 'cadastro',
+        loadComponent: () => import('./features/cadastro/cadastro-base/cadastro-base.component').then((m) => m.CadastroBaseComponent),
+      },
+      */
+    ],
+  },
+  /*
+  {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login/login.component').then((m) => m.LoginComponent),
+  },
+  */
+  {
+    path: '**',
+    redirectTo: 'estoque',
+  },
+];
+</file>
+
+<file path="src/app/app.spec.ts">
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { AppComponent } from './app.component';
+
+describe('App', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [AppComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+  });
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it('should render title', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, infyniq-core');
+  });
+});
+</file>
+
+<file path="src/app/layout/app-shell/app-shell.html">
+<div class="flex h-screen">
+  <app-sidebar />
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <app-header />
+    <main class="flex-1 overflow-y-auto bg-slate-50">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+</file>
+
+<file path="src/app/layout/app-shell/app-shell.ts">
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { SidebarComponent } from '../../core/components/sidebar/sidebar.component';
+
+@Component({
+  selector: 'app-app-shell',
+  standalone: true,
+  imports: [RouterOutlet, SidebarComponent],
+  template: `
+    <div class="flex h-screen bg-slate-50">
+      <app-sidebar />
+
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <header
+          class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm"
+        >
+          <h2 class="text-xl font-semibold text-slate-800">Sistema de Gestão</h2>
+          <div class="flex items-center gap-4">
+            <span class="text-sm text-slate-500 italic">Unidade: São Paulo</span>
+            <div
+              class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold"
+            >
+              M
+            </div>
+          </div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto p-8">
+          <router-outlet />
+        </main>
+      </div>
+    </div>
+  `,
+})
+export class AppShellComponent {}
+</file>
+
+<file path="src/main.ts">
+// No main.ts do Frontend
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { AppComponent } from './app/app.component'; // Verifique se este ficheiro existe
+
+bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err));
+</file>
+
+<file path="src/styles.scss">
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Seus estilos globais abaixo */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #f8fafc;
+}
+</file>
+
+<file path="tsconfig.app.json">
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": []
+  },
+  "include": ["src/**/*.ts", "src/app/core/components/header/header.componentts"],
+  "exclude": ["src/**/*.spec.ts"]
 }
 </file>
 
