@@ -11,7 +11,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         <div class="relative w-16 h-16 mb-2 flex items-center justify-center">
           <img
             src="logo-infyniq-icon.png"
-            alt="Infiniq Logo"
+            alt="Infyniq Logo"
             class="w-full h-auto object-contain"
           />
         </div>

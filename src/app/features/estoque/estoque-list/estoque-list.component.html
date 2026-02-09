@@ -158,149 +158,163 @@
     <div
       class="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden"
     >
-      <table class="w-full text-left border-collapse">
-        <thead class="bg-slate-50 border-b border-slate-200">
-          <tr>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Peça
-            </th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Código
-            </th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Categoria
-            </th>
-            <th
-              class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center"
-            >
-              Estoque / Movimentação
-            </th>
-            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Custo Un.
-            </th>
-            <th
-              class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right"
-            >
-              Ações
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100">
-          @for (item of store.filteredItems(); track item.id) {
-            <tr class="hover:bg-slate-50/80 transition-colors group">
-              <td class="px-6 py-4">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden border border-slate-200"
-                  >
-                    <img
-                      [src]="item.imageUrl || 'assets/placeholder-component.png'"
-                      class="w-full h-full object-cover"
-                    />
-                  </div>
-                  <span class="font-medium text-slate-700">{{ item.name }}</span>
-                </div>
-              </td>
-              <td class="px-6 py-4 text-sm text-slate-500 font-mono">{{ item.code }}</td>
-              <td class="px-6 py-4">
-                <span
-                  class="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-medium"
-                  >{{ item.category }}</span
-                >
-              </td>
-              <td class="px-6 py-4 text-center">
-                <div class="flex flex-col items-center gap-2">
-                  <div
-                    class="flex items-center gap-2 bg-slate-100 p-1 rounded-xl border border-slate-200"
-                  >
-                    <button
-                      (click)="updateQuantity(item, -1)"
-                      class="w-7 h-7 flex items-center justify-center bg-white text-slate-600 rounded-lg shadow-sm hover:text-red-600 transition-all active:scale-90"
-                    >
-                      -
-                    </button>
-                    <div class="min-w-[40px]">
-                      <span
-                        [class]="
-                          'text-sm font-black ' +
-                          (item.currentQuantity <= item.minQuantity
-                            ? 'text-red-600'
-                            : 'text-slate-800')
-                        "
-                      >
-                        {{ item.currentQuantity }}
-                      </span>
-                    </div>
-                    <button
-                      (click)="updateQuantity(item, 1)"
-                      class="w-7 h-7 flex items-center justify-center bg-white text-slate-600 rounded-lg shadow-sm hover:text-emerald-600 transition-all active:scale-90"
-                    >
-                      +
-                    </button>
-                  </div>
-                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter"
-                    >{{ item.unit }} disponível</span
-                  >
-                </div>
-              </td>
-              <td class="px-6 py-4 text-sm font-semibold text-slate-700">
-                {{ item.costPrice | currency: 'BRL' : 'symbol' : '1.2-2' }}
-              </td>
-              <td class="px-6 py-4 text-right">
-                <div
-                  class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <button
-                    (click)="openModal(item)"
-                    class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                    title="Editar"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="w-5 h-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    (click)="store.deleteItem(item.id)"
-                    class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Excluir"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="w-5 h-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </td>
+      <div class="max-h-[550px] overflow-y-auto scrollbar-thin">
+        <table class="w-full text-left border-collapse relative">
+          <thead class="sticky top-0 bg-slate-50 border-b border-slate-200 z-20">
+            <tr>
+              <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Peça
+              </th>
+              <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Código
+              </th>
+              <th
+                class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center"
+              >
+                Status
+              </th>
+              <th
+                class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center"
+              >
+                Estoque
+              </th>
+              <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Custo Un.
+              </th>
+              <th
+                class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right"
+              >
+                Ações
+              </th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            @for (item of store.filteredItems(); track item.id) {
+              <tr
+                [class]="
+                  item.currentQuantity <= item.minQuantity
+                    ? 'bg-red-50/50 hover:bg-red-100/50 transition-colors group'
+                    : 'hover:bg-slate-50/80 transition-colors group'
+                "
+              >
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden border border-slate-200 flex-shrink-0"
+                    >
+                      <img
+                        [src]="item.imageUrl || 'assets/placeholder-component.png'"
+                        class="w-full h-full object-cover"
+                      />
+                    </div>
+                    <span class="font-medium text-slate-700">{{ item.name }}</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm text-slate-500 font-mono">{{ item.code }}</td>
+                <td class="px-6 py-4 text-center">
+                  @if (item.currentQuantity <= item.minQuantity) {
+                    <span
+                      class="px-2.5 py-1 rounded-full bg-red-100 text-red-600 text-[10px] font-bold uppercase tracking-wider"
+                      >Crítico</span
+                    >
+                  } @else {
+                    <span
+                      class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-600 text-[10px] font-bold uppercase tracking-wider"
+                      >Ok</span
+                    >
+                  }
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-col items-center gap-1">
+                    <div
+                      class="flex items-center gap-2 bg-white p-1 rounded-xl border border-slate-200 shadow-sm"
+                    >
+                      <button
+                        (click)="updateQuantity(item, -1)"
+                        class="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-red-600 transition-all active:scale-90"
+                      >
+                        -
+                      </button>
+                      <span class="min-w-[30px] text-center text-sm font-black text-slate-800">{{
+                        item.currentQuantity
+                      }}</span>
+                      <button
+                        (click)="updateQuantity(item, 1)"
+                        class="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-emerald-600 transition-all active:scale-90"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter"
+                      >{{ item.unit }} disponível</span
+                    >
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm font-semibold text-slate-700">
+                  {{ item.costPrice | currency: 'BRL' }}
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <div
+                    class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <button
+                      (click)="openModal(item)"
+                      class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      title="Editar"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      (click)="store.deleteItem(item.id)"
+                      class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Excluir"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <div class="grid grid-cols-1 gap-4 md:hidden">
       @for (item of store.filteredItems(); track item.id) {
-        <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm">
+        <div
+          [class]="
+            item.currentQuantity <= item.minQuantity
+              ? 'bg-red-50/50 border-red-200 p-4 rounded-3xl border shadow-sm'
+              : 'bg-white p-4 rounded-3xl border border-slate-200 shadow-sm'
+          "
+        >
           <div class="flex gap-4">
             <div
               class="w-20 h-20 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 flex-shrink-0"
@@ -313,23 +327,26 @@
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-start gap-2">
                 <h3 class="font-black text-slate-800 truncate leading-tight">{{ item.name }}</h3>
+                @if (item.currentQuantity <= item.minQuantity) {
+                  <span class="flex-shrink-0 w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                }
               </div>
               <p class="text-xs text-slate-500 font-mono mt-1 tracking-tighter">{{ item.code }}</p>
 
               <div class="mt-4 flex items-center justify-between">
                 <div
-                  class="flex items-center gap-3 bg-slate-50 p-1.5 rounded-2xl border border-slate-100"
+                  class="flex items-center gap-3 bg-white p-1.5 rounded-2xl border border-slate-100 shadow-sm"
                 >
                   <button
                     (click)="updateQuantity(item, -1)"
-                    class="w-8 h-8 flex items-center justify-center bg-white rounded-xl shadow-sm active:bg-red-50 text-slate-600"
+                    class="w-8 h-8 flex items-center justify-center rounded-xl active:bg-red-50 text-slate-600"
                   >
                     -
                   </button>
                   <span class="font-black text-sm text-slate-800">{{ item.currentQuantity }}</span>
                   <button
                     (click)="updateQuantity(item, 1)"
-                    class="w-8 h-8 flex items-center justify-center bg-white rounded-xl shadow-sm active:bg-emerald-50 text-slate-600"
+                    class="w-8 h-8 flex items-center justify-center rounded-xl active:bg-emerald-50 text-slate-600"
                   >
                     +
                   </button>
@@ -342,16 +359,16 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-slate-50">
+          <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-slate-100">
             <button
               (click)="openModal(item)"
-              class="flex items-center justify-center gap-2 py-3 bg-blue-50 text-blue-600 rounded-2xl font-bold text-xs active:scale-95 transition-all"
+              class="flex items-center justify-center py-2.5 bg-blue-50 text-blue-600 rounded-2xl font-bold text-xs active:scale-95 transition-all"
             >
               Editar
             </button>
             <button
               (click)="store.deleteItem(item.id)"
-              class="flex items-center justify-center gap-2 py-3 bg-red-50 text-red-600 rounded-2xl font-bold text-xs active:scale-95 transition-all"
+              class="flex items-center justify-center py-2.5 bg-red-50 text-red-600 rounded-2xl font-bold text-xs active:scale-95 transition-all"
             >
               Excluir
             </button>
@@ -370,7 +387,7 @@
             class="w-8 h-8"
             fill="none"
             viewBox="0 0 24 24"
-            stroke="currentColor font-bold"
+            stroke="currentColor"
           >
             <path
               stroke-linecap="round"

@@ -14,7 +14,6 @@ export class EstoqueFormComponent implements OnInit {
   protected store = inject(StockStore);
   private cd = inject(ChangeDetectorRef);
 
-  // 🟢 IMPORTANTE: O nome aqui deve ser 'close' para bater com o seu HTML (close.emit)
   @Output() close = new EventEmitter<void>();
 
   stockForm: FormGroup;

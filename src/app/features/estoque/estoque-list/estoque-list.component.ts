@@ -18,18 +18,28 @@ registerLocaleData(localePt);
 export class EstoqueListComponent implements OnInit {
   protected readonly store = inject(StockStore);
   private readonly toast = inject(ToastService);
-  searchTerm = signal<string>('');
 
+  searchTerm = signal<string>('');
   isModalOpen = signal(false);
 
   totalItens = computed(() => this.store.items().length);
-
   itensAbaixoMinimo = computed(
     () => this.store.items().filter((i) => i.currentQuantity <= i.minQuantity).length,
   );
   valorTotalEstoque = computed(() =>
     this.store.items().reduce((acc, item) => acc + item.costPrice * item.currentQuantity, 0),
   );
+  filteredItems = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    const allItems = this.store.items();
+
+    if (!term) return allItems;
+
+    return allItems.filter(
+      (item) =>
+        item.name.toLowerCase().includes(term) || item.category?.toLowerCase().includes(term),
+    );
+  });
 
   ngOnInit() {
     this.store.loadAll();
@@ -54,6 +64,11 @@ export class EstoqueListComponent implements OnInit {
 
     // 3. Opcional: Se sua store tiver um método de filtro interno, use-o:
     this.store.setFilter(value);
+  }
+
+  updateSearch(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.searchTerm.set(input.value);
   }
 
   updateQuantity(item: any, amount: number) {

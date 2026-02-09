@@ -181,13 +181,23 @@
       </form>
     </div>
 
-    <div class="p-6 border-t border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row gap-3">
+    <div
+      class="p-6 border-t border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row gap-3 justify-end"
+    >
       <button
         type="button"
         (click)="close.emit()"
-        class="order-2 sm:order-1 px-6 py-3 rounded-xl font-medium text-slate-600 hover:bg-slate-200 transition-colors"
+        class="order-2 sm:order-1 px-6 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-200 transition-all active:scale-95"
       >
         Cancelar
+      </button>
+      <button
+        type="submit"
+        form="stockForm"
+        [disabled]="!stockForm.valid"
+        class="order-1 sm:order-2 px-10 py-3 bg-blue-600 text-white rounded-xl font-black shadow-lg shadow-blue-200 hover:bg-blue-700 hover:-translate-y-0.5 transition-all active:scale-95 disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none"
+      >
+        {{ isEditMode ? 'Atualizar Peça' : 'Cadastrar Peça' }}
       </button>
     </div>
   </div>
