@@ -1,83 +1,116 @@
-<div class="bg-white rounded-2xl shadow-xl w-full max-w-[800px] overflow-hidden">
-  <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center">
-    <h2 class="text-xl font-bold text-[#1e293b]">Prontuário do Elevador</h2>
-    <button (click)="cancel.emit()" class="text-slate-400 hover:text-slate-600">✕</button>
-  </div>
-
-  <form
-    [formGroup]="equipmentForm"
-    (ngSubmit)="onSubmit()"
-    class="p-8 space-y-6 max-h-[80vh] overflow-y-auto"
+<div
+  class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4"
+>
+  <div
+    class="bg-white rounded-2xl shadow-xl w-full max-w-[800px] overflow-hidden animate-in fade-in zoom-in duration-200"
   >
-    <div class="grid grid-cols-2 gap-4">
-      <div class="col-span-2">
-        <label class="block text-sm font-bold text-[#1e293b] mb-1">Nome / Identificação *</label>
-        <input
-          formControlName="name"
-          placeholder="Ex: Elevador Social 01"
-          class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2"
-        />
-      </div>
-      <div>
-        <label class="block text-sm font-bold text-[#1e293b] mb-1">Marca *</label>
-        <input
-          formControlName="brand"
-          class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2"
-        />
-      </div>
-      <div>
-        <label class="block text-sm font-bold text-[#1e293b] mb-1">Modelo *</label>
-        <input
-          formControlName="model"
-          class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2"
-        />
-      </div>
+    <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center">
+      <h2 class="text-xl font-bold text-[#1e293b]">Prontuário do Elevador</h2>
+      <button (click)="cancel.emit()" class="text-slate-400 hover:text-slate-600">✕</button>
     </div>
 
-    <div
-      formGroupName="technicalSpecs"
-      class="bg-slate-50 p-6 rounded-2xl border border-slate-100 grid grid-cols-3 gap-4"
+    <form
+      [formGroup]="equipmentForm"
+      (ngSubmit)="onSubmit()"
+      class="p-8 space-y-6 max-h-[85vh] overflow-y-auto"
     >
-      <h3 class="col-span-3 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
-        Dados Técnicos
-      </h3>
-      <div>
-        <label class="block text-xs font-bold text-slate-500 mb-1">Paradas</label>
-        <input
-          type="number"
-          formControlName="stops"
-          class="w-full border-slate-200 rounded-lg px-3 py-2"
-        />
+      <div class="grid grid-cols-2 gap-4">
+        <div class="col-span-2">
+          <label class="block text-sm font-bold text-[#1e293b] mb-1">Nome / Identificação *</label>
+          <input
+            formControlName="name"
+            placeholder="Ex: Elevador Social 01"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-100 outline-none"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-[#1e293b] mb-1">Marca *</label>
+          <input
+            formControlName="brand"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-100 outline-none"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-[#1e293b] mb-1">Modelo *</label>
+          <input
+            formControlName="model"
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-100 outline-none"
+          />
+        </div>
       </div>
-      <div>
-        <label class="block text-xs font-bold text-slate-500 mb-1">Capacidade (KG)</label>
-        <input
-          type="number"
-          formControlName="capacityKg"
-          class="w-full border-slate-200 rounded-lg px-3 py-2"
-        />
-      </div>
-      <div>
-        <label class="block text-xs font-bold text-slate-500 mb-1">Tração</label>
-        <select formControlName="driveType" class="w-full border-slate-200 rounded-lg px-3 py-2">
-          <option value="GEARED">GEARED (Com engrenagem)</option>
-          <option value="GEARLESS">GEARLESS (Sem engrenagem)</option>
-          <option value="HYDRAULIC">Hidráulico</option>
-        </select>
-      </div>
-    </div>
 
-    <div class="flex justify-end gap-4">
-      <button type="button" (click)="cancel.emit()" class="px-6 py-2 text-slate-500 font-bold">
-        Cancelar
-      </button>
-      <button
-        type="submit"
-        [disabled]="equipmentForm.invalid"
-        class="px-10 py-3 bg-[#94aef2] text-white font-bold rounded-xl shadow-lg"
+      <div
+        formGroupName="technicalSpecs"
+        class="bg-slate-50 p-6 rounded-2xl border border-slate-100 grid grid-cols-3 gap-4"
       >
-        Salvar Equipamento
-      </button>
-    </div>
-  </form>
+        <h3 class="col-span-3 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+          Dados Técnicos
+        </h3>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 mb-1">Paradas</label>
+          <input
+            type="number"
+            formControlName="stops"
+            class="w-full border-slate-200 rounded-lg px-3 py-2 outline-none focus:border-blue-300"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 mb-1">Capacidade (KG)</label>
+          <input
+            type="number"
+            formControlName="capacityKg"
+            class="w-full border-slate-200 rounded-lg px-3 py-2 outline-none focus:border-blue-300"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 mb-1">Tração</label>
+          <select
+            formControlName="driveType"
+            class="w-full border-slate-200 rounded-lg px-3 py-2 outline-none focus:border-blue-300"
+          >
+            <option value="GEARED">GEARED (Com engrenagem)</option>
+            <option value="GEARLESS">GEARLESS (Sem engrenagem)</option>
+            <option value="HYDRAULIC">Hidráulico</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-4 pt-4">
+        <button
+          type="button"
+          (click)="cancel.emit()"
+          class="px-6 py-2 text-slate-500 font-bold hover:text-slate-700 transition-colors"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          [disabled]="equipmentForm.invalid || loading()"
+          class="order-1 sm:order-2 px-10 py-3 bg-blue-600 text-white rounded-xl font-black shadow-lg shadow-blue-200 hover:bg-blue-700 hover:-translate-y-0.5 transition-all active:scale-95 disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none"
+        >
+          @if (loading()) {
+            <svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+                fill="none"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span>Salvando...</span>
+          } @else {
+            <span>Salvar Equipamento</span>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

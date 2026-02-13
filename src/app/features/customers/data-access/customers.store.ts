@@ -3,68 +3,91 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { CustomersService } from './customers.service';
 import { Customer } from '../models/customer.model';
-import { Equipment } from '../models/equipment.model';
 import { ToastService } from '../../../services/toast.service';
+import { finalize } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CustomersStore {
   private readonly service = inject(CustomersService);
   private readonly toast = inject(ToastService);
 
-  // Estados (Signals)
-  readonly customers = signal<Customer[]>([]);
-  readonly selectedCustomer = signal<Customer | null>(null);
-  readonly equipments = signal<Equipment[]>([]);
-  readonly loading = signal(false);
+  // Estados (Signals Privados para controle)
+  private readonly _customers = signal<Customer[]>([]);
+  private readonly _searchTerm = signal<string>('');
 
-  // Ação: Carregar todos os clientes (Condomínios)
+  readonly selectedCustomer = signal<Customer | null>(null);
+  readonly loading = signal(false);
+  readonly displayLimit = signal(20);
+
+  // Selectors (Computed) - O que o componente consome
+  readonly customers = computed(() => this._customers());
+  readonly searchTerm = computed(() => this._searchTerm());
+  readonly totalUnits = computed(() => this._customers().length);
+  readonly totalEquipments = computed(() => {
+    return this._customers().reduce((acc, customer) => acc + (customer.equipments?.length || 0), 0);
+  });
+  readonly displayedCustomers = computed(() => {
+    return this.filteredCustomers().slice(0, this.displayLimit());
+  });
+
+  readonly maintenancesToday = computed(() => {
+    // Por enquanto retornamos um valor fixo ou baseado em alguma flag
+    // Exemplo: return this._customers().filter(c => c.hasPendingService).length;
+    return 8;
+  });
+
+  // O motor de busca reativo
+  readonly filteredCustomers = computed(() => {
+    const term = this._searchTerm().toLowerCase().trim();
+    const list = this._customers(); // Aqui ele lê do sinal privado
+    if (!term) return list;
+    return list.filter((c) => c.name.toLowerCase().includes(term));
+  });
+
+  loadMore() {
+    this.displayLimit.update((limit) => limit + 20);
+  }
+
+  updateSearchTerm(term: string) {
+    this._searchTerm.set(term);
+  }
+
   loadAllCustomers() {
     this.loading.set(true);
-    this.service.getCustomers().subscribe({
-      next: (data) => this.customers.set(data),
-      error: (err) => console.error('Erro ao buscar clientes', err),
-      complete: () => this.loading.set(false),
-    });
-  }
 
-  // Ação: Selecionar um cliente e buscar seus elevadores
-  selectCustomer(customer: Customer) {
-    this.selectedCustomer.set(customer);
-    this.loading.set(true);
-    this.service.getEquipmentsByCustomer(customer.id).subscribe({
-      next: (data) => {
-        console.log('Dados de equipamentos recebidos:', data);
-        this.equipments.set(data);
-      },
-      error: (err) => console.error('Erro ao buscar elevadores', err),
-      complete: () => this.loading.set(false),
-    });
-  }
-
-  // Ação: Limpar seleção (Usado no botão "Trocar")
-  clearSelection() {
-    this.selectedCustomer.set(null);
-    this.equipments.set([]);
+    this.service
+      .getCustomers()
+      .pipe(
+        // O finalize roda se der certo OU se der erro. É infalível.
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe({
+        next: (data) => this._customers.set(data),
+        error: (err) => {
+          console.error('Erro:', err);
+          this.toast.showToast('Erro ao carregar dados', 'error');
+        },
+      });
   }
 
   addCustomer(customerData: Partial<Customer>) {
     this.loading.set(true);
-
     this.service.createCustomer(customerData).subscribe({
       next: (newCustomer) => {
-        // Atualiza a lista de clientes adicionando o novo ao array atual
-        // Usamos o update() do signal para garantir imutabilidade
-        this.customers.update((allCustomers) => [...allCustomers, newCustomer]);
-
-        this.toast.showToast(`Cliente cadastrado com sucesso!`, 'success');
-        // Opcional: Se quiser que ele já fique selecionado após criar:
-        // this.selectCustomer(newCustomer);
+        // Adiciona à lista mantendo o filtro ativo se houver
+        this._customers.update((all) => [...all, newCustomer]);
+        this.toast.showToast(`${newCustomer.name} cadastrado!`, 'success');
       },
-      error: (err) => {
-        console.error('Erro ao cadastrar cliente', err);
-        // Aqui você poderia setar um signal de 'errorMessage' se quiser mostrar na tela
-      },
+      error: (err) => this.toast.showToast('Erro ao salvar condomínio', 'error'),
       complete: () => this.loading.set(false),
     });
+  }
+
+  selectCustomer(customer: Customer | null) {
+    this.selectedCustomer.set(customer);
+  }
+
+  clearSelection() {
+    this.selectedCustomer.set(null);
   }
 }

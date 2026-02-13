@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CreateEquipmentDto } from '../../models/equipment.model';
+import { CreateEquipmentDto, Equipment } from '../../models/equipment.model';
+import { EquipmentsStore } from '../../data-access/equipments.store';
 
 @Component({
   selector: 'app-equipment-form',
@@ -11,9 +12,11 @@ import { CreateEquipmentDto } from '../../models/equipment.model';
 })
 export class EquipmentFormComponent {
   private fb = inject(FormBuilder);
+  private readonly equipmentsStore = inject(EquipmentsStore);
 
   @Output() save = new EventEmitter<CreateEquipmentDto>();
   @Output() cancel = new EventEmitter<void>();
+  @Input() equipmentToEdit: Equipment | null = null;
 
   equipmentForm: FormGroup = this.fb.group({
     name: ['', [Validators.required]],
@@ -39,6 +42,20 @@ export class EquipmentFormComponent {
     lastPreventiveDate: [null],
     nextPreventiveDate: [null],
   });
+
+  public readonly loading = this.equipmentsStore.loading;
+
+  ngOnInit() {
+    if (this.equipmentToEdit) {
+      // O patchValue preenche todos os campos que têm o mesmo nome no Form e no Objeto
+      this.equipmentForm.patchValue(this.equipmentToEdit);
+
+      // Se você tiver um FormGroupName para technicalSpecs, faça assim:
+      if (this.equipmentToEdit.technicalSpecs) {
+        this.equipmentForm.get('technicalSpecs')?.patchValue(this.equipmentToEdit.technicalSpecs);
+      }
+    }
+  }
 
   onSubmit() {
     if (this.equipmentForm.valid) {
