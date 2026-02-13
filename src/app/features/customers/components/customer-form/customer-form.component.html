@@ -1,0 +1,97 @@
+<div class="bg-white rounded-2xl shadow-xl w-full max-w-[700px] overflow-hidden">
+  <div class="flex justify-between items-center px-8 py-6 border-b border-slate-100">
+    <h2 class="text-xl font-bold text-[#1e293b]">Cadastrar Novo Cliente / Condomínio</h2>
+    <button (click)="close()" class="text-slate-400 hover:text-slate-600 transition-colors">
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <form [formGroup]="customerForm" (ngSubmit)="onSubmit()" class="p-8 space-y-6">
+    <div>
+      <label class="block text-sm font-bold text-[#1e293b] mb-2">Nome do Condomínio *</label>
+      <input
+        formControlName="name"
+        type="text"
+        placeholder="Ex: Edifício Solar das Palmeiras"
+        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+      />
+    </div>
+
+    <div class="grid grid-cols-2 gap-6">
+      <div>
+        <label class="block text-sm font-bold text-[#1e293b] mb-2">CNPJ *</label>
+        <input
+          formControlName="document"
+          mask="00.000.000/0000-00"
+          [dropSpecialCharacters]="true"
+          placeholder="00.000.000/0000-00"
+          class="w-full bg-[#f8fafc] border border-slate-200 rounded-xl px-4 py-3 text-slate-700 outline-none focus:border-[#94aef2] focus:ring-2 focus:ring-[#94aef2]/10 transition-all"
+        />
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-[#1e293b] mb-2">Responsável / Síndico *</label>
+        <input
+          formControlName="contactName"
+          type="text"
+          placeholder="Ex: João Silva"
+          class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+        />
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-bold text-[#1e293b] mb-2">Endereço Completo *</label>
+      <input
+        formControlName="address"
+        type="text"
+        placeholder="Rua, Número, Bairro, Cidade"
+        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+      />
+    </div>
+
+    <div class="grid grid-cols-2 gap-6">
+      <div>
+        <label class="block text-sm font-bold text-[#1e293b] mb-2">Telefone de Contato</label>
+        <input
+          formControlName="phone"
+          mask="(00) 00000-0000"
+          placeholder="(00) 00000-0000"
+          class="w-full bg-[#f8fafc] border border-slate-200 rounded-xl px-4 py-3 text-slate-700 outline-none focus:border-[#94aef2] focus:ring-2 focus:ring-[#94aef2]/10 transition-all"
+        />
+      </div>
+      <div>
+        <label class="block text-sm font-bold text-[#1e293b] mb-2">E-mail</label>
+        <input
+          formControlName="email"
+          type="email"
+          placeholder="contato@condominio.com"
+          class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+        />
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-4 pt-6">
+      <button
+        type="button"
+        (click)="close()"
+        class="px-8 py-3 text-slate-500 font-bold hover:text-slate-700 transition-colors"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        [disabled]="customerForm.invalid"
+        class="px-10 py-3 bg-[#94aef2] hover:bg-[#7a96e6] text-white font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Cadastrar Cliente
+      </button>
+    </div>
+  </form>
+</div>

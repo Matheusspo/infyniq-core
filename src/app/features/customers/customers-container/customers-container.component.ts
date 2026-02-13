@@ -1,30 +1,33 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CustomersStore } from '../data-access/customers.store';
-import { CustomerListComponent } from '../components/customer-list/customer-list.component';
-import { EquipmentFormComponent } from '../components/equipment-form/equipment-form.component';
+import { CustomersStore } from '../data-access/customers.store'; // ajuste o caminho se necessário
+import { CustomerFormComponent } from '../components/customer-form/customer-form.component';
+import { CustomersListComponent } from '../components/customers-list/customers-list.component';
+import { Customer } from '../models/customer.model';
 
 @Component({
   selector: 'app-customers-container',
   standalone: true,
-  imports: [CommonModule, CustomerListComponent, EquipmentFormComponent],
+  imports: [CommonModule, CustomerFormComponent, CustomersListComponent],
   templateUrl: './customers-container.component.html',
-  styles: [
-    `
-      :host {
-        display: block;
-        background-color: #f9fafb; /* bg-gray-50 */
-        min-height: 100vh;
-      }
-    `,
-  ],
 })
 export class CustomersContainerComponent {
-  // Injetamos a Store para que o HTML possa usar store.selectedCustomer()
-  public readonly store = inject(CustomersStore);
+  private readonly store = inject(CustomersStore);
 
-  constructor() {
-    // Opcional: Você pode carregar os dados aqui ou no ngOnInit da Listagem
-    // this.store.loadAllCustomers();
+  // 1. Defina a propriedade showForm (erro de "Property does not exist")
+  showForm = false;
+
+  // 2. Mapeie o signal de clientes da store
+  customers = this.store.customers;
+
+  // 3. Crie o método de salvar (que o seu HTML está chamando)
+  onSaveCustomer(customerData: Partial<Customer>) {
+    this.store.addCustomer(customerData);
+    this.showForm = false;
+  }
+
+  // 4. Crie o método de seleção (o erro TS2339 que apareceu no seu log)
+  onCustomerSelect(customer: Customer) {
+    this.store.selectCustomer(customer);
   }
 }

@@ -8,15 +8,15 @@ import { Equipment } from '../models/equipment.model';
 @Injectable({ providedIn: 'root' })
 export class CustomersService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:3000/api'; // Ajuste conforme seu env
+  private readonly apiUrl = 'http://localhost:3000'; // Ajuste conforme seu env
 
   // Clientes
   getCustomers(): Observable<Customer[]> {
     return this.http.get<Customer[]>(`${this.apiUrl}/customers`);
   }
 
-  createCustomer(data: Partial<Customer>): Observable<Customer> {
-    return this.http.post<Customer>(`${this.apiUrl}/customers`, data);
+  createCustomer(customer: Partial<Customer>) {
+    return this.http.post<Customer>(`${this.apiUrl}/customers`, customer);
   }
 
   // Equipamentos (Prontuário)

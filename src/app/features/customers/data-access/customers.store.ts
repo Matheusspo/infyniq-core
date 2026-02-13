@@ -4,10 +4,12 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { CustomersService } from './customers.service';
 import { Customer } from '../models/customer.model';
 import { Equipment } from '../models/equipment.model';
+import { ToastService } from '../../../services/toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class CustomersStore {
   private readonly service = inject(CustomersService);
+  private readonly toast = inject(ToastService);
 
   // Estados (Signals)
   readonly customers = signal<Customer[]>([]);
@@ -40,5 +42,26 @@ export class CustomersStore {
   clearSelection() {
     this.selectedCustomer.set(null);
     this.equipments.set([]);
+  }
+
+  addCustomer(customerData: Partial<Customer>) {
+    this.loading.set(true);
+
+    this.service.createCustomer(customerData).subscribe({
+      next: (newCustomer) => {
+        // Atualiza a lista de clientes adicionando o novo ao array atual
+        // Usamos o update() do signal para garantir imutabilidade
+        this.customers.update((allCustomers) => [...allCustomers, newCustomer]);
+
+        this.toast.showToast(`Cliente cadastrado com sucesso!`, 'success');
+        // Opcional: Se quiser que ele já fique selecionado após criar:
+        // this.selectCustomer(newCustomer);
+      },
+      error: (err) => {
+        console.error('Erro ao cadastrar cliente', err);
+        // Aqui você poderia setar um signal de 'errorMessage' se quiser mostrar na tela
+      },
+      complete: () => this.loading.set(false),
+    });
   }
 }

@@ -1,16 +1,20 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CustomersStore } from '../../data-access/customers.store';
 import { Customer } from '../../models/customer.model';
 
 @Component({
-  selector: 'app-customer-list',
+  selector: 'app-customers-list',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './customer-list.component.html',
+  templateUrl: './customers-list.component.html',
 })
-export class CustomerListComponent implements OnInit {
+export class CustomersListComponent implements OnInit {
   public readonly store = inject(CustomersStore);
+
+  @Input() customers: Customer[] = [];
+
+  @Output() select = new EventEmitter<Customer>();
 
   ngOnInit() {
     this.store.loadAllCustomers();
