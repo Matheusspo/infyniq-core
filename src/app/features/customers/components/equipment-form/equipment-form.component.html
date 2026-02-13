@@ -1,68 +1,82 @@
-<div class="p-4 bg-white rounded-lg shadow">
-  <h2 class="text-xl font-bold mb-4 text-gray-800">Prontuário do Equipamento</h2>
+<div class="bg-white rounded-2xl shadow-xl w-full max-w-[800px] overflow-hidden">
+  <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center">
+    <h2 class="text-xl font-bold text-[#1e293b]">Prontuário do Elevador</h2>
+    <button (click)="cancel.emit()" class="text-slate-400 hover:text-slate-600">✕</button>
+  </div>
 
   <form
     [formGroup]="equipmentForm"
     (ngSubmit)="onSubmit()"
-    class="grid grid-cols-1 md:grid-cols-2 gap-4"
+    class="p-8 space-y-6 max-h-[80vh] overflow-y-auto"
   >
-    <div class="col-span-2 border-b pb-2">
-      <h3 class="font-semibold text-blue-600">Identificação</h3>
-    </div>
-
-    <div class="flex flex-col">
-      <label class="text-sm font-medium">Nome/Apelido (ex: Social 01)</label>
-      <input
-        formControlName="name"
-        type="text"
-        class="border p-2 rounded"
-        placeholder="Ex: Elevador Social Torre A"
-      />
-    </div>
-
-    <div class="flex flex-col">
-      <label class="text-sm font-medium">Marca</label>
-      <select formControlName="brand" class="border p-2 rounded">
-        <option value="Otis">Otis</option>
-        <option value="Atlas Schindler">Atlas Schindler</option>
-        <option value="Thyssenkrupp">Thyssenkrupp</option>
-        <option value="Outra">Outra</option>
-      </select>
-    </div>
-
-    <div class="col-span-2 border-b pb-2 mt-4">
-      <h3 class="font-semibold text-blue-600">Especificações Técnicas</h3>
-    </div>
-
-    <div formGroupName="technicalSpecs" class="col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="flex flex-col">
-        <label class="text-sm font-medium">Nº de Paradas</label>
-        <input formControlName="stops" type="number" class="border p-2 rounded" />
+    <div class="grid grid-cols-2 gap-4">
+      <div class="col-span-2">
+        <label class="block text-sm font-bold text-[#1e293b] mb-1">Nome / Identificação *</label>
+        <input
+          formControlName="name"
+          placeholder="Ex: Elevador Social 01"
+          class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2"
+        />
       </div>
-
-      <div class="flex flex-col">
-        <label class="text-sm font-medium">Capacidade (Pessoas)</label>
-        <input formControlName="capacityPersons" type="number" class="border p-2 rounded" />
+      <div>
+        <label class="block text-sm font-bold text-[#1e293b] mb-1">Marca *</label>
+        <input
+          formControlName="brand"
+          class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2"
+        />
       </div>
+      <div>
+        <label class="block text-sm font-bold text-[#1e293b] mb-1">Modelo *</label>
+        <input
+          formControlName="model"
+          class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2"
+        />
+      </div>
+    </div>
 
-      <div class="flex flex-col">
-        <label class="text-sm font-medium">Tipo de Tração</label>
-        <select formControlName="driveType" class="border p-2 rounded">
-          <option value="GEARED">Com Engrenagem (Geared)</option>
-          <option value="GEARLESS">Sem Engrenagem (Gearless)</option>
+    <div
+      formGroupName="technicalSpecs"
+      class="bg-slate-50 p-6 rounded-2xl border border-slate-100 grid grid-cols-3 gap-4"
+    >
+      <h3 class="col-span-3 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+        Dados Técnicos
+      </h3>
+      <div>
+        <label class="block text-xs font-bold text-slate-500 mb-1">Paradas</label>
+        <input
+          type="number"
+          formControlName="stops"
+          class="w-full border-slate-200 rounded-lg px-3 py-2"
+        />
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-500 mb-1">Capacidade (KG)</label>
+        <input
+          type="number"
+          formControlName="capacityKg"
+          class="w-full border-slate-200 rounded-lg px-3 py-2"
+        />
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-500 mb-1">Tração</label>
+        <select formControlName="driveType" class="w-full border-slate-200 rounded-lg px-3 py-2">
+          <option value="GEARED">GEARED (Com engrenagem)</option>
+          <option value="GEARLESS">GEARLESS (Sem engrenagem)</option>
           <option value="HYDRAULIC">Hidráulico</option>
         </select>
       </div>
     </div>
 
-    <div class="col-span-2 flex justify-end gap-2 mt-6">
-      <button type="button" class="px-4 py-2 border rounded text-gray-600">Cancelar</button>
+    <div class="flex justify-end gap-4">
+      <button type="button" (click)="cancel.emit()" class="px-6 py-2 text-slate-500 font-bold">
+        Cancelar
+      </button>
       <button
         type="submit"
         [disabled]="equipmentForm.invalid"
-        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        class="px-10 py-3 bg-[#94aef2] text-white font-bold rounded-xl shadow-lg"
       >
-        Salvar no Prontuário
+        Salvar Equipamento
       </button>
     </div>
   </form>

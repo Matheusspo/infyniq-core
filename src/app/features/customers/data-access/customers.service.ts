@@ -19,12 +19,11 @@ export class CustomersService {
     return this.http.post<Customer>(`${this.apiUrl}/customers`, customer);
   }
 
-  // Equipamentos (Prontuário)
-  getEquipmentsByCustomer(customerId: string): Observable<Equipment[]> {
-    return this.http.get<Equipment[]>(`${this.apiUrl}/customers/${customerId}/equipments`);
-  }
-
   addEquipment(equipment: Partial<Equipment>): Observable<Equipment> {
     return this.http.post<Equipment>(`${this.apiUrl}/equipments`, equipment);
+  }
+
+  getEquipmentsByCustomer(customerId: string): Observable<Equipment[]> {
+    return this.http.get<Equipment[]>(`${this.apiUrl}/equipments/customer/${customerId}`);
   }
 }

@@ -32,7 +32,10 @@ export class CustomersStore {
     this.selectedCustomer.set(customer);
     this.loading.set(true);
     this.service.getEquipmentsByCustomer(customer.id).subscribe({
-      next: (data) => this.equipments.set(data),
+      next: (data) => {
+        console.log('Dados de equipamentos recebidos:', data);
+        this.equipments.set(data);
+      },
       error: (err) => console.error('Erro ao buscar elevadores', err),
       complete: () => this.loading.set(false),
     });

@@ -1,0 +1,69 @@
+<div class="bg-white rounded-2xl shadow-sm border border-slate-100 h-full flex flex-col">
+  <div
+    class="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50 rounded-t-2xl"
+  >
+    <div>
+      <h3 class="text-lg font-bold text-[#1e293b] uppercase tracking-wider text-xs">
+        Elevadores: {{ customerName }}
+      </h3>
+      <p class="text-slate-500 text-xs">Gerencie os prontuários técnicos</p>
+    </div>
+
+    <button
+      (click)="onAddEquipment()"
+      class="bg-[#94aef2] hover:bg-[#7a96e6] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2"
+    >
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path d="M12 4v16m8-8H4" stroke-width="3" />
+      </svg>
+      ADICIONAR ELEVADOR
+    </button>
+  </div>
+
+  <div class="grid gap-6">
+    @for (item of equipments(); track item.id) {
+      <div
+        class="bg-white border border-slate-100 rounded-2xl p-5 hover:shadow-md transition-all relative overflow-hidden"
+      >
+        <div
+          [ngClass]="{
+            'bg-emerald-500': item.status === 'OPERATIONAL',
+            'bg-amber-500': item.status === 'MAINTENANCE',
+            'bg-rose-500': item.status === 'OUT_OF_SERVICE',
+          }"
+          class="absolute left-0 top-0 bottom-0 w-1.5"
+        ></div>
+
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-between items-start">
+            <div>
+              <h4 class="font-bold text-slate-800 text-lg">{{ item.name }}</h4>
+              <p class="text-xs text-slate-400 uppercase font-semibold">
+                {{ item.brand }} · {{ item.model }}
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3">
+            <div class="bg-slate-50 rounded-lg p-2 text-center">
+              <span class="block text-[10px] text-slate-400 font-bold uppercase">Paradas</span>
+              <span class="text-sm font-bold">{{ item.technicalSpecs.stops }}</span>
+            </div>
+            <div class="bg-slate-50 rounded-lg p-2 text-center">
+              <span class="block text-[10px] text-slate-400 font-bold uppercase">Carga</span>
+              <span class="text-sm font-bold">{{ item.technicalSpecs.capacityKg }}kg</span>
+            </div>
+            <div class="bg-slate-50 rounded-lg p-2 text-center">
+              <span class="block text-[10px] text-slate-400 font-bold uppercase">Tração</span>
+              <span class="text-sm font-bold">{{ item.technicalSpecs.driveType }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="p-8 text-center border-2 border-dashed border-slate-100 rounded-2xl">
+        <p class="text-slate-400 italic">Nenhum elevador cadastrado para este cliente.</p>
+      </div>
+    }
+  </div>
+</div>
