@@ -1,15 +1,15 @@
 <aside
   [class.w-64]="isExpanded()"
   [class.w-20]="!isExpanded()"
-  class="bg-[#0a0f1c] h-screen flex flex-col border-r border-slate-800 transition-all duration-300 relative"
+  class="bg-[#0a0f1c] h-screen flex flex-col border-r border-slate-800 transition-all duration-300 relative shadow-2xl"
 >
   <button
     (click)="toggleSidebar()"
-    class="absolute -right-3 top-10 bg-blue-600 text-white rounded-full p-1 shadow-lg hover:bg-blue-700 transition-colors z-50"
+    class="absolute -right-3 top-10 bg-blue-600 text-white rounded-full p-1 shadow-lg hover:bg-blue-700 transition-all z-50 active:scale-90"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      class="w-4 h-4 transition-transform"
+      class="w-4 h-4 transition-transform duration-500"
       [class.rotate-180]="!isExpanded()"
       fill="none"
       viewBox="0 0 24 24"
@@ -19,28 +19,30 @@
     </svg>
   </button>
 
-  <div class="p-6 flex flex-col items-center border-b border-slate-800/50 overflow-hidden">
+  <div
+    class="p-6 flex flex-col items-center border-b border-slate-800/50 overflow-hidden min-h-[140px] justify-center"
+  >
     <div class="relative w-12 h-12 flex items-center justify-center shrink-0">
       <img src="logo-infyniq-icon.png" alt="Logo" class="w-full h-auto object-contain" />
     </div>
 
     @if (isExpanded()) {
-      <div class="text-center mt-2">
-        <h2 class="text-white font-bold text-lg tracking-[0.15em]">INFYNIQ</h2>
+      <div class="text-center mt-4 animate-in fade-in zoom-in duration-300">
+        <h2 class="text-white font-black text-lg tracking-[0.2em]">INFYNIQ</h2>
         <p
-          class="text-[9px] text-blue-400/70 uppercase tracking-[0.2em] font-medium whitespace-nowrap"
+          class="text-[8px] text-blue-400/70 uppercase tracking-[0.3em] font-bold whitespace-nowrap"
         >
-          Tecnologia sem limites
+          Elevadores & Engenharia
         </p>
       </div>
     }
   </div>
 
-  <nav class="flex-1 mt-6 px-4 space-y-2">
+  <nav class="flex-1 mt-6 px-3 space-y-2">
     <a
       routerLink="/dashboard"
-      routerLinkActive="bg-blue-600 text-white"
-      class="flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition-all group"
+      routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+      class="flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-slate-100 transition-all group"
     >
       <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
@@ -51,30 +53,59 @@
         />
       </svg>
       @if (isExpanded()) {
-        <span class="font-medium">Dashboard</span>
+        <span
+          class="text-[11px] font-black uppercase tracking-widest animate-in slide-in-from-left-2"
+          >Dashboard</span
+        >
       }
     </a>
+
     <a
       routerLink="/clientes"
-      routerLinkActive="bg-blue-600 text-white"
-      class="flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition-all group"
+      routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+      class="flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-slate-100 transition-all group"
     >
       <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
-          stroke-width="2"
+          stroke-width="1.5"
           d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
         />
       </svg>
       @if (isExpanded()) {
-        <span class="font-medium">Clientes & Elevadores</span>
+        <span
+          class="text-[11px] font-black uppercase tracking-widest animate-in slide-in-from-left-2"
+          >Unidades</span
+        >
       }
     </a>
+
+    <a
+      routerLink="/orders"
+      routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+      class="flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-slate-100 transition-all group"
+    >
+      <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+        />
+      </svg>
+      @if (isExpanded()) {
+        <span
+          class="text-[11px] font-black uppercase tracking-widest animate-in slide-in-from-left-2"
+          >Ordens de Serviço</span
+        >
+      }
+    </a>
+
     <a
       routerLink="/estoque"
-      routerLinkActive="bg-blue-600 text-white"
-      class="flex items-center gap-3 p-3 rounded-lg text-slate-300 hover:bg-slate-800 transition-all group"
+      routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+      class="flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-slate-100 transition-all group"
     >
       <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
@@ -85,8 +116,33 @@
         />
       </svg>
       @if (isExpanded()) {
-        <span class="font-medium">Estoque</span>
+        <span
+          class="text-[11px] font-black uppercase tracking-widest animate-in slide-in-from-left-2"
+          >Estoque</span
+        >
       }
     </a>
   </nav>
+
+  <div class="p-4 border-t border-slate-800/50">
+    <div class="flex items-center gap-3 overflow-hidden">
+      <div
+        class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 shrink-0 flex items-center justify-center font-black text-blue-400 text-xs"
+      >
+        AD
+      </div>
+      @if (isExpanded()) {
+        <div class="animate-in fade-in duration-500">
+          <p class="text-[10px] font-black text-white uppercase tracking-tighter leading-none">
+            Administrador
+          </p>
+          <button
+            class="text-[9px] text-slate-500 font-bold hover:text-rose-400 transition-colors uppercase mt-1"
+          >
+            Sair
+          </button>
+        </div>
+      }
+    </div>
+  </div>
 </aside>

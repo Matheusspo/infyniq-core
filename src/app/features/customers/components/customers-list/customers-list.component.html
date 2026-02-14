@@ -83,24 +83,36 @@
   </div>
 </div>
 
-<div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden transition-all">
-  <div class="overflow-x-auto">
+<div
+  class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden transition-all flex flex-col"
+>
+  <div
+    #scrollContainer
+    class="overflow-x-auto overflow-y-auto max-h-[600px] relative scroll-smooth"
+  >
     <table class="w-full text-left border-collapse">
+      <thead class="sticky top-0 z-20 bg-slate-50/95 backdrop-blur-sm shadow-sm">
+        <tr class="text-[10px] uppercase font-black text-slate-400 tracking-widest">
+          <th class="px-8 py-4 border-b border-slate-100">Nome do Condomínio</th>
+          <th class="px-8 py-4 border-b border-slate-100">Documento</th>
+          <th class="px-8 py-4 border-b border-slate-100">Contato</th>
+          <th class="px-8 py-4 text-center border-b border-slate-100">Ações</th>
+        </tr>
+      </thead>
+
       <tbody class="divide-y divide-slate-100">
-        @for (customer of store.filteredCustomers(); track customer.id) {
+        @for (customer of store.displayedCustomers(); track customer.id) {
           <tr
             (click)="onSelect(customer)"
             [class.bg-blue-50]="store.selectedCustomer()?.id === customer.id"
             class="group hover:bg-slate-50/80 cursor-pointer transition-all border-b border-slate-100 last:border-0"
           >
             <td class="px-8 py-5">
-              <div class="flex items-center gap-3">
-                <span
-                  class="text-sm font-bold text-slate-700 uppercase group-hover:text-blue-600 transition-colors"
-                >
-                  {{ customer.name }}
-                </span>
-              </div>
+              <span
+                class="text-sm font-bold text-slate-700 uppercase group-hover:text-blue-600 transition-colors"
+              >
+                {{ customer.name }}
+              </span>
             </td>
 
             <td class="px-8 py-5">
@@ -134,14 +146,41 @@
             <td class="px-8 py-5 text-center">
               <button
                 (click)="onButtonClick($event, customer)"
-                class="px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-2xl transition-all shadow-sm hover:shadow-blue-200 active:scale-95"
+                class="px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-2xl transition-all shadow-sm active:scale-95"
               >
-                Gerenciar Elevadores
+                Gerenciar
               </button>
             </td>
           </tr>
         }
       </tbody>
     </table>
+
+    @if (store.filteredCustomers().length > store.displayLimit()) {
+      <div class="p-6 flex justify-center bg-gradient-to-t from-white to-transparent">
+        <button
+          (click)="store.loadMore()"
+          class="px-8 py-3 bg-white border border-slate-200 text-slate-600 text-[11px] font-black uppercase tracking-widest rounded-2xl hover:bg-slate-50 transition-all shadow-sm active:scale-95"
+        >
+          Ver mais ({{ store.filteredCustomers().length - store.displayLimit() }} restantes)
+        </button>
+      </div>
+    }
   </div>
 </div>
+
+<button
+  (click)="scrollContainer.scrollTo({ top: 0, behavior: 'smooth' })"
+  class="fixed bottom-8 right-8 p-4 bg-slate-800 text-white rounded-full shadow-2xl hover:bg-blue-600 transition-all active:scale-90 z-50 group"
+  title="Voltar ao topo"
+>
+  <svg
+    class="w-5 h-5 group-hover:-translate-y-1 transition-transform"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="3"
+  >
+    <path d="M5 15l7-7 7 7" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+</button>

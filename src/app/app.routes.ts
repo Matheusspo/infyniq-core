@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { AppShellComponent } from './layout/app-shell/app-shell';
+import { AppShellComponent } from './layout/app-shell/app-shell.component';
 
 export const routes: Routes = [
   {
@@ -8,7 +8,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'clientes', // Alterado para clientes como foco inicial do MVP
+        redirectTo: 'clientes',
         pathMatch: 'full',
       },
       {
@@ -17,6 +17,11 @@ export const routes: Routes = [
           import('./features/customers/customers-container/customers-container.component').then(
             (m) => m.CustomersContainerComponent,
           ),
+      },
+      {
+        path: 'orders', // Rota que configuramos no Sidebar
+        loadComponent: () =>
+          import('./features/orders/os-list/os-list.component').then((m) => m.OSListComponent),
       },
       {
         path: 'estoque',

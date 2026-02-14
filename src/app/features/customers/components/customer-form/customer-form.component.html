@@ -40,26 +40,74 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       <div class="group">
-        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
-          >CNPJ *</label
+        <label
+          class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block group-focus-within:text-blue-500 transition-colors"
         >
+          Nome do Condomínio *
+        </label>
         <input
-          formControlName="document"
-          mask="00.000.000/0000-00"
-          placeholder="00.000.000/0000-00"
-          class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
-        />
-      </div>
-      <div class="group">
-        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
-          >Responsável *</label
-        >
-        <input
-          formControlName="contactName"
+          formControlName="name"
           type="text"
-          placeholder="Ex: João Silva"
+          [class.border-red-200]="
+            customerForm.get('name')?.invalid && customerForm.get('name')?.touched
+          "
           class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
         />
+        @if (customerForm.get('name')?.invalid && customerForm.get('name')?.touched) {
+          <p
+            class="text-[9px] font-black text-red-500 uppercase tracking-tighter mt-1 ml-1 animate-in fade-in slide-in-from-top-1"
+          >
+            O nome do condomínio é obrigatório
+          </p>
+        }
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="group">
+          <label
+            class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
+            >CNPJ *</label
+          >
+          <input
+            formControlName="document"
+            mask="00.000.000/0000-00"
+            [class.border-red-200]="
+              customerForm.get('document')?.invalid && customerForm.get('document')?.touched
+            "
+            class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
+          />
+          @if (customerForm.get('document')?.invalid && customerForm.get('document')?.touched) {
+            <p
+              class="text-[9px] font-black text-red-500 uppercase tracking-tighter mt-1 ml-1 animate-in fade-in slide-in-from-top-1"
+            >
+              CNPJ inválido ou incompleto
+            </p>
+          }
+        </div>
+
+        <div class="group">
+          <label
+            class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
+            >Responsável *</label
+          >
+          <input
+            formControlName="contactName"
+            type="text"
+            [class.border-red-200]="
+              customerForm.get('contactName')?.invalid && customerForm.get('contactName')?.touched
+            "
+            class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
+          />
+          @if (
+            customerForm.get('contactName')?.invalid && customerForm.get('contactName')?.touched
+          ) {
+            <p
+              class="text-[9px] font-black text-red-500 uppercase tracking-tighter mt-1 ml-1 animate-in fade-in slide-in-from-top-1"
+            >
+              Nome do responsável é obrigatório
+            </p>
+          }
+        </div>
       </div>
     </div>
 
@@ -112,7 +160,8 @@
       <button
         type="submit"
         [disabled]="customerForm.invalid"
-        class="flex items-center gap-3 px-8 py-3 bg-[#1e293b] hover:bg-blue-600 text-white text-[10px] font-black uppercase tracking-[2px] rounded-xl shadow-lg transition-all disabled:opacity-30 active:scale-95"
+        (click)="(customerForm.invalid ? null : null)"
+        class="px-10 py-3 bg-[#1e293b] text-white text-[10px] font-black uppercase tracking-[2px] rounded-xl shadow-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
       >
         Confirmar Cadastro
       </button>

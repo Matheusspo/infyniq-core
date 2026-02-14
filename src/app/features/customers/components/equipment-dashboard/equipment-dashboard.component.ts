@@ -1,7 +1,15 @@
-// src/app/features/customers/components/equipment-dashboard/equipment-dashboard.component.ts
-import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  inject,
+  signal,
+  HostListener,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { EquipmentsStore } from '../../data-access/equipments.store';
+import { Equipment } from '../../models/equipment.model';
 
 @Component({
   selector: 'app-equipment-dashboard',
@@ -14,7 +22,6 @@ import { EquipmentsStore } from '../../data-access/equipments.store';
         display: block;
         animation: slideIn 0.3s ease-out;
       }
-
       @keyframes slideIn {
         from {
           opacity: 0;
@@ -29,46 +36,55 @@ import { EquipmentsStore } from '../../data-access/equipments.store';
   ],
 })
 export class EquipmentDashboardComponent {
-  public equipmentsStore = inject(EquipmentsStore);
-
-  readonly equipments = this.equipmentsStore.equipments;
-  searchTerm = signal('');
+  public readonly store = inject(EquipmentsStore);
 
   @Input() customerName: string | undefined = '';
   @Output() addEquipment = new EventEmitter<void>();
   @Output() editEquipment = new EventEmitter<any>();
   @Output() back = new EventEmitter<void>();
 
-  get filteredEquipments() {
-    const term = this.searchTerm().toLowerCase();
-    return this.equipments().filter(
-      (eq) => eq.name.toLowerCase().includes(term) || eq.brand.toLowerCase().includes(term),
-    );
-  }
-
-  onAddEquipment() {
-    this.addEquipment.emit();
-  }
-
-  onEditEquipment(item: any) {
-    this.editEquipment.emit(item);
-  }
-
-  onDelete(id: string) {
-    this.equipmentsStore.deleteEquipment(id);
-  }
-
-  onBack() {
-    this.back.emit();
-  }
-
+  // Mapeamento para o HTML usar
   readonly driveTypeMap: Record<string, string> = {
     GEARED: 'Com Engrenagem',
     GEARLESS: 'Sem Engrenagem',
     HYDRAULIC: 'Hidráulico',
   };
 
+  // Signal para controlar a visibilidade
+  readonly showScrollTop = signal(false);
+
+  // Monitora o scroll da DIV interna
+  onDivScroll(container: HTMLElement) {
+    // Aparece após rolar 300px para baixo
+    this.showScrollTop.set(container.scrollTop > 300);
+  }
+
+  // Faz o scroll suave de volta ao topo da DIV
+  scrollToTop(container: HTMLElement) {
+    container.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
+
+  // Métodos de ação simplificados
   onFilterEquipments(value: string) {
-    this.searchTerm.set(value);
+    this.store.updateSearchTerm(value);
+  }
+
+  onDelete(id: string) {
+    this.store.deleteEquipment(id);
+  }
+
+  onAddEquipment() {
+    this.addEquipment.emit();
+  }
+
+  onEditEquipment(item: Equipment) {
+    this.editEquipment.emit(item);
+  }
+
+  onBack() {
+    this.back.emit();
   }
 }

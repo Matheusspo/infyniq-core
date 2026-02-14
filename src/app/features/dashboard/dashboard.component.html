@@ -1,74 +1,125 @@
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-  <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-    <h2 class="font-bold text-slate-800 mb-6">Saúde do Almoxarifado</h2>
-
-    <div class="flex items-center justify-around">
-      <div class="relative w-40 h-40">
-        <svg class="w-full h-full" viewBox="0 0 36 36">
-          <path
-            class="text-slate-100"
-            stroke-width="3"
-            stroke="currentColor"
-            fill="none"
-            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-          />
-          <path
-            class="text-blue-600 transition-all duration-1000 ease-out"
-            [attr.stroke-dasharray]="getPercentage() + ', 100'"
-            stroke-width="3"
-            stroke-linecap="round"
-            stroke="currentColor"
-            fill="none"
-            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-          />
-        </svg>
-        <div class="absolute inset-0 flex flex-col items-center justify-center">
-          <span class="text-3xl font-bold text-slate-800">{{ getPercentage() }}%</span>
-          <span class="text-[10px] text-slate-400 uppercase">Em Conformidade</span>
-        </div>
-      </div>
-
-      <div class="space-y-4">
-        <div class="flex items-center gap-2">
-          <div class="w-3 h-3 bg-blue-600 rounded-full"></div>
-          <span class="text-sm text-slate-600">Estoque OK</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-          <span class="text-sm text-slate-600">Reposição Necessária</span>
-        </div>
-      </div>
-    </div>
+<div class="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+  <div>
+    <h1 class="text-4xl font-black text-[#1e293b] tracking-tighter uppercase">
+      Painel de <span class="text-blue-600">Controle</span>
+    </h1>
+    <p class="text-slate-400 font-bold text-xs uppercase tracking-[0.3em] mt-1">
+      Monitoramento operacional em tempo real
+    </p>
   </div>
 
-  <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-      <h2 class="font-bold text-slate-800">Alertas Recentes</h2>
-      <span class="px-2 py-1 bg-red-50 text-red-600 text-xs font-bold rounded-md">
-        {{ store.criticalItemsCount() }} Críticos
-      </span>
-    </div>
-    <div class="p-4 max-h-[250px] overflow-y-auto">
-      <ul class="space-y-3">
-        @for (item of store.items(); track item.id) {
-          @if (item.currentQuantity <= item.minQuantity) {
-            <li
-              class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100"
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    @for (item of kpis; track item.label) {
+      <div
+        class="bg-white border border-slate-100 p-8 rounded-[32px] hover:shadow-xl hover:shadow-blue-900/5 transition-all group relative overflow-hidden"
+      >
+        <div class="relative z-10">
+          <div
+            [class]="
+              'w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-500 ' +
+              item.bg
+            "
+          >
+            <span [class]="'font-black ' + item.color">#</span>
+          </div>
+          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+            {{ item.label }}
+          </p>
+          <h2 class="text-4xl font-black text-[#1e293b] tracking-tighter">
+            {{ stats()[item.key] }}
+          </h2>
+        </div>
+        <div
+          class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity"
+        >
+          <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div
+      class="lg:col-span-2 bg-[#1e293b] rounded-[40px] p-10 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20 flex flex-col md:flex-row gap-8"
+    >
+      <div class="relative z-10 flex-1">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+          <span class="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em]"
+            >Estatísticas Semanais</span
+          >
+        </div>
+        <h3 class="text-3xl font-black tracking-tight mb-4">
+          Demanda <br /><span class="text-blue-400">Semanal</span>
+        </h3>
+        <p class="text-slate-400 text-sm font-medium leading-relaxed mb-8 max-w-xs">
+          O volume de chamados técnicos apresentou um pico de
+          <span class="text-white font-bold">15%</span> nos últimos 7 dias.
+        </p>
+        <button
+          class="bg-blue-600 hover:bg-blue-500 px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-900/40 active:scale-95"
+        >
+          Relatório Completo
+        </button>
+      </div>
+
+      <div class="flex-1 h-52 flex items-end justify-between gap-2 px-2 relative z-10">
+        @for (item of weeklyDemand(); track item.day) {
+          <div class="flex flex-col items-center gap-3 flex-1 group h-full justify-end">
+            <div
+              class="w-full bg-blue-500/20 rounded-t-xl relative transition-all duration-1000 ease-out group-hover:bg-blue-400 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.5)]"
+              [style.height]="getBarHeight(item.value)"
             >
-              <div class="flex flex-col">
-                <span class="text-sm font-semibold text-slate-700">{{ item.name }}</span>
-                <span class="text-[10px] text-slate-400 font-mono">{{ item.code }}</span>
+              <div
+                class="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-[#1e293b] text-[10px] font-black px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-all transform group-hover:-translate-y-1 shadow-xl"
+              >
+                {{ item.value }}
               </div>
-              <div class="text-right">
-                <p class="text-sm font-bold text-red-600">
-                  {{ item.currentQuantity }} / {{ item.minQuantity }}
-                </p>
-                <p class="text-[9px] text-slate-400 uppercase font-bold">Qtd Atual</p>
-              </div>
-            </li>
-          }
+            </div>
+            <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter">{{
+              item.day
+            }}</span>
+          </div>
         }
-      </ul>
+      </div>
+
+      <div
+        class="absolute top-0 right-0 w-80 h-80 bg-blue-600/10 rounded-full blur-[100px] -mr-40 -mt-40"
+      ></div>
+    </div>
+
+    <div class="bg-white border border-slate-100 rounded-[40px] p-8">
+      <h3
+        class="text-xs font-black text-[#1e293b] uppercase tracking-widest mb-6 border-b border-slate-50 pb-4"
+      >
+        Técnicos em Campo
+      </h3>
+      <div class="space-y-6">
+        @for (tech of ['João Silva', 'Ricardo Souza', 'Marcos Lima']; track tech) {
+          <div class="flex items-center gap-4 group cursor-pointer">
+            <div
+              class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center font-black text-blue-600 text-[10px] group-hover:bg-blue-600 group-hover:text-white transition-all"
+            >
+              {{ tech.substring(0, 2) }}
+            </div>
+            <div class="flex-1">
+              <p
+                class="text-xs font-black text-slate-700 uppercase tracking-tight group-hover:text-blue-600 transition-colors"
+              >
+                {{ tech }}
+              </p>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter"
+                  >Ativo na OS #2024</span
+                >
+              </div>
+            </div>
+          </div>
+        }
+      </div>
     </div>
   </div>
 </div>
