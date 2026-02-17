@@ -1,0 +1,92 @@
+<div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex justify-end transition-all">
+  <form
+    [formGroup]="form"
+    (ngSubmit)="save()"
+    class="h-full w-full max-w-[500px] bg-white shadow-2xl shadow-blue-900/20 rounded-l-[48px] flex flex-col animate-in slide-in-from-right duration-500"
+  >
+    <header class="p-10 pb-6">
+      <span class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 block mb-1">
+        Recursos Humanos
+      </span>
+      <h2 class="text-3xl font-black text-slate-800 tracking-tighter">
+        {{ form.get('id')?.value ? 'Editar Técnico' : 'Novo Especialista' }}
+      </h2>
+    </header>
+
+    <div class="flex-1 overflow-y-auto px-10 space-y-6">
+      <div class="group">
+        <label
+          class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 group-focus-within:text-blue-600 transition-colors"
+        >
+          Nome do Profissional
+        </label>
+        <input
+          type="text"
+          formControlName="name"
+          placeholder="Ex: João Silva"
+          class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-6 py-4 focus:bg-white focus:border-blue-500/10 outline-none transition-all"
+        />
+      </div>
+
+      <div class="group">
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
+          Especialidade Técnica
+        </label>
+        <select
+          formControlName="specialty"
+          class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-6 py-4 focus:bg-white focus:border-blue-500/10 outline-none transition-all"
+        >
+          <option value="Mecânica">Mecânica</option>
+          <option value="Elétrica">Elétrica</option>
+          <option value="Eletrônica">Eletrônica</option>
+          <option value="Hidráulica">Hidráulica</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6">
+        <div class="group">
+          <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
+            E-mail Corporativo
+          </label>
+          <input
+            type="email"
+            formControlName="email"
+            (input)="applyEmailMask($event)"
+            placeholder="exemplo@exemplo.com.br"
+            class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-6 py-4 focus:bg-white focus:border-blue-500/10 outline-none transition-all"
+          />
+        </div>
+
+        <div class="group">
+          <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
+            Telefone / WhatsApp
+          </label>
+          <input
+            type="text"
+            formControlName="phone"
+            (input)="applyPhoneMask($event)"
+            placeholder="(00) 0000-0000"
+            class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-6 py-4 focus:bg-white focus:border-blue-500/10 outline-none transition-all"
+          />
+        </div>
+      </div>
+    </div>
+
+    <footer class="p-10 pt-6 border-t border-slate-50 flex gap-3">
+      <button
+        type="button"
+        (click)="close.emit()"
+        class="flex-1 px-6 py-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-100 transition-all active:scale-95"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        [disabled]="form.invalid"
+        class="flex-[2] bg-[#1e293b] text-white px-6 py-4 rounded-2xl font-bold hover:bg-blue-600 shadow-xl shadow-blue-900/10 transition-all active:scale-95 disabled:opacity-50"
+      >
+        {{ form.get('id')?.value ? 'Atualizar Perfil' : 'Cadastrar Técnico' }}
+      </button>
+    </footer>
+  </form>
+</div>

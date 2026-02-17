@@ -1,0 +1,4259 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: src/**/*
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+src/app/app.component.html
+src/app/app.component.ts
+src/app/app.config.ts
+src/app/app.routes.ts
+src/app/app.scss
+src/app/app.spec.ts
+src/app/core/components/header/header.component.ts
+src/app/core/components/header/header.html
+src/app/core/components/header/header.scss
+src/app/core/components/header/header.spec.ts
+src/app/core/components/sidebar/sidebar.component.html
+src/app/core/components/sidebar/sidebar.component.ts
+src/app/core/components/sidebar/sidebar.scss
+src/app/core/components/sidebar/sidebar.spec.ts
+src/app/core/interceptors/error-interceptor.spec.ts
+src/app/core/interceptors/error-interceptor.ts
+src/app/core/layouts/main-layout/main-layout.component.ts
+src/app/core/layouts/main-layout/main-layout.html
+src/app/core/layouts/main-layout/main-layout.scss
+src/app/core/layouts/main-layout/main-layout.spec.ts
+src/app/core/models/stock.interfaces.ts
+src/app/core/services/stock.service.ts
+src/app/features/cadastro/cadastro-base/cadastro-base.html
+src/app/features/cadastro/cadastro-base/cadastro-base.scss
+src/app/features/cadastro/cadastro-base/cadastro-base.spec.ts
+src/app/features/cadastro/cadastro-base/cadastro-base.ts
+src/app/features/customers/components/customer-form/customer-form.component.html
+src/app/features/customers/components/customer-form/customer-form.component.ts
+src/app/features/customers/components/customer-form/customer-form.scss
+src/app/features/customers/components/customers-list/customer-list.scss
+src/app/features/customers/components/customers-list/customers-list.component.html
+src/app/features/customers/components/customers-list/customers-list.component.ts
+src/app/features/customers/components/equipment-dashboard/equipment-dashboard.component.html
+src/app/features/customers/components/equipment-dashboard/equipment-dashboard.component.scss
+src/app/features/customers/components/equipment-dashboard/equipment-dashboard.component.ts
+src/app/features/customers/components/equipment-form/equipment-form.component.html
+src/app/features/customers/components/equipment-form/equipment-form.component.ts
+src/app/features/customers/components/equipment-form/equipment-form.scss
+src/app/features/customers/customers-container/customers-container.component.html
+src/app/features/customers/customers-container/customers-container.component.ts
+src/app/features/customers/customers-container/customers-container.scss
+src/app/features/customers/data-access/customers.service.ts
+src/app/features/customers/data-access/customers.spec.ts
+src/app/features/customers/data-access/customers.store.ts
+src/app/features/customers/data-access/equipments.service.ts
+src/app/features/customers/data-access/equipments.store.ts
+src/app/features/customers/models/customer.model.ts
+src/app/features/customers/models/equipment.model.ts
+src/app/features/dashboard/dashboard.component.html
+src/app/features/dashboard/dashboard.component.ts
+src/app/features/dashboard/dashboard.scss
+src/app/features/dashboard/dashboard.spec.ts
+src/app/features/dashboard/models/dashboard.model.ts
+src/app/features/estoque/estoque-form/estoque-form.component.html
+src/app/features/estoque/estoque-form/estoque-form.component.ts
+src/app/features/estoque/estoque-form/estoque-form.scss
+src/app/features/estoque/estoque-form/estoque-form.spec.ts
+src/app/features/estoque/estoque-list/estoque-list.component.html
+src/app/features/estoque/estoque-list/estoque-list.component.ts
+src/app/features/estoque/estoque-list/estoque-list.scss
+src/app/features/estoque/estoque-list/estoque-list.spec.ts
+src/app/features/estoque/stock.store.ts
+src/app/features/orders/models/order-service.model.ts
+src/app/features/orders/os-form/os-form.component.html
+src/app/features/orders/os-form/os-form.component.ts
+src/app/features/orders/os-list/os-list.component.html
+src/app/features/orders/os-list/os-list.component.ts
+src/app/features/orders/service/order-service.service.ts
+src/app/features/orders/store/order-service.store.ts
+src/app/layout/app-shell/app-shell.component.html
+src/app/layout/app-shell/app-shell.component.ts
+src/app/layout/app-shell/app-shell.scss
+src/app/pipe/phone.pipe.ts
+src/app/services/toast.service.ts
+src/app/services/toast.spec.ts
+src/assets/logo-infiniq.png
+src/environments/environment.ts
+src/index.html
+src/main.ts
+src/styles.scss
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/app/app.scss">
+
+</file>
+
+<file path="src/app/core/components/header/header.component.ts">
+import { Component, signal } from '@angular/core';
+
+@Component({
+  selector: 'app-header',
+  standalone: true,
+  template: `
+    <header
+      class="h-16 bg-white shadow-sm border-b flex items-center justify-between px-8 fixed top-0 right-0 left-0 z-10"
+      [style.margin-left]="sidebarWidth()"
+    >
+      <h1 class="text-slate-700 font-medium">Gestão de Elevadores</h1>
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-slate-500 italic">Unidade: São Paulo</span>
+        <div class="w-8 h-8 rounded-full bg-slate-200"></div>
+      </div>
+    </header>
+  `,
+})
+export class HeaderComponent {
+  // Aqui poderíamos injetar um serviço para saber a largura da sidebar
+  sidebarWidth = signal('256px');
+}
+</file>
+
+<file path="src/app/core/components/header/header.html">
+<p>header works!</p>
+</file>
+
+<file path="src/app/core/components/header/header.scss">
+
+</file>
+
+<file path="src/app/core/components/header/header.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { Header } from './header';
+
+describe('Header', () => {
+  let component: Header;
+  let fixture: ComponentFixture<Header>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [Header]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(Header);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/core/components/sidebar/sidebar.scss">
+
+</file>
+
+<file path="src/app/core/components/sidebar/sidebar.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { Sidebar } from './sidebar.component';
+
+describe('Sidebar', () => {
+  let component: Sidebar;
+  let fixture: ComponentFixture<Sidebar>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [Sidebar],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(Sidebar);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/core/interceptors/error-interceptor.spec.ts">
+import { TestBed } from '@angular/core/testing';
+import { HttpInterceptorFn } from '@angular/common/http';
+
+import { errorInterceptor } from './error-interceptor';
+
+describe('errorInterceptor', () => {
+  const interceptor: HttpInterceptorFn = (req, next) => 
+    TestBed.runInInjectionContext(() => errorInterceptor(req, next));
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+  });
+
+  it('should be created', () => {
+    expect(interceptor).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/core/interceptors/error-interceptor.ts">
+import { HttpInterceptorFn } from '@angular/common/http';
+import { catchError, throwError } from 'rxjs';
+
+export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+  return next(req).pipe(
+    catchError((error) => {
+      let errorMsg = 'Ocorreu um erro inesperado.';
+
+      if (error.status === 0) {
+        errorMsg =
+          'Não foi possível conectar ao servidor da Repair Elevadores. Verifique se o Backend está rodando.';
+      } else if (error.status === 400) {
+        errorMsg = 'Dados inválidos. Verifique os campos do formulário.';
+      }
+
+      // Aqui você poderia usar um Toast/Notificação em vez de alert
+      alert(errorMsg);
+      return throwError(() => error);
+    }),
+  );
+};
+</file>
+
+<file path="src/app/core/layouts/main-layout/main-layout.component.ts">
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { HeaderComponent } from '../../components/header/header.component';
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
+
+@Component({
+  selector: 'app-main-layout',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, HeaderComponent, SidebarComponent],
+  template: `
+    <div class="flex min-h-screen bg-slate-50">
+      <app-sidebar />
+
+      <div class="flex-1 flex flex-col transition-all duration-300" [style.margin-left]="'256px'">
+        <app-header />
+
+        <main class="mt-16 p-6">
+          <router-outlet />
+        </main>
+      </div>
+    </div>
+  `,
+})
+export class MainLayoutComponent {}
+</file>
+
+<file path="src/app/core/layouts/main-layout/main-layout.html">
+<p>main-layout works!</p>
+</file>
+
+<file path="src/app/core/layouts/main-layout/main-layout.scss">
+
+</file>
+
+<file path="src/app/core/layouts/main-layout/main-layout.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { MainLayout } from './main-layout.component';
+
+describe('MainLayout', () => {
+  let component: MainLayout;
+  let fixture: ComponentFixture<MainLayout>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MainLayout],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(MainLayout);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/features/cadastro/cadastro-base/cadastro-base.html">
+<p>cadastro-base works!</p>
+</file>
+
+<file path="src/app/features/cadastro/cadastro-base/cadastro-base.scss">
+
+</file>
+
+<file path="src/app/features/cadastro/cadastro-base/cadastro-base.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { CadastroBase } from './cadastro-base';
+
+describe('CadastroBase', () => {
+  let component: CadastroBase;
+  let fixture: ComponentFixture<CadastroBase>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [CadastroBase]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(CadastroBase);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/features/cadastro/cadastro-base/cadastro-base.ts">
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-cadastro-base',
+  imports: [],
+  templateUrl: './cadastro-base.html',
+  styleUrl: './cadastro-base.scss',
+})
+export class CadastroBase {
+
+}
+</file>
+
+<file path="src/app/features/customers/components/customer-form/customer-form.component.ts">
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+
+@Component({
+  selector: 'app-customer-form',
+  standalone: true,
+  imports: [ReactiveFormsModule, NgxMaskDirective, CommonModule],
+  templateUrl: './customer-form.component.html',
+  providers: [provideNgxMask()],
+})
+export class CustomerFormComponent {
+  private fb = new FormBuilder();
+
+  // Os eventos que o Container vai "escutar"
+  @Output() save = new EventEmitter<any>();
+  @Output() cancel = new EventEmitter<void>();
+
+  customerForm: FormGroup = this.fb.group({
+    name: ['', [Validators.required, Validators.minLength(3)]],
+    document: ['', [Validators.required]], // CNPJ
+    contactName: ['', [Validators.required]],
+    address: ['', [Validators.required]],
+    phone: [''],
+    email: ['', [Validators.email]],
+  });
+
+  onSubmit() {
+    if (this.customerForm.valid) {
+      this.save.emit(this.customerForm.value);
+      this.customerForm.reset();
+    }
+  }
+
+  close() {
+    // Avisa o Container para fechar o overlay
+    this.cancel.emit();
+  }
+}
+</file>
+
+<file path="src/app/features/customers/components/customer-form/customer-form.scss">
+
+</file>
+
+<file path="src/app/features/customers/components/customers-list/customer-list.scss">
+
+</file>
+
+<file path="src/app/features/customers/components/equipment-dashboard/equipment-dashboard.component.scss">
+
+</file>
+
+<file path="src/app/features/customers/components/equipment-form/equipment-form.scss">
+
+</file>
+
+<file path="src/app/features/customers/customers-container/customers-container.scss">
+
+</file>
+
+<file path="src/app/features/customers/data-access/customers.spec.ts">
+import { TestBed } from '@angular/core/testing';
+
+import { Customers } from './customers';
+
+describe('Customers', () => {
+  let service: Customers;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(Customers);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/features/customers/models/customer.model.ts">
+import { Equipment } from './equipment.model';
+
+export interface Customer {
+  id: string;
+  name: string; // Nome do Condomínio / Empresa
+  document: string; // CNPJ
+  address: string;
+  contactName: string; // Síndico ou Gestor
+  phone: string;
+  email: string;
+  active: boolean;
+  createdAt: Date;
+  equipments?: Equipment[];
+}
+</file>
+
+<file path="src/app/features/customers/models/equipment.model.ts">
+export interface Equipment {
+  id: string;
+  customerId: string; // Relacionamento com o Condomínio
+
+  // Identificação Visual e Localização
+  name: string; // Ex: "Elevador Social 01", "Torre A - Carga"
+  position?: string; // Localização física dentro do prédio
+
+  // Dados do Fabricante (Vital para peças de reposição)
+  brand: string; // Ex: Otis, Atlas Schindler, Thyssenkrupp, Kone
+  model: string; // Ex: Gen2, 3300, Sinergy
+  serialNumber: string; // Número de série da placa/máquina
+  manufactureYear?: number;
+
+  // Especificações Técnicas (O Prontuário)
+  technicalSpecs: {
+    stops: number; // Quantidade de paradas/andares
+    capacityKg: number; // Capacidade em KG
+    capacityPersons: number; // Capacidade em pessoas
+    speed?: number; // Velocidade em m/s
+    driveType: 'GEARED' | 'GEARLESS' | 'HYDRAULIC'; // Tipo de tração
+    controlPanel?: string; // Modelo do quadro de comando (Ex: Infolev, VVVF)
+  };
+
+  // Histórico e Status
+  status: 'OPERATIONAL' | 'MAINTENANCE' | 'OUT_OF_SERVICE';
+  lastPreventiveDate?: Date;
+  nextPreventiveDate?: Date;
+
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/** * DTO para criação via formulário
+ * (omitimos campos gerados pelo backend)
+ */
+export type CreateEquipmentDto = Omit<Equipment, 'id' | 'createdAt' | 'updatedAt'>;
+</file>
+
+<file path="src/app/features/dashboard/dashboard.scss">
+
+</file>
+
+<file path="src/app/features/dashboard/models/dashboard.model.ts">
+export interface DashboardStats {
+  todayOS: number;
+  pendingOS: number;
+  activeTechnicians: number;
+  completedMonth: number;
+}
+</file>
+
+<file path="src/app/features/estoque/estoque-form/estoque-form.scss">
+
+</file>
+
+<file path="src/app/features/estoque/estoque-form/estoque-form.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { EstoqueFormComponent } from './estoque-form.component';
+
+describe('EstoqueFormComponent', () => {
+  let component: EstoqueFormComponent;
+  let fixture: ComponentFixture<EstoqueFormComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [EstoqueFormComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(EstoqueFormComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/features/estoque/estoque-list/estoque-list.scss">
+
+</file>
+
+<file path="src/app/features/estoque/estoque-list/estoque-list.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { EstoqueListComponent } from './estoque-list.component';
+
+describe('EstoqueList', () => {
+  let component: EstoqueListComponent;
+  let fixture: ComponentFixture<EstoqueListComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [EstoqueListComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(EstoqueListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/app/features/orders/models/order-service.model.ts">
+export type OSStatus = 'OPEN' | 'IN_PROGRESS' | 'PENDING_PARTS' | 'COMPLETED' | 'CANCELLED';
+export type OSType = 'PREVENTIVE' | 'CORRECTIVE' | 'INSTALLATION' | 'EMERGENCY';
+
+export interface OrderService {
+  id: string;
+  osNumber: string; // Ex: OS-2024-001
+  customerId: string;
+  customerName: string;
+  equipmentId: string;
+  equipmentName: string;
+  type: OSType;
+  status: OSStatus;
+  description: string;
+  technicianId: string;
+  technicianName: string;
+  createdAt: Date;
+  scheduledFor?: Date;
+  completedAt?: Date;
+}
+</file>
+
+<file path="src/app/features/orders/os-form/os-form.component.html">
+<div
+  class="fixed inset-0 z-[100] flex items-center justify-end bg-slate-900/40 backdrop-blur-sm transition-all"
+>
+  <div
+    class="bg-white h-full w-full max-w-[550px] shadow-2xl flex flex-col animate-in slide-in-from-right duration-500 rounded-l-[48px] overflow-hidden"
+  >
+    <div
+      class="px-10 py-12 border-b border-slate-50 flex justify-between items-center bg-gradient-to-b from-slate-50/50 to-white"
+    >
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+          <span class="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em]"
+            >Operacional</span
+          >
+        </div>
+        <h2 class="text-3xl font-black text-[#1e293b] tracking-tighter">
+          ABRIR <span class="text-slate-400">ORDEM DE SERVIÇO</span>
+        </h2>
+      </div>
+      <button (click)="onClose()" class="group p-4 hover:bg-slate-100 rounded-2xl transition-all">
+        <svg
+          class="w-6 h-6 text-slate-300 group-hover:text-slate-600"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="3"
+        >
+          <path d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <form
+      [formGroup]="osForm"
+      (ngSubmit)="onSubmit()"
+      class="flex-1 p-10 space-y-8 overflow-y-auto custom-scrollbar"
+    >
+      <div class="space-y-5">
+        <div>
+          <label
+            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
+            >Cliente / Condomínio</label
+          >
+          <select
+            formControlName="customerId"
+            class="w-full bg-slate-50 border-2 border-transparent focus:border-blue-500/10 focus:bg-white rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 outline-none transition-all appearance-none cursor-pointer"
+          >
+            <option value="">Selecione o Cliente</option>
+            @for (c of customers(); track c.id) {
+              <option [value]="c.id">{{ c.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label
+            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
+            >Equipamento</label
+          >
+          <select
+            formControlName="equipmentId"
+            [attr.disabled]="!osForm.get('customerId')?.value ? true : null"
+            class="w-full bg-slate-50 border-2 border-transparent focus:border-blue-500/10 focus:bg-white rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 outline-none transition-all appearance-none disabled:opacity-30"
+          >
+            <option value="">Selecione o Elevador</option>
+            @for (e of filteredEquipments(); track e.id) {
+              <option [value]="e.id">{{ e.name }} - {{ e.brand }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="h-px bg-gradient-to-r from-transparent via-slate-100 to-transparent"></div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label
+            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
+            >Tipo de Serviço</label
+          >
+          <select
+            formControlName="type"
+            class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/10 transition-all"
+          >
+            <option value="PREVENTIVE">PREVENTIVA</option>
+            <option value="CORRECTIVE">CORRETIVA</option>
+            <option value="EMERGENCY">EMERGÊNCIA</option>
+          </select>
+        </div>
+        <div>
+          <label
+            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
+            >Técnico Responsável</label
+          >
+          <select
+            formControlName="technicianId"
+            class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/10 transition-all"
+          >
+            @for (t of technicians(); track t.id) {
+              <option [value]="t.id">{{ t.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label
+          class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
+          >Descrição do Problema / Serviço</label
+        >
+        <textarea
+          formControlName="description"
+          rows="4"
+          placeholder="Descreva detalhadamente o que precisa ser feito..."
+          class="w-full bg-slate-50 border-2 border-transparent focus:border-blue-500/10 focus:bg-white rounded-3xl px-6 py-4 text-sm font-bold text-slate-700 outline-none transition-all resize-none"
+        ></textarea>
+      </div>
+    </form>
+
+    <div class="p-10 border-t border-slate-50 bg-slate-50/30 flex items-center gap-4">
+      <button
+        type="button"
+        (click)="onClose()"
+        class="flex-1 px-6 py-4 text-xs font-black text-slate-400 hover:text-slate-600 rounded-2xl uppercase tracking-widest"
+      >
+        Cancelar
+      </button>
+      <button
+        (click)="onSubmit()"
+        [disabled]="osForm.invalid"
+        class="flex-[2] px-10 py-4 bg-[#1e293b] text-white rounded-2xl font-black text-xs uppercase tracking-[0.15em] shadow-xl shadow-slate-200 hover:bg-blue-600 hover:-translate-y-1 transition-all active:scale-95 disabled:opacity-30 disabled:translate-y-0"
+      >
+        Gerar Ordem de Serviço
+      </button>
+    </div>
+  </div>
+</div>
+</file>
+
+<file path="src/app/features/orders/os-form/os-form.component.ts">
+import { Component, inject, signal, computed, effect, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-os-form',
+  standalone: true,
+  imports: [ReactiveFormsModule],
+  templateUrl: './os-form.component.html',
+})
+export class OSFormComponent {
+  private fb = inject(FormBuilder);
+
+  @Output() close = new EventEmitter<void>();
+
+  // Mocks de dados (Substituir pelos seus stores/services)
+  customers = signal([
+    { id: '1', name: 'Condomínio Solar' },
+    { id: '2', name: 'Edifício Luna' },
+  ]);
+  allEquipments = signal([
+    { id: 'e1', customerId: '1', name: 'Elevador Social 01', brand: 'Otis' },
+    { id: 'e2', customerId: '1', name: 'Elevador Serviço', brand: 'Otis' },
+    { id: 'e3', customerId: '2', name: 'Elevador Principal', brand: 'Atlas' },
+  ]);
+  technicians = signal([
+    { id: 't1', name: 'João Silva' },
+    { id: 't2', name: 'Ricardo Souza' },
+  ]);
+
+  osForm = this.fb.group({
+    customerId: ['', Validators.required],
+    equipmentId: ['', Validators.required],
+    type: ['PREVENTIVE', Validators.required],
+    technicianId: ['', Validators.required],
+    description: ['', [Validators.required, Validators.minLength(10)]],
+  });
+
+  // Filtro reativo de equipamentos
+  filteredEquipments = computed(() => {
+    const selectedCustId = this.osForm.get('customerId')?.value;
+    return this.allEquipments().filter((e) => e.customerId === selectedCustId);
+  });
+
+  constructor() {
+    // Resetar o equipamento se o cliente mudar
+    effect(() => {
+      this.osForm.get('customerId')?.valueChanges.subscribe(() => {
+        this.osForm.patchValue({ equipmentId: '' });
+      });
+    });
+  }
+
+  onClose() {
+    this.close.emit(); // Avisa o componente pai para mudar showForm para false
+  }
+
+  onSubmit() {
+    if (this.osForm.valid) {
+      // Após salvar com sucesso:
+      console.log('OS Salva!');
+      this.onClose();
+    }
+  }
+}
+</file>
+
+<file path="src/app/features/orders/os-list/os-list.component.html">
+<div class="p-8 space-y-8 animate-in fade-in duration-700">
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-4xl font-black text-[#1e293b] tracking-tighter">
+        ORDENS DE <span class="text-blue-600">SERVIÇO</span>
+      </h1>
+      <p class="text-slate-400 font-bold text-xs uppercase tracking-[0.3em] mt-1">
+        Gestão de Manutenção em Tempo Real
+      </p>
+    </div>
+
+    <button
+      (click)="openNewOS()"
+      class="bg-[#1e293b] hover:bg-blue-600 text-white px-8 py-4 rounded-2xl text-xs font-black transition-all flex items-center gap-3 shadow-2xl shadow-blue-900/20 active:scale-95"
+    >
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+        <path d="M12 4v16m8-8H4" />
+      </svg>
+      ABRIR NOVA OS
+    </button>
+  </div>
+
+  <div class="flex gap-4 overflow-x-auto pb-2">
+    @for (stat of ['ALL', 'OPEN', 'IN_PROGRESS', 'COMPLETED']; track stat) {
+      <button
+        (click)="filterBy(stat)"
+        [class]="statusFilter() === stat ? 'bg-blue-600 text-white' : 'bg-white text-slate-400'"
+        class="px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border border-slate-100 shadow-sm transition-all whitespace-nowrap"
+      >
+        {{ stat }}
+      </button>
+    }
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    @for (os of filteredOrders(); track os.id) {
+      <div
+        class="group bg-white border border-slate-100 p-8 rounded-[32px] hover:border-blue-200 transition-all hover:shadow-xl hover:shadow-blue-900/5 relative overflow-hidden"
+      >
+        <div
+          class="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 bg-slate-50 rounded-full group-hover:bg-blue-50 transition-colors"
+        ></div>
+
+        <div class="relative z-10">
+          <div class="flex justify-between items-start mb-6">
+            <div>
+              <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest">{{
+                os.osNumber
+              }}</span>
+              <h3 class="text-xl font-black text-slate-800 tracking-tight mt-1 uppercase">
+                {{ os.customerName }}
+              </h3>
+            </div>
+            <span
+              [class]="
+                'px-3 py-1 rounded-lg text-[9px] font-black uppercase ' + getStatusClass(os.status)
+              "
+            >
+              {{ os.status }}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-4 text-slate-500 mb-6">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <span class="text-xs font-bold">{{ os.equipmentName }}</span>
+            </div>
+            <div class="w-1 h-1 bg-slate-200 rounded-full"></div>
+            <span class="text-xs font-bold uppercase">{{ os.type }}</span>
+          </div>
+
+          <div class="flex justify-between items-center pt-6 border-t border-slate-50">
+            <div class="flex -space-x-2">
+              <div
+                class="w-8 h-8 rounded-full bg-blue-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-blue-600"
+              >
+                {{ os.technicianName.substring(0, 2) }}
+              </div>
+            </div>
+            <button
+              class="text-[10px] font-black text-slate-400 hover:text-blue-600 transition-colors uppercase tracking-widest"
+            >
+              Gerenciar OS →
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+@if (showForm()) {
+  <app-os-form (close)="closeForm()"></app-os-form>
+}
+</file>
+
+<file path="src/app/features/orders/os-list/os-list.component.ts">
+// ... outras importações
+import { Component, inject, signal } from '@angular/core';
+import { OSFormComponent } from '../os-form/os-form.component'; // ajuste o caminho
+import { CommonModule } from '@angular/common';
+import { OSStore } from '../store/order-service.store';
+
+@Component({
+  selector: 'app-os-list',
+  standalone: true,
+  imports: [CommonModule, OSFormComponent], // Adicione o formulário aqui
+  templateUrl: './os-list.component.html',
+})
+export class OSListComponent {
+  private osStore = inject(OSStore);
+
+  filteredOrders = this.osStore.filteredOrders;
+  statusFilter = this.osStore.statusFilter;
+  showForm = signal(false);
+
+  filterBy(status: string) {
+    this.osStore.statusFilter.set(status);
+  }
+
+  openNewOS() {
+    this.showForm.set(true);
+  }
+
+  // Função para fechar vinda do componente filho
+  closeForm() {
+    this.showForm.set(false);
+  }
+
+  getStatusClass(status: string): string {
+    const classes: Record<string, string> = {
+      OPEN: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+      IN_PROGRESS: 'bg-blue-50 text-blue-600 border-blue-100',
+      PENDING_PARTS: 'bg-amber-50 text-amber-600 border-amber-100',
+      COMPLETED: 'bg-slate-100 text-slate-400 border-slate-200',
+    };
+    return classes[status] || 'bg-slate-50';
+  }
+}
+</file>
+
+<file path="src/app/features/orders/service/order-service.service.ts">
+
+</file>
+
+<file path="src/app/features/orders/store/order-service.store.ts">
+import { Injectable, signal, computed } from '@angular/core';
+import { OrderService } from '../models/order-service.model'; // Verifique o caminho
+
+@Injectable({
+  providedIn: 'root',
+})
+export class OSStore {
+  // 1. Signals (Estado)
+  readonly orders = signal<OrderService[]>([]);
+  readonly searchTerm = signal('');
+  readonly statusFilter = signal<string>('ALL');
+
+  // 2. Computed (Estado Derivado)
+  readonly filteredOrders = computed(() => {
+    const list = this.orders();
+    const term = this.searchTerm().toLowerCase();
+    const status = this.statusFilter();
+
+    return list.filter((os) => {
+      const matchesSearch =
+        os.osNumber.toLowerCase().includes(term) || os.customerName.toLowerCase().includes(term);
+      const matchesStatus = status === 'ALL' || os.status === status;
+      return matchesSearch && matchesStatus;
+    });
+  });
+
+  // 3. Métodos de Atualização
+  setOrders(orders: OrderService[]) {
+    this.orders.set(orders);
+  }
+
+  updateSearch(term: string) {
+    this.searchTerm.set(term);
+  }
+
+  updateStatus(status: string) {
+    this.statusFilter.set(status);
+  }
+}
+</file>
+
+<file path="src/app/layout/app-shell/app-shell.component.html">
+<div class="flex h-screen overflow-hidden bg-slate-50">
+  <app-sidebar></app-sidebar>
+
+  <main class="flex-1 overflow-y-auto relative custom-scrollbar">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+</file>
+
+<file path="src/app/layout/app-shell/app-shell.component.ts">
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { SidebarComponent } from '../../core/components/sidebar/sidebar.component';
+
+@Component({
+  selector: 'app-app-shell',
+  standalone: true,
+  imports: [RouterOutlet, SidebarComponent],
+  template: `
+    <div class="flex h-screen bg-slate-50 overflow-hidden">
+      <app-sidebar />
+
+      <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <header class="h-20 flex items-center justify-end px-10 z-10 transition-all">
+          <div
+            class="flex items-center gap-6 bg-white/40 backdrop-blur-md px-6 py-2.5 rounded-2xl border border-white/50 shadow-sm hover:shadow-md transition-all group"
+          >
+            <div class="flex flex-col items-end border-r border-slate-200 pr-6">
+              <span
+                class="text-[9px] font-black text-blue-600 uppercase tracking-[0.2em] leading-none mb-1"
+                >Unidade Ativa</span
+              >
+              <span class="text-[11px] font-bold text-[#1e293b]">SÃO PAULO - MATRIZ</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="flex flex-col items-end">
+                <span class="text-[11px] font-black text-slate-700 uppercase tracking-tighter"
+                  >Admin</span
+                >
+                <span class="text-[9px] font-bold text-slate-400 leading-none">Acesso Total</span>
+              </div>
+              <div
+                class="w-10 h-10 rounded-xl bg-[#1e293b] flex items-center justify-center text-white text-xs font-black shadow-lg shadow-slate-900/10 group-hover:bg-blue-600 transition-colors"
+              >
+                M
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto custom-scrollbar px-10 pb-10">
+          <div
+            class="max-w-[1600px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700"
+          >
+            <router-outlet />
+          </div>
+        </main>
+      </div>
+    </div>
+  `,
+  styles: [
+    `
+      /* Scrollbar estilizada para manter o visual Premium */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #cbd5e1;
+      }
+    `,
+  ],
+})
+export class AppShellComponent {}
+</file>
+
+<file path="src/app/layout/app-shell/app-shell.scss">
+
+</file>
+
+<file path="src/app/pipe/phone.pipe.ts">
+// phone.pipe.ts
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'phone',
+  standalone: true,
+})
+export class PhonePipe implements PipeTransform {
+  transform(value: string | number): string {
+    if (!value) return '';
+
+    // Remove tudo que não for número
+    const phone = value.toString().replace(/\D/g, '');
+
+    // Máscara para Celular (11 dígitos) ou Fixo (10 dígitos)
+    if (phone.length === 11) {
+      return phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    } else if (phone.length === 10) {
+      return phone.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+    }
+
+    return value.toString(); // Retorna o original caso não encaixe
+  }
+}
+</file>
+
+<file path="src/app/services/toast.service.ts">
+import { Injectable, signal } from '@angular/core';
+
+export type ToastType = 'success' | 'error' | 'info';
+
+@Injectable({ providedIn: 'root' })
+export class ToastService {
+  message = signal<string>('');
+  type = signal<ToastType>('success');
+  show = signal(false);
+
+  showToast(msg: string, type: ToastType = 'success') {
+    this.message.set(msg);
+    this.type.set(type);
+    this.show.set(true);
+
+    setTimeout(() => {
+      this.show.set(false);
+    }, 3000); // Some após 3 segundos
+  }
+}
+</file>
+
+<file path="src/app/services/toast.spec.ts">
+import { TestBed } from '@angular/core/testing';
+
+import { Toast } from './toast';
+
+describe('Toast', () => {
+  let service: Toast;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(Toast);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/environments/environment.ts">
+export const environment = {
+  production: false,
+  // URL onde seu NestJS está rodando (geralmente porta 3000)
+  apiUrl: 'http://localhost:3000',
+};
+</file>
+
+<file path="src/app/app.config.ts">
+import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core'; // Nome atualizado
+import { provideRouter } from '@angular/router';
+import { provideHttpClient, withFetch } from '@angular/common/http';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZonelessChangeDetection(), // Sem o "Experimental"
+    provideRouter(routes),
+    provideHttpClient(withFetch()),
+  ],
+};
+</file>
+
+<file path="src/app/app.spec.ts">
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { AppComponent } from './app.component';
+
+describe('App', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [AppComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+  });
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it('should render title', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, infyniq-core');
+  });
+});
+</file>
+
+<file path="src/app/core/components/sidebar/sidebar.component.html">
+<aside
+  [class.w-64]="isExpanded()"
+  [class.w-20]="!isExpanded()"
+  class="bg-[#0a0f1c] h-screen flex flex-col border-r border-slate-800 transition-all duration-300 relative shadow-2xl"
+>
+  <button
+    (click)="toggleSidebar()"
+    class="absolute -right-3 top-10 bg-blue-600 text-white rounded-full p-1 shadow-lg hover:bg-blue-700 transition-all z-50 active:scale-90"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-4 h-4 transition-transform duration-500"
+      [class.rotate-180]="!isExpanded()"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <div
+    class="p-6 flex flex-col items-center border-b border-slate-800/50 overflow-hidden min-h-[140px] justify-center"
+  >
+    <div class="relative w-12 h-12 flex items-center justify-center shrink-0">
+      <img src="logo-infyniq-icon.png" alt="Logo" class="w-full h-auto object-contain" />
+    </div>
+
+    @if (isExpanded()) {
+      <div class="text-center mt-4 animate-in fade-in zoom-in duration-300">
+        <h2 class="text-white font-black text-lg tracking-[0.2em]">INFYNIQ</h2>
+        <p
+          class="text-[8px] text-blue-400/70 uppercase tracking-[0.3em] font-bold whitespace-nowrap"
+        >
+          Elevadores & Engenharia
+        </p>
+      </div>
+    }
+  </div>
+
+  <nav class="flex-1 mt-6 px-3 space-y-2">
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+      class="flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-slate-100 transition-all group"
+    >
+      <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z"
+        />
+      </svg>
+      @if (isExpanded()) {
+        <span
+          class="text-[11px] font-black uppercase tracking-widest animate-in slide-in-from-left-2"
+          >Dashboard</span
+        >
+      }
+    </a>
+
+    <a
+      routerLink="/clientes"
+      routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+      class="flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-slate-100 transition-all group"
+    >
+      <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+        />
+      </svg>
+      @if (isExpanded()) {
+        <span
+          class="text-[11px] font-black uppercase tracking-widest animate-in slide-in-from-left-2"
+          >Unidades</span
+        >
+      }
+    </a>
+
+    <a
+      routerLink="/orders"
+      routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+      class="flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-slate-100 transition-all group"
+    >
+      <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+        />
+      </svg>
+      @if (isExpanded()) {
+        <span
+          class="text-[11px] font-black uppercase tracking-widest animate-in slide-in-from-left-2"
+          >Ordens de Serviço</span
+        >
+      }
+    </a>
+
+    <a
+      routerLink="/estoque"
+      routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+      class="flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-slate-100 transition-all group"
+    >
+      <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"
+        />
+      </svg>
+      @if (isExpanded()) {
+        <span
+          class="text-[11px] font-black uppercase tracking-widest animate-in slide-in-from-left-2"
+          >Estoque</span
+        >
+      }
+    </a>
+  </nav>
+
+  <div class="p-4 border-t border-slate-800/50">
+    <div class="flex items-center gap-3 overflow-hidden">
+      <div
+        class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 shrink-0 flex items-center justify-center font-black text-blue-400 text-xs"
+      >
+        AD
+      </div>
+      @if (isExpanded()) {
+        <div class="animate-in fade-in duration-500">
+          <p class="text-[10px] font-black text-white uppercase tracking-tighter leading-none">
+            Administrador
+          </p>
+          <button
+            class="text-[9px] text-slate-500 font-bold hover:text-rose-400 transition-colors uppercase mt-1"
+          >
+            Sair
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</aside>
+</file>
+
+<file path="src/app/core/models/stock.interfaces.ts">
+export interface StockItem {
+  id: string; // ID gerado pelo banco (NestJS/TypeORM/Prisma)
+  code: string; // O que era SKU agora é code
+  name: string;
+  description?: string;
+  category: string;
+  currentQuantity: number;
+  minQuantity: number;
+  unit: string; // Unidade de medida (un, mt, kg)
+  costPrice: number; // O que era unitPrice agora é costPrice
+  supplier?: string;
+  location?: string;
+  updatedAt: string; // ISO String vinda do JSON
+  imageUrl?: string;
+}
+
+export interface CreateStockItemDto {
+  name: string;
+  code: string;
+  category: string;
+  currentQuantity: number;
+  minQuantity: number;
+  unit: string;
+  costPrice: number;
+  location?: string;
+  description?: string;
+  imageUrl?: string;
+}
+</file>
+
+<file path="src/app/core/services/stock.service.ts">
+// 1. O Injectable e o inject vêm do @angular/core
+import { Injectable, inject } from '@angular/core';
+
+// 2. O HttpClient e outros utilitários de rede vêm do @angular/common/http
+import { HttpClient } from '@angular/common/http';
+
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { StockItem, CreateStockItemDto } from '../models/stock.interfaces';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class StockService {
+  // Agora o inject vai funcionar corretamente aqui
+  private http = inject(HttpClient);
+  private readonly API_URL = `${environment.apiUrl}/stock`;
+
+  findAll(): Observable<StockItem[]> {
+    return this.http.get<StockItem[]>(`${this.API_URL}/items`);
+  }
+
+  create(item: CreateStockItemDto): Observable<StockItem> {
+    return this.http.post<StockItem>(`${this.API_URL}/items`, item);
+  }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/items/${id}`);
+  }
+
+  update(id: string, item: Partial<StockItem>): Observable<StockItem> {
+    return this.http.put<StockItem>(`${this.API_URL}/items/${id}`, item);
+  }
+}
+</file>
+
+<file path="src/app/features/customers/components/customers-list/customers-list.component.ts">
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CustomersStore } from '../../data-access/customers.store';
+import { Customer } from '../../models/customer.model';
+import { PhonePipe } from '../../../../pipe/phone.pipe';
+
+@Component({
+  selector: 'app-customers-list',
+  standalone: true,
+  imports: [CommonModule, PhonePipe],
+  templateUrl: './customers-list.component.html',
+})
+export class CustomersListComponent {
+  public readonly store = inject(CustomersStore);
+
+  @Input() customers: Customer[] = [];
+
+  @Output() select = new EventEmitter<Customer>();
+
+  onSelect(customer: Customer) {
+    this.select.emit(customer);
+  }
+
+  onViewEquipments(customer: any) {
+    this.select.emit(customer);
+  }
+
+  onSearch(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.store.updateSearchTerm(value);
+  }
+
+  onButtonClick(event: Event, customer: Customer) {
+    // Isso impede que o clique "atravesse" o botão e atinja a linha (evita duplo disparo)
+    event.stopPropagation();
+
+    // Chama a mesma lógica de seleção
+    this.onSelect(customer);
+  }
+}
+</file>
+
+<file path="src/app/features/customers/data-access/equipments.service.ts">
+// src/app/features/customers/data-access/equipments.service.ts
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Equipment, CreateEquipmentDto } from '../models/equipment.model';
+import { Observable } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class EquipmentsService {
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:3000/equipments';
+
+  getByCustomer(customerId: string) {
+    return this.http.get<Equipment[]>(`${this.apiUrl}/customer/${customerId}`);
+  }
+
+  create(equipment: CreateEquipmentDto) {
+    // O objeto enviado aqui já contém o technicalSpecs aninhado
+    return this.http.post<Equipment>(this.apiUrl, equipment);
+  }
+
+  delete(id: string): Observable<void> {
+    // Apenas ${this.apiUrl}/${id} porque a apiUrl já termina em /equipments
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  update(id: string, equipment: Partial<Equipment>): Observable<Equipment> {
+    return this.http.put<Equipment>(`${this.apiUrl}/${id}`, equipment);
+  }
+}
+</file>
+
+<file path="src/app/features/dashboard/dashboard.component.html">
+<div class="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+  <div>
+    <h1 class="text-4xl font-black text-[#1e293b] tracking-tighter uppercase">
+      Painel de <span class="text-blue-600">Controle</span>
+    </h1>
+    <p class="text-slate-400 font-bold text-xs uppercase tracking-[0.3em] mt-1">
+      Monitoramento operacional em tempo real
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    @for (item of kpis; track item.label) {
+      <div
+        class="bg-white border border-slate-100 p-8 rounded-[32px] hover:shadow-xl hover:shadow-blue-900/5 transition-all group relative overflow-hidden"
+      >
+        <div class="relative z-10">
+          <div
+            [class]="
+              'w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-500 ' +
+              item.bg
+            "
+          >
+            <span [class]="'font-black ' + item.color">#</span>
+          </div>
+          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+            {{ item.label }}
+          </p>
+          <h2 class="text-4xl font-black text-[#1e293b] tracking-tighter">
+            {{ stats()[item.key] }}
+          </h2>
+        </div>
+        <div
+          class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity"
+        >
+          <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div
+      class="lg:col-span-2 bg-[#1e293b] rounded-[40px] p-10 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20 flex flex-col md:flex-row gap-8"
+    >
+      <div class="relative z-10 flex-1">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+          <span class="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em]"
+            >Estatísticas Semanais</span
+          >
+        </div>
+        <h3 class="text-3xl font-black tracking-tight mb-4">
+          Demanda <br /><span class="text-blue-400">Semanal</span>
+        </h3>
+        <p class="text-slate-400 text-sm font-medium leading-relaxed mb-8 max-w-xs">
+          O volume de chamados técnicos apresentou um pico de
+          <span class="text-white font-bold">15%</span> nos últimos 7 dias.
+        </p>
+        <button
+          class="bg-blue-600 hover:bg-blue-500 px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-900/40 active:scale-95"
+        >
+          Relatório Completo
+        </button>
+      </div>
+
+      <div class="flex-1 h-52 flex items-end justify-between gap-2 px-2 relative z-10">
+        @for (item of weeklyDemand(); track item.day) {
+          <div class="flex flex-col items-center gap-3 flex-1 group h-full justify-end">
+            <div
+              class="w-full bg-blue-500/20 rounded-t-xl relative transition-all duration-1000 ease-out group-hover:bg-blue-400 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.5)]"
+              [style.height]="getBarHeight(item.value)"
+            >
+              <div
+                class="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-[#1e293b] text-[10px] font-black px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-all transform group-hover:-translate-y-1 shadow-xl"
+              >
+                {{ item.value }}
+              </div>
+            </div>
+            <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter">{{
+              item.day
+            }}</span>
+          </div>
+        }
+      </div>
+
+      <div
+        class="absolute top-0 right-0 w-80 h-80 bg-blue-600/10 rounded-full blur-[100px] -mr-40 -mt-40"
+      ></div>
+    </div>
+
+    <div class="bg-white border border-slate-100 rounded-[40px] p-8">
+      <h3
+        class="text-xs font-black text-[#1e293b] uppercase tracking-widest mb-6 border-b border-slate-50 pb-4"
+      >
+        Técnicos em Campo
+      </h3>
+      <div class="space-y-6">
+        @for (tech of ['João Silva', 'Ricardo Souza', 'Marcos Lima']; track tech) {
+          <div class="flex items-center gap-4 group cursor-pointer">
+            <div
+              class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center font-black text-blue-600 text-[10px] group-hover:bg-blue-600 group-hover:text-white transition-all"
+            >
+              {{ tech.substring(0, 2) }}
+            </div>
+            <div class="flex-1">
+              <p
+                class="text-xs font-black text-slate-700 uppercase tracking-tight group-hover:text-blue-600 transition-colors"
+              >
+                {{ tech }}
+              </p>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter"
+                  >Ativo na OS #2024</span
+                >
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+</file>
+
+<file path="src/app/features/dashboard/dashboard.component.ts">
+import { Component, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+// 1. Definimos a interface para o objeto de estatísticas
+interface DashboardData {
+  todayOS: number;
+  pendingOS: number;
+  activeTechnicians: number;
+  completedMonth: number;
+}
+
+// 2. Definimos a interface para o item do KPI
+interface KpiItem {
+  label: string;
+  key: keyof DashboardData; // Isso garante que a 'key' deve ser uma das propriedades acima
+  icon: string;
+  color: string;
+  bg: string;
+}
+
+@Component({
+  selector: 'app-dashboard',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './dashboard.component.html',
+})
+export class DashboardComponent {
+  // Tipamos o Signal com a interface
+  stats = signal<DashboardData>({
+    todayOS: 12,
+    pendingOS: 5,
+    activeTechnicians: 8,
+    completedMonth: 142,
+  });
+
+  // Tipamos a array de KPIs
+  kpis: KpiItem[] = [
+    {
+      label: 'OS Hoje',
+      key: 'todayOS',
+      icon: 'check',
+      color: 'text-emerald-600',
+      bg: 'bg-emerald-50',
+    },
+    {
+      label: 'Pendentes',
+      key: 'pendingOS',
+      icon: 'alert',
+      color: 'text-amber-600',
+      bg: 'bg-amber-50',
+    },
+    {
+      label: 'Em Campo',
+      key: 'activeTechnicians',
+      icon: 'tool',
+      color: 'text-blue-600',
+      bg: 'bg-blue-50',
+    },
+    {
+      label: 'Mês Atual',
+      key: 'completedMonth',
+      icon: 'chart',
+      color: 'text-slate-600',
+      bg: 'bg-slate-50',
+    },
+  ];
+
+  weeklyDemand = signal([
+    { day: 'Seg', value: 45 },
+    { day: 'Ter', value: 72 },
+    { day: 'Qua', value: 38 },
+    { day: 'Qui', value: 90 },
+    { day: 'Sex', value: 55 },
+    { day: 'Sáb', value: 20 },
+    { day: 'Dom', value: 10 },
+  ]);
+
+  // Função para calcular a altura da barra (normalização em %)
+  getBarHeight(value: number): string {
+    const max = Math.max(...this.weeklyDemand().map((d) => d.value));
+    return `${(value / max) * 100}%`;
+  }
+}
+</file>
+
+<file path="src/app/features/dashboard/dashboard.spec.ts">
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { DashboardComponent } from './dashboard.component';
+
+describe('DashboardComponent', () => {
+  let component: DashboardComponent;
+  let fixture: ComponentFixture<DashboardComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [DashboardComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(DashboardComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+</file>
+
+<file path="src/main.ts">
+// No main.ts do Frontend
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { AppComponent } from './app/app.component'; // Verifique se este ficheiro existe
+
+bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err));
+</file>
+
+<file path="src/app/app.component.html">
+<router-outlet></router-outlet>
+
+@if (toast.show()) {
+  <div class="fixed bottom-5 right-5 z-[100] animate-bounce-in">
+    <div
+      [class]="
+        'flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl border backdrop-blur-md ' +
+        (toast.type() === 'success'
+          ? 'bg-emerald-500/90 border-emerald-400 text-white'
+          : 'bg-red-500/90 border-red-400 text-white')
+      "
+    >
+      @if (toast.type() === 'success') {
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+      }
+
+      <span class="font-bold tracking-tight">{{ toast.message() }}</span>
+    </div>
+  </div>
+}
+</file>
+
+<file path="src/app/app.component.ts">
+import { Component, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { ToastService } from './services/toast.service';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-root', // O index.html procura por isso
+  standalone: true,
+  imports: [RouterOutlet, CommonModule], // Precisa do RouterOutlet para as rotas funcionarem
+  templateUrl: './app.component.html',
+})
+export class AppComponent {
+  public toast = inject(ToastService);
+}
+</file>
+
+<file path="src/app/features/customers/components/customer-form/customer-form.component.html">
+<div
+  class="bg-white rounded-[24px] shadow-2xl w-full max-w-[900px] overflow-hidden border border-slate-50 mx-auto"
+>
+  <div class="flex justify-between items-center px-8 py-4 border-b border-slate-50 bg-slate-50/30">
+    <div>
+      <h2 class="text-lg font-black text-slate-800 tracking-tight uppercase">Novo Condomínio</h2>
+      <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+        Cadastro de Unidade
+      </p>
+    </div>
+    <button
+      (click)="close()"
+      class="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-90"
+    >
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="3"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <form [formGroup]="customerForm" (ngSubmit)="onSubmit()" class="p-8 space-y-5">
+    <div class="group">
+      <label
+        class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block group-focus-within:text-blue-500 transition-colors"
+      >
+        Nome do Condomínio *
+      </label>
+      <input
+        formControlName="name"
+        type="text"
+        placeholder="Ex: Edifício Solar das Palmeiras"
+        class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
+      />
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div class="group">
+        <label
+          class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block group-focus-within:text-blue-500 transition-colors"
+        >
+          Nome do Condomínio *
+        </label>
+        <input
+          formControlName="name"
+          type="text"
+          [class.border-red-200]="
+            customerForm.get('name')?.invalid && customerForm.get('name')?.touched
+          "
+          class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
+        />
+        @if (customerForm.get('name')?.invalid && customerForm.get('name')?.touched) {
+          <p
+            class="text-[9px] font-black text-red-500 uppercase tracking-tighter mt-1 ml-1 animate-in fade-in slide-in-from-top-1"
+          >
+            O nome do condomínio é obrigatório
+          </p>
+        }
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="group">
+          <label
+            class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
+            >CNPJ *</label
+          >
+          <input
+            formControlName="document"
+            mask="00.000.000/0000-00"
+            [class.border-red-200]="
+              customerForm.get('document')?.invalid && customerForm.get('document')?.touched
+            "
+            class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
+          />
+          @if (customerForm.get('document')?.invalid && customerForm.get('document')?.touched) {
+            <p
+              class="text-[9px] font-black text-red-500 uppercase tracking-tighter mt-1 ml-1 animate-in fade-in slide-in-from-top-1"
+            >
+              CNPJ inválido ou incompleto
+            </p>
+          }
+        </div>
+
+        <div class="group">
+          <label
+            class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
+            >Responsável *</label
+          >
+          <input
+            formControlName="contactName"
+            type="text"
+            [class.border-red-200]="
+              customerForm.get('contactName')?.invalid && customerForm.get('contactName')?.touched
+            "
+            class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
+          />
+          @if (
+            customerForm.get('contactName')?.invalid && customerForm.get('contactName')?.touched
+          ) {
+            <p
+              class="text-[9px] font-black text-red-500 uppercase tracking-tighter mt-1 ml-1 animate-in fade-in slide-in-from-top-1"
+            >
+              Nome do responsável é obrigatório
+            </p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
+        >Endereço Completo *</label
+      >
+      <input
+        formControlName="address"
+        type="text"
+        placeholder="Rua, Número, Bairro, Cidade"
+        class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
+      />
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div class="group">
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
+          >Telefone</label
+        >
+        <input
+          formControlName="phone"
+          mask="(00) 00000-0000"
+          placeholder="(00) 00000-0000"
+          class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
+        />
+      </div>
+      <div class="group">
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
+          >E-mail</label
+        >
+        <input
+          formControlName="email"
+          type="email"
+          placeholder="contato@condominio.com"
+          class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
+        />
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between pt-6 border-t border-slate-50">
+      <button
+        type="button"
+        (click)="close()"
+        class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-all"
+      >
+        Cancelar
+      </button>
+
+      <button
+        type="submit"
+        [disabled]="customerForm.invalid"
+        (click)="(customerForm.invalid ? null : null)"
+        class="px-10 py-3 bg-[#1e293b] text-white text-[10px] font-black uppercase tracking-[2px] rounded-xl shadow-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
+      >
+        Confirmar Cadastro
+      </button>
+    </div>
+  </form>
+</div>
+</file>
+
+<file path="src/app/features/customers/components/customers-list/customers-list.component.html">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+  <div
+    class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all group"
+  >
+    <div class="flex justify-between items-start mb-2">
+      <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+        Total de Unidades
+      </p>
+      <span
+        class="p-1.5 bg-slate-50 rounded-lg text-slate-400 group-hover:text-blue-500 transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16" stroke-width="2" />
+        </svg>
+      </span>
+    </div>
+    <h2 class="text-2xl font-black text-slate-800">{{ store.totalUnits() }}</h2>
+  </div>
+
+  <div
+    class="bg-blue-600 p-6 rounded-3xl shadow-xl shadow-blue-200 group hover:bg-blue-700 transition-all"
+  >
+    <div class="flex justify-between items-start mb-2">
+      <p class="text-[10px] font-black text-blue-100 uppercase tracking-widest">
+        Elevadores Ativos
+      </p>
+      <span class="p-1.5 bg-white/10 rounded-lg text-white">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M8 9l4-4 4 4m0 6l-4 4-4-4" stroke-width="3" />
+        </svg>
+      </span>
+    </div>
+    <h2 class="text-2xl font-black text-white">{{ store.totalEquipments() }}</h2>
+  </div>
+
+  <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm group">
+    <div class="flex justify-between items-start mb-2">
+      <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+        Manutenções Hoje
+      </p>
+      <span class="p-1.5 bg-amber-50 rounded-lg text-amber-500">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M12 8v4l3 3" stroke-width="2.5" />
+        </svg>
+      </span>
+    </div>
+    <div class="flex items-baseline gap-2">
+      <h2 class="text-2xl font-black text-slate-800">
+        {{ store.maintenancesToday() | number: '2.0-0' }}
+      </h2>
+      <span class="text-[10px] font-bold text-amber-500 bg-amber-50 px-2 py-0.5 rounded-full">{{
+        store.maintenancesToday() > 0 ? 'Pendente' : 'Em dia'
+      }}</span>
+    </div>
+  </div>
+</div>
+
+<div
+  class="bg-white p-4 mb-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4"
+>
+  <div class="relative flex-1 group">
+    <span
+      class="absolute left-3.5 top-2.5 text-slate-300 group-focus-within:text-blue-500 transition-colors"
+    >
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
+      </svg>
+    </span>
+    <input
+      type="text"
+      [value]="store.searchTerm()"
+      (input)="store.updateSearchTerm($any($event.target).value)"
+      placeholder="Filtrar condomínios ou documentos..."
+      class="w-full pl-10 pr-4 py-2 bg-slate-50 border-none rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all placeholder:font-normal"
+    />
+  </div>
+  <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest hidden md:block">
+    {{ store.filteredCustomers().length }} Resultados
+  </div>
+</div>
+
+<div
+  class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden transition-all flex flex-col"
+>
+  <div
+    #scrollContainer
+    class="overflow-x-auto overflow-y-auto max-h-[600px] relative scroll-smooth"
+  >
+    <table class="w-full text-left border-collapse">
+      <thead class="sticky top-0 z-20 bg-slate-50/95 backdrop-blur-sm shadow-sm">
+        <tr class="text-[10px] uppercase font-black text-slate-400 tracking-widest">
+          <th class="px-8 py-4 border-b border-slate-100">Nome do Condomínio</th>
+          <th class="px-8 py-4 border-b border-slate-100">Documento</th>
+          <th class="px-8 py-4 border-b border-slate-100">Contato</th>
+          <th class="px-8 py-4 text-center border-b border-slate-100">Ações</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-slate-100">
+        @for (customer of store.displayedCustomers(); track customer.id) {
+          <tr
+            (click)="onSelect(customer)"
+            [class.bg-blue-50]="store.selectedCustomer()?.id === customer.id"
+            class="group hover:bg-slate-50/80 cursor-pointer transition-all border-b border-slate-100 last:border-0"
+          >
+            <td class="px-8 py-5">
+              <span
+                class="text-sm font-bold text-slate-700 uppercase group-hover:text-blue-600 transition-colors"
+              >
+                {{ customer.name }}
+              </span>
+            </td>
+
+            <td class="px-8 py-5">
+              <span
+                class="px-3 py-1 bg-slate-100 text-slate-600 text-[10px] font-bold rounded-full uppercase tracking-tighter group-hover:bg-white transition-colors"
+              >
+                CNPJ {{ customer.document }}
+              </span>
+            </td>
+
+            <td class="px-8 py-5">
+              <div class="flex flex-col">
+                <span class="text-xs font-bold text-slate-700">{{ customer.contactName }}</span>
+                <a
+                  (click)="$event.stopPropagation()"
+                  [href]="'https://wa.me/55' + customer.phone"
+                  target="_blank"
+                  class="text-[10px] text-slate-400 font-medium hover:text-green-500 transition-colors flex items-center gap-1"
+                >
+                  {{ customer.phone | phone }}
+                  <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      stroke-width="2.5"
+                    />
+                  </svg>
+                </a>
+              </div>
+            </td>
+
+            <td class="px-8 py-5 text-center">
+              <button
+                (click)="onButtonClick($event, customer)"
+                class="px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-2xl transition-all shadow-sm active:scale-95"
+              >
+                Gerenciar
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (store.filteredCustomers().length > store.displayLimit()) {
+      <div class="p-6 flex justify-center bg-gradient-to-t from-white to-transparent">
+        <button
+          (click)="store.loadMore()"
+          class="px-8 py-3 bg-white border border-slate-200 text-slate-600 text-[11px] font-black uppercase tracking-widest rounded-2xl hover:bg-slate-50 transition-all shadow-sm active:scale-95"
+        >
+          Ver mais ({{ store.filteredCustomers().length - store.displayLimit() }} restantes)
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+<button
+  (click)="scrollContainer.scrollTo({ top: 0, behavior: 'smooth' })"
+  class="fixed bottom-8 right-8 p-4 bg-slate-800 text-white rounded-full shadow-2xl hover:bg-blue-600 transition-all active:scale-90 z-50 group"
+  title="Voltar ao topo"
+>
+  <svg
+    class="w-5 h-5 group-hover:-translate-y-1 transition-transform"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="3"
+  >
+    <path d="M5 15l7-7 7 7" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+</button>
+</file>
+
+<file path="src/app/features/customers/components/equipment-dashboard/equipment-dashboard.component.html">
+<div
+  class="bg-white rounded-3xl shadow-sm border border-slate-100 flex flex-col min-h-[600px] max-h-[85vh]"
+>
+  <div
+    class="px-8 py-8 border-b border-slate-50 flex justify-between items-end bg-gradient-to-r from-slate-50 to-white rounded-t-3xl"
+  >
+    <div>
+      <div class="flex items-center gap-2 mb-2">
+        <button
+          (click)="onBack()"
+          class="p-2 -ml-2 hover:bg-white rounded-full transition-all text-slate-400 hover:text-blue-600"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+        <span
+          class="px-3 py-1 bg-blue-100 text-blue-700 text-[10px] font-black uppercase tracking-tighter rounded-lg"
+          >Unidade Selecionada</span
+        >
+      </div>
+      <h2 class="text-3xl font-black text-slate-800 tracking-tight">{{ customerName }}</h2>
+      <p class="text-slate-400 text-sm mt-1">
+        Existem
+        <span class="text-blue-600 font-bold"
+          >{{ store.filteredEquipments().length }} elevadores</span
+        >
+        registrados.
+      </p>
+    </div>
+
+    <button
+      (click)="onAddEquipment()"
+      class="bg-[#1e293b] hover:bg-blue-600 text-white px-6 py-3 rounded-2xl text-xs font-black transition-all flex items-center gap-3 shadow-xl shadow-slate-200 active:scale-95"
+    >
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+        <path d="M12 4v16m8-8H4" />
+      </svg>
+      NOVO EQUIPAMENTO
+    </button>
+  </div>
+
+  <div
+    #scrollContainer
+    (scroll)="onDivScroll(scrollContainer)"
+    class="p-8 overflow-y-auto bg-white custom-scrollbar flex-1"
+  >
+    <div class="space-y-4">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+        <div class="relative flex-1 group max-w-md">
+          <span
+            class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="3"
+            >
+              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+          <input
+            type="text"
+            [value]="store.searchTerm()"
+            (input)="onFilterEquipments($any($event.target).value)"
+            placeholder="Buscar por nome, marca ou série..."
+            class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border-2 border-transparent rounded-2xl text-xs font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 focus:ring-4 focus:ring-blue-500/5 transition-all placeholder:font-normal placeholder:text-slate-400"
+          />
+        </div>
+        <div
+          class="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-4 py-2 rounded-full border border-slate-100"
+        >
+          Exibindo {{ store.filteredEquipments().length }} equipamento(s)
+        </div>
+      </div>
+
+      @for (item of store.filteredEquipments(); track item.id) {
+        <div
+          class="group relative flex items-center justify-between p-6 bg-white border border-slate-100 rounded-2xl transition-all hover:border-blue-200 hover:shadow-md hover:-translate-y-0.5"
+        >
+          <div class="flex items-center gap-6">
+            <div
+              class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors"
+            >
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                />
+              </svg>
+            </div>
+
+            <div>
+              <h4
+                class="text-lg font-bold text-slate-800 group-hover:text-blue-600 transition-colors uppercase tracking-tight"
+              >
+                {{ item.name }}
+              </h4>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{{
+                  item.brand
+                }}</span>
+                <span class="w-1 h-1 bg-slate-200 rounded-full"></span>
+                <span class="text-[11px] font-medium text-slate-400">{{ item.model }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-12">
+            <div class="text-center hidden sm:block">
+              <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">
+                Paradas
+              </p>
+              <p class="text-lg font-bold text-slate-700 leading-none">
+                {{ item.technicalSpecs.stops }}
+              </p>
+            </div>
+
+            <div class="min-w-[140px]">
+              <span
+                [ngClass]="{
+                  'bg-emerald-50 text-emerald-600 border-emerald-100':
+                    item.status === 'OPERATIONAL',
+                  'bg-amber-50 text-amber-600 border-amber-100': item.status === 'MAINTENANCE',
+                  'bg-rose-50 text-rose-600 border-rose-100': item.status === 'OUT_OF_SERVICE',
+                }"
+                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border shadow-sm"
+              >
+                <span
+                  [ngClass]="{
+                    'bg-emerald-500': item.status === 'OPERATIONAL',
+                    'bg-amber-500': item.status === 'MAINTENANCE',
+                    'bg-rose-500': item.status === 'OUT_OF_SERVICE',
+                  }"
+                  class="w-1.5 h-1.5 rounded-full animate-pulse"
+                ></span>
+                <span class="text-[10px] font-black uppercase tracking-wider">
+                  {{
+                    item.status === 'OPERATIONAL'
+                      ? 'Operacional'
+                      : item.status === 'MAINTENANCE'
+                        ? 'Manutenção'
+                        : 'Fora de Serviço'
+                  }}
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button
+              (click)="onEditEquipment(item)"
+              class="px-4 py-2 text-[11px] font-black text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all uppercase tracking-wider"
+            >
+              Ver Detalhes
+            </button>
+          </div>
+        </div>
+      } @empty {
+        <div
+          class="flex flex-col items-center justify-center py-20 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-100"
+        >
+          <p class="text-slate-400 font-medium">Nenhum equipamento encontrado.</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<button
+  (click)="scrollToTop(scrollContainer)"
+  [class.opacity-100]="showScrollTop()"
+  [class.translate-y-0]="showScrollTop()"
+  [class.pointer-events-none]="!showScrollTop()"
+  class="fixed bottom-8 right-8 z-[100] p-4 bg-[#1e293b] text-white rounded-2xl shadow-2xl shadow-blue-900/20 border border-slate-700/50 transition-all duration-500 opacity-0 translate-y-10 hover:bg-blue-600 hover:-translate-y-1 active:scale-90 group"
+>
+  <div class="flex flex-col items-center gap-1">
+    <svg
+      class="w-5 h-5 group-hover:-translate-y-1 transition-transform"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="3"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+    </svg>
+    <span class="text-[8px] font-black uppercase tracking-tighter">Topo</span>
+  </div>
+</button>
+</file>
+
+<file path="src/app/features/customers/components/equipment-dashboard/equipment-dashboard.component.ts">
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  inject,
+  signal,
+  HostListener,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { EquipmentsStore } from '../../data-access/equipments.store';
+import { Equipment } from '../../models/equipment.model';
+
+@Component({
+  selector: 'app-equipment-dashboard',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './equipment-dashboard.component.html',
+  styles: [
+    `
+      :host {
+        display: block;
+        animation: slideIn 0.3s ease-out;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+    `,
+  ],
+})
+export class EquipmentDashboardComponent {
+  public readonly store = inject(EquipmentsStore);
+
+  @Input() customerName: string | undefined = '';
+  @Output() addEquipment = new EventEmitter<void>();
+  @Output() editEquipment = new EventEmitter<any>();
+  @Output() back = new EventEmitter<void>();
+
+  // Mapeamento para o HTML usar
+  readonly driveTypeMap: Record<string, string> = {
+    GEARED: 'Com Engrenagem',
+    GEARLESS: 'Sem Engrenagem',
+    HYDRAULIC: 'Hidráulico',
+  };
+
+  // Signal para controlar a visibilidade
+  readonly showScrollTop = signal(false);
+
+  // Monitora o scroll da DIV interna
+  onDivScroll(container: HTMLElement) {
+    // Aparece após rolar 300px para baixo
+    this.showScrollTop.set(container.scrollTop > 300);
+  }
+
+  // Faz o scroll suave de volta ao topo da DIV
+  scrollToTop(container: HTMLElement) {
+    container.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
+
+  // Métodos de ação simplificados
+  onFilterEquipments(value: string) {
+    this.store.updateSearchTerm(value);
+  }
+
+  onDelete(id: string) {
+    this.store.deleteEquipment(id);
+  }
+
+  onAddEquipment() {
+    this.addEquipment.emit();
+  }
+
+  onEditEquipment(item: Equipment) {
+    this.editEquipment.emit(item);
+  }
+
+  onBack() {
+    this.back.emit();
+  }
+}
+</file>
+
+<file path="src/app/features/customers/components/equipment-form/equipment-form.component.ts">
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CreateEquipmentDto, Equipment } from '../../models/equipment.model';
+import { EquipmentsStore } from '../../data-access/equipments.store';
+
+@Component({
+  selector: 'app-equipment-form',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './equipment-form.component.html',
+})
+export class EquipmentFormComponent {
+  private fb = inject(FormBuilder);
+  private readonly equipmentsStore = inject(EquipmentsStore);
+
+  @Output() save = new EventEmitter<CreateEquipmentDto>();
+  @Output() cancel = new EventEmitter<void>();
+  @Input() equipmentToEdit: Equipment | null = null;
+
+  equipmentForm: FormGroup = this.fb.group({
+    name: ['', [Validators.required]],
+    position: [''],
+    brand: ['', [Validators.required]],
+    model: ['', [Validators.required]],
+    // 1. Mudei para opcional ou valor padrão, caso não queira preencher agora
+    serialNumber: ['S/N'],
+    manufactureYear: [new Date().getFullYear()],
+
+    technicalSpecs: this.fb.group({
+      // 2. IMPORTANTE: Começar com 1, pois o mínimo é 1. 0 invalida o form.
+      stops: [1, [Validators.required, Validators.min(1)]],
+      capacityKg: [450, [Validators.required]],
+      // 3. Tornei opcional para não travar o botão caso esqueça de preencher
+      capacityPersons: [6],
+      speed: [1.0],
+      driveType: ['GEARED', [Validators.required]],
+      controlPanel: [''],
+    }),
+
+    status: ['OPERATIONAL'],
+    lastPreventiveDate: [null],
+    nextPreventiveDate: [null],
+  });
+
+  public readonly loading = this.equipmentsStore.loading;
+
+  ngOnInit() {
+    if (this.equipmentToEdit) {
+      // O patchValue preenche todos os campos que têm o mesmo nome no Form e no Objeto
+      this.equipmentForm.patchValue(this.equipmentToEdit);
+
+      // Se você tiver um FormGroupName para technicalSpecs, faça assim:
+      if (this.equipmentToEdit.technicalSpecs) {
+        this.equipmentForm.get('technicalSpecs')?.patchValue(this.equipmentToEdit.technicalSpecs);
+      }
+    }
+  }
+
+  onSubmit() {
+    if (this.equipmentForm.valid) {
+      this.save.emit(this.equipmentForm.value);
+    }
+  }
+
+  checkInvalidControls() {
+    const invalid = [];
+    const controls = this.equipmentForm.controls;
+    for (const name in controls) {
+      if (controls[name].invalid) invalid.push(name);
+    }
+
+    // Verifica também dentro do grupo aninhado
+    const specs = (this.equipmentForm.get('technicalSpecs') as FormGroup).controls;
+    for (const name in specs) {
+      if (specs[name].invalid) invalid.push('technicalSpecs.' + name);
+    }
+
+    console.log('Campos que impedem o envio:', invalid);
+  }
+}
+</file>
+
+<file path="src/app/features/customers/data-access/customers.service.ts">
+// src/app/features/customers/data-access/customers.service.ts
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Customer } from '../models/customer.model';
+import { Equipment } from '../models/equipment.model';
+
+@Injectable({ providedIn: 'root' })
+export class CustomersService {
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:3000'; // Ajuste conforme seu env
+
+  // Clientes
+  getCustomers(): Observable<Customer[]> {
+    return this.http.get<Customer[]>(`${this.apiUrl}/customers`);
+  }
+
+  createCustomer(customer: Partial<Customer>) {
+    return this.http.post<Customer>(`${this.apiUrl}/customers`, customer);
+  }
+
+  addEquipment(equipment: Partial<Equipment>): Observable<Equipment> {
+    return this.http.post<Equipment>(`${this.apiUrl}/equipments`, equipment);
+  }
+
+  getEquipmentsByCustomer(customerId: string): Observable<Equipment[]> {
+    return this.http.get<Equipment[]>(`${this.apiUrl}/equipments/customer/${customerId}`);
+  }
+}
+</file>
+
+<file path="src/app/features/customers/data-access/equipments.store.ts">
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { EquipmentsService } from './equipments.service';
+import { Equipment, CreateEquipmentDto } from '../models/equipment.model';
+import { ToastService } from '../../../services/toast.service';
+
+@Injectable({ providedIn: 'root' })
+export class EquipmentsStore {
+  private readonly service = inject(EquipmentsService);
+  private readonly toast = inject(ToastService);
+
+  // --- STATE (Sinais Privados) ---
+  private readonly _equipments = signal<Equipment[]>([]);
+  private readonly _loading = signal(false);
+  private readonly _searchTerm = signal('');
+
+  // --- SELECTORS (Sinais Públicos / Computados) ---
+
+  // Retorna a lista bruta
+  readonly equipments = computed(() => this._equipments());
+
+  // Retorna o estado de carregamento
+  readonly loading = computed(() => this._loading());
+
+  // Retorna o termo de busca atual
+  readonly searchTerm = computed(() => this._searchTerm());
+
+  // TOQUE PREMIUM: Filtro Reativo em tempo real
+  readonly filteredEquipments = computed(() => {
+    const term = this._searchTerm().toLowerCase().trim();
+    const list = this._equipments();
+
+    if (!term) return list;
+
+    return list.filter(
+      (eq) =>
+        eq.name.toLowerCase().includes(term) ||
+        eq.brand.toLowerCase().includes(term) ||
+        eq.model?.toLowerCase().includes(term) ||
+        eq.serialNumber?.toLowerCase().includes(term),
+    );
+  });
+
+  // --- MÉTODOS DE AÇÃO ---
+
+  /**
+   * Atualiza o termo de busca para disparar o computed 'filteredEquipments'
+   */
+  updateSearchTerm(term: string) {
+    this._searchTerm.set(term);
+  }
+
+  /**
+   * Carrega os equipamentos de um cliente específico
+   */
+  loadByCustomer(customerId: string) {
+    this._loading.set(true);
+    this._searchTerm.set(''); // Reseta a busca ao trocar de cliente
+
+    this.service.getByCustomer(customerId).subscribe({
+      next: (data) => {
+        // Ordena por nome antes de salvar no estado
+        const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
+        this._equipments.set(sortedData);
+        this._loading.set(false);
+      },
+      error: (err) => {
+        console.error('Erro na Store ao carregar:', err);
+        this._equipments.set([]);
+        this._loading.set(false);
+        this.toast.showToast('Erro ao carregar equipamentos.', 'error');
+      },
+    });
+  }
+
+  /**
+   * Adiciona um novo elevador
+   */
+  addEquipment(equipmentDto: CreateEquipmentDto) {
+    this._loading.set(true);
+    this.service.create(equipmentDto).subscribe({
+      next: (newEquipment) => {
+        this._equipments.update((current) => [...current, newEquipment]);
+        this.toast.showToast('Elevador cadastrado com sucesso!', 'success');
+        this._loading.set(false);
+      },
+      error: (err) => {
+        this.toast.showToast('Erro ao criar equipamento.', 'error');
+        this._loading.set(false);
+      },
+    });
+  }
+
+  /**
+   * Remove um elevador
+   */
+  deleteEquipment(id: string) {
+    this._loading.set(true);
+    this.service.delete(id).subscribe({
+      next: () => {
+        this._equipments.update((list) => list.filter((item) => item.id !== id));
+        this.toast.showToast('Equipamento removido.', 'success');
+        this._loading.set(false);
+      },
+      error: (err) => {
+        this.toast.showToast('Erro ao excluir do servidor.', 'error');
+        this._loading.set(false);
+      },
+    });
+  }
+
+  /**
+   * Atualiza dados de um elevador existente
+   */
+  updateEquipment(id: string, changes: Partial<Equipment>) {
+    this._loading.set(true);
+    this.service.update(id, changes).subscribe({
+      next: (updated) => {
+        this._equipments.update((list) =>
+          list.map((item) => (item.id === id ? { ...item, ...updated } : item)),
+        );
+        this.toast.showToast('Alterações salvas!', 'success');
+        this._loading.set(false);
+      },
+      error: (err) => {
+        this.toast.showToast('Falha ao atualizar dados.', 'error');
+        this._loading.set(false);
+      },
+    });
+  }
+}
+</file>
+
+<file path="src/app/features/estoque/estoque-form/estoque-form.component.ts">
+import { Component, inject, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { StockStore } from '../stock.store';
+
+@Component({
+  selector: 'app-estoque-form',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './estoque-form.component.html',
+})
+export class EstoqueFormComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  protected store = inject(StockStore);
+  private cd = inject(ChangeDetectorRef);
+
+  @Output() close = new EventEmitter<void>();
+
+  stockForm: FormGroup;
+  imagePreview: string | null = null;
+  isEditMode = false;
+
+  constructor() {
+    this.stockForm = this.fb.group({
+      name: ['', Validators.required],
+      code: ['', Validators.required],
+      category: ['', Validators.required],
+      currentQuantity: [0, [Validators.required, Validators.min(0)]],
+      minQuantity: [0, [Validators.required, Validators.min(0)]],
+      unit: ['un', Validators.required],
+      costPrice: [0, [Validators.required, Validators.min(0)]],
+      location: [''],
+      description: [''],
+      imageUrl: [''],
+    });
+  }
+
+  ngOnInit() {
+    const itemToEdit = this.store.selectedItem();
+    if (itemToEdit) {
+      this.isEditMode = true;
+      // setTimeout evita o erro de 'ExpressionChangedAfterItHasBeenChecked'
+      setTimeout(() => {
+        this.stockForm.patchValue(itemToEdit);
+        this.imagePreview = itemToEdit.imageUrl || null;
+      });
+    }
+  }
+
+  // 🟢 ESSA FUNÇÃO RESOLVE O ERRO DO (change)
+  onFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        this.stockForm.patchValue({ imageUrl: base64String });
+        this.imagePreview = base64String;
+        this.cd.detectChanges();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // 🟢 ESSA FUNÇÃO RESOLVE O ERRO DO (click)="removeImage()"
+  removeImage() {
+    this.imagePreview = null;
+    this.stockForm.patchValue({ imageUrl: '' });
+  }
+
+  onSubmit() {
+    if (this.stockForm.valid) {
+      const formData = this.stockForm.value;
+      const selectedItem = this.store.selectedItem();
+
+      if (this.isEditMode && selectedItem) {
+        this.store.updateItem(selectedItem.id, formData);
+      } else {
+        this.store.createItem(formData);
+      }
+
+      this.close.emit();
+
+      this.stockForm.reset();
+      this.imagePreview = null;
+    }
+  }
+}
+</file>
+
+<file path="src/app/features/estoque/stock.store.ts">
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { StockService } from '../../core/services/stock.service';
+import { CreateStockItemDto, StockItem } from '../../core/models/stock.interfaces';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class StockStore {
+  private stockService = inject(StockService);
+
+  // State (Signals)
+  readonly items = signal<StockItem[]>([]);
+  readonly loading = signal<boolean>(false);
+
+  // Computed (Derivados do estado)
+  readonly criticalItems = computed(() =>
+    this.items().filter((item) => item.currentQuantity <= item.minQuantity),
+  );
+
+  readonly totalStockValue = computed(() =>
+    this.items().reduce((acc, item) => acc + item.currentQuantity * item.costPrice, 0),
+  );
+
+  readonly criticalItemsCount = computed(
+    () => this.items().filter((item) => item.currentQuantity <= item.minQuantity).length,
+  );
+
+  readonly selectedCategory = signal<string>('Todas');
+
+  readonly selectedItem = signal<StockItem | null>(null);
+
+  readonly filteredItems = computed(() => {
+    const query = this.filterText().toLowerCase();
+    return this.items().filter(
+      (item) => item.name.toLowerCase().includes(query) || item.code.toLowerCase().includes(query),
+    );
+  });
+
+  readonly categories = computed(() => {
+    const cats = this.items().map((i) => i.category);
+    return ['Todas', ...new Set(cats)];
+  });
+
+  readonly filterText = signal<string>('');
+
+  loadAll() {
+    this.loading.set(true);
+    this.stockService.findAll().subscribe({
+      next: (data: StockItem[]) => {
+        // Agora o tipo vai bater perfeitamente
+        this.items.set(data);
+      },
+      error: (err: any) => {
+        console.error('Erro ao carregar estoque da Repair Elevadores', err);
+        this.loading.set(false);
+      },
+      complete: () => this.loading.set(false),
+    });
+  }
+
+  createItem(newItem: CreateStockItemDto) {
+    this.stockService.create(newItem).subscribe({
+      next: (createdItem: StockItem) => {
+        this.items.update((currentItems) => [...currentItems, createdItem]);
+        console.log('Item criado com sucesso!');
+      },
+      error: (err) => console.error('Erro ao criar item:', err),
+    });
+  }
+
+  deleteItem(id: string) {
+    if (confirm('Deseja realmente excluir esta peça?')) {
+      this.stockService.delete(id).subscribe({
+        next: () => this.loadAll(), // Recarrega a lista após deletar
+        error: (err) => console.error('Erro ao deletar', err),
+      });
+    }
+  }
+
+  updateItem(id: string, changes: Partial<CreateStockItemDto>) {
+    this.stockService.update(id, changes).subscribe({
+      next: () => {
+        this.loadAll(); // Atualiza a lista
+        this.selectedItem.set(null); // Limpa a seleção
+        // O fechamento do modal será controlado pelo componente
+      },
+      error: (err) => alert('Erro ao atualizar: ' + err.message),
+    });
+  }
+
+  setFilter(text: string) {
+    this.filterText.set(text);
+  }
+}
+</file>
+
+<file path="src/index.html">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Infyniq</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="logo-infyniq-icon.png" />
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>
+</file>
+
+<file path="src/app/core/components/sidebar/sidebar.component.ts">
+import { Component, signal } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+
+@Component({
+  selector: 'app-sidebar',
+  standalone: true,
+  imports: [RouterLink, RouterLinkActive],
+  templateUrl: './sidebar.component.html',
+})
+export class SidebarComponent {
+  isExpanded = signal(true);
+
+  toggleSidebar() {
+    this.isExpanded.update((prev) => !prev);
+  }
+}
+</file>
+
+<file path="src/app/features/customers/components/equipment-form/equipment-form.component.html">
+<div
+  class="fixed inset-0 z-[100] flex items-center justify-end bg-slate-900/40 backdrop-blur-sm transition-all"
+>
+  <div
+    class="bg-white h-full w-full max-w-[550px] shadow-2xl flex flex-col animate-in slide-in-from-right duration-500 rounded-l-[48px] overflow-hidden"
+  >
+    <div
+      class="px-10 py-12 border-b border-slate-50 flex justify-between items-center bg-gradient-to-b from-slate-50/50 to-white"
+    >
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+          <span class="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em]"
+            >Configuração Técnica</span
+          >
+        </div>
+        <h2 class="text-3xl font-black text-[#1e293b] tracking-tighter">
+          PRONTUÁRIO <span class="text-slate-400">DO ELEVADOR</span>
+        </h2>
+      </div>
+      <button
+        (click)="cancel.emit()"
+        class="group p-4 hover:bg-slate-100 rounded-2xl transition-all"
+      >
+        <svg
+          class="w-6 h-6 text-slate-300 group-hover:text-slate-600"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="3"
+        >
+          <path d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <form
+      [formGroup]="equipmentForm"
+      (ngSubmit)="onSubmit()"
+      class="flex-1 p-10 space-y-8 overflow-y-auto custom-scrollbar"
+    >
+      <div class="space-y-5">
+        <div>
+          <label
+            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
+            >Identificação do Equipamento</label
+          >
+          <input
+            formControlName="name"
+            placeholder="Ex: Elevador Social 01"
+            class="w-full bg-slate-50 border-2 border-transparent focus:border-blue-500/10 focus:bg-white rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 outline-none transition-all focus:ring-4 focus:ring-blue-500/5 placeholder:font-normal placeholder:text-slate-300"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
+              >Marca</label
+            >
+            <input
+              formControlName="brand"
+              placeholder="Ex: Otis"
+              class="w-full bg-slate-50 border-2 border-transparent focus:border-blue-500/10 focus:bg-white rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 outline-none transition-all focus:ring-4 focus:ring-blue-500/5"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
+              >Modelo</label
+            >
+            <input
+              formControlName="model"
+              placeholder="Ex: Gen2 Comfort"
+              class="w-full bg-slate-50 border-2 border-transparent focus:border-blue-500/10 focus:bg-white rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 outline-none transition-all focus:ring-4 focus:ring-blue-500/5"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="h-px bg-gradient-to-r from-transparent via-slate-100 to-transparent"></div>
+
+      <div
+        formGroupName="technicalSpecs"
+        class="bg-slate-50/50 p-8 rounded-[32px] border border-slate-100 space-y-6"
+      >
+        <h3 class="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em] mb-4">
+          Especificações de Engenharia
+        </h3>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
+              >Nº de Paradas</label
+            >
+            <input
+              type="number"
+              formControlName="stops"
+              class="w-full bg-white border-2 border-slate-100 focus:border-blue-500/20 rounded-xl px-5 py-3 text-sm font-bold text-slate-700 outline-none transition-all"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
+              >Capacidade (KG)</label
+            >
+            <input
+              type="number"
+              formControlName="capacityKg"
+              class="w-full bg-white border-2 border-slate-100 focus:border-blue-500/20 rounded-xl px-5 py-3 text-sm font-bold text-slate-700 outline-none transition-all"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label
+            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
+            >Sistema de Tração</label
+          >
+          <select
+            formControlName="driveType"
+            class="w-full bg-white border-2 border-slate-100 focus:border-blue-500/20 rounded-xl px-5 py-3 text-sm font-bold text-slate-700 outline-none transition-all appearance-none cursor-pointer"
+          >
+            <option value="GEARED">GEARED (Com engrenagem)</option>
+            <option value="GEARLESS">GEARLESS (Sem engrenagem)</option>
+            <option value="HYDRAULIC">HIDRÁULICO</option>
+          </select>
+        </div>
+      </div>
+    </form>
+
+    <div class="p-10 border-t border-slate-50 bg-slate-50/30 flex items-center gap-4">
+      <button
+        type="button"
+        (click)="cancel.emit()"
+        class="flex-1 px-6 py-4 text-xs font-black text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-2xl transition-all uppercase tracking-widest"
+      >
+        Descartar
+      </button>
+      <button
+        type="submit"
+        [disabled]="equipmentForm.invalid || loading()"
+        class="flex-[2] px-10 py-4 bg-[#1e293b] text-white rounded-2xl font-black text-xs uppercase tracking-[0.15em] shadow-xl shadow-slate-200 hover:bg-blue-600 hover:-translate-y-1 transition-all active:scale-95 disabled:opacity-30 disabled:translate-y-0 disabled:shadow-none"
+      >
+        @if (loading()) {
+          <div class="flex items-center justify-center gap-3">
+            <svg class="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+                fill="none"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span>Processando</span>
+          </div>
+        } @else {
+          <span>Confirmar Registro</span>
+        }
+      </button>
+    </div>
+  </div>
+</div>
+</file>
+
+<file path="src/app/features/customers/customers-container/customers-container.component.html">
+<div class="p-8 max-w-[1400px] mx-auto min-h-screen">
+  @if (viewMode() === 'LIST') {
+    <div class="animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h1 class="text-3xl font-black text-slate-800 tracking-tight uppercase">
+            GESTÃO DE UNIDADES
+          </h1>
+          <p class="text-slate-500 text-sm font-medium">
+            Selecione um condomínio para gerenciar o prontuário técnico
+          </p>
+        </div>
+
+        <button
+          (click)="showCustomerForm.set(true)"
+          class="flex items-center gap-3 bg-[#1e293b] hover:bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold transition-all shadow-xl shadow-slate-200 active:scale-95"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M12 4v16m8-8H4" />
+          </svg>
+          Novo Condomínio
+        </button>
+      </div>
+
+      @if (customersStore.loading()) {
+        <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 animate-pulse">
+          <div class="flex justify-end mb-6">
+            <div class="h-10 bg-slate-100 rounded-2xl w-64"></div>
+          </div>
+          <div class="space-y-6">
+            @for (i of [1, 2, 3, 4, 5]; track i) {
+              <div class="flex items-center gap-4">
+                <div class="h-12 bg-slate-50 rounded-xl flex-1"></div>
+                <div class="h-12 bg-slate-50 rounded-xl w-32"></div>
+                <div class="h-12 bg-slate-50 rounded-xl w-48"></div>
+                <div class="h-12 bg-slate-50 rounded-xl w-24"></div>
+              </div>
+            }
+          </div>
+        </div>
+      } @else {
+        <div
+          class="bg-white rounded-3xl p-1 shadow-sm border border-slate-100 animate-in fade-in duration-500"
+        >
+          <app-customers-list
+            [customers]="customersStore.filteredCustomers()"
+            (select)="onCustomerSelect($event)"
+          >
+          </app-customers-list>
+        </div>
+      }
+    </div>
+
+  } @else {
+    <div class="animate-in fade-in slide-in-from-right-8 duration-500">
+      <app-equipment-dashboard
+        [customerName]="selectedCustomer()?.name || ''"
+        (back)="goBackToList()"
+        (addEquipment)="openEquipmentForm()"
+        (editEquipment)="onEditEquipment($event)"
+      >
+      </app-equipment-dashboard>
+    </div>
+  }
+
+  @if (showCustomerForm()) {
+    <div
+      class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-4"
+    >
+      <div class="animate-in zoom-in-95 duration-200 w-full max-w-2xl">
+        <app-customer-form (save)="onSaveCustomer($event)" (cancel)="showCustomerForm.set(false)">
+        </app-customer-form>
+      </div>
+    </div>
+  }
+
+  @if (showEquipmentForm()) {
+    <div
+      class="fixed inset-0 z-[110] flex items-center justify-center p-4 animate-in fade-in duration-300"
+    >
+      <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-md"></div>
+      <div class="relative z-10 w-full max-w-[800px]">
+        <app-equipment-form
+          [equipmentToEdit]="selectedEquipment()"
+          (save)="onSaveEquipment($event)"
+          (cancel)="closeEquipmentModal()"
+        >
+        </app-equipment-form>
+      </div>
+    </div>
+  }
+</div>
+</file>
+
+<file path="src/app/features/customers/customers-container/customers-container.component.ts">
+// src/app/features/customers/customers-container.component.ts
+
+import { Component, computed, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CustomersStore } from '../data-access/customers.store';
+import { EquipmentsStore } from '../data-access/equipments.store'; // 👈 Importe a store nova
+import { EquipmentDashboardComponent } from '../components/equipment-dashboard/equipment-dashboard.component'; // 👈 Importe o dashboard
+import { EquipmentFormComponent } from '../components/equipment-form/equipment-form.component'; // 👈 Importe o form novo
+import { CustomersListComponent } from '../components/customers-list/customers-list.component';
+import { CustomerFormComponent } from '../components/customer-form/customer-form.component';
+import { CreateEquipmentDto, Equipment } from '../models/equipment.model';
+import { ToastService } from '../../../services/toast.service';
+
+@Component({
+  selector: 'app-customers-container',
+  standalone: true,
+  imports: [
+    CommonModule,
+    CustomersListComponent,
+    CustomerFormComponent,
+    EquipmentDashboardComponent,
+    EquipmentFormComponent,
+  ],
+  templateUrl: './customers-container.component.html',
+})
+export class CustomersContainerComponent {
+  // Injeção das Stores
+  protected readonly customersStore = inject(CustomersStore);
+  protected readonly equipmentsStore = inject(EquipmentsStore);
+  private readonly toast = inject(ToastService);
+
+  // Signals para controlar a exibição dos formulários (Modais)
+  showCustomerForm = signal(false);
+  showEquipmentForm = signal(false);
+  selectedEquipment = signal<Equipment | null>(null);
+
+  viewMode = signal<'LIST' | 'DETAIL'>('LIST');
+
+  // Atalhos para os Signals das Stores (para o HTML limpar os erros)
+  readonly selectedCustomer = this.customersStore.selectedCustomer;
+  readonly customers = this.customersStore.filteredCustomers;
+  readonly equipments = computed(() => this.equipmentsStore.equipments());
+
+  ngOnInit() {
+    this.customersStore.loadAllCustomers();
+  }
+
+  onCustomerSelect(customer: any) {
+    console.log('Objeto recebido no clique:', customer); // Verifique se o 'id' existe aqui!
+    this.customersStore.selectCustomer(customer);
+
+    if (customer && customer.id) {
+      this.equipmentsStore.loadByCustomer(customer.id);
+      this.viewMode.set('DETAIL');
+    } else {
+      console.error('ERRO: O cliente selecionado não possui um ID válido!', customer);
+    }
+  }
+
+  onSaveCustomer(customerData: any) {
+    // 1. Chama a store para persistir no backend/JSON
+    this.customersStore.addCustomer(customerData);
+
+    // 2. Fecha o modal de cadastro de cliente
+    this.showCustomerForm.set(false);
+  }
+
+  // --- Métodos de Equipamento ---
+  openEquipmentForm() {
+    this.showEquipmentForm.set(true);
+  }
+
+  onSaveEquipment(formData: any) {
+    const editing = this.selectedEquipment();
+
+    if (editing) {
+      // EDIÇÃO
+      this.equipmentsStore.updateEquipment(editing.id, formData);
+      this.toast.showToast('Prontuário técnico atualizado!', 'success'); // 👈 Chamando seu Toast
+    } else {
+      // CRIAÇÃO
+      const customerId = this.selectedCustomer()?.id;
+      this.equipmentsStore.addEquipment({ ...formData, customerId });
+      this.toast.showToast('Novo elevador cadastrado com sucesso!', 'success'); // 👈 Chamando seu Toast
+    }
+
+    this.closeEquipmentModal();
+  }
+
+  openEditForm(equipment: Equipment) {
+    this.selectedEquipment.set(equipment);
+    this.showEquipmentForm.set(true);
+  }
+
+  closeEquipmentModal() {
+    this.showEquipmentForm.set(false);
+    this.selectedEquipment.set(null);
+  }
+
+  onEditEquipment(equipment: Equipment) {
+    console.log('Editando equipamento:', equipment);
+    this.selectedEquipment.set(equipment);
+    this.showEquipmentForm.set(true);
+  }
+
+  goBackToList() {
+    this.viewMode.set('LIST');
+    this.customersStore.selectCustomer(null as any);
+  }
+
+  onSearch(event: Event) {
+    // Captura o valor do input com segurança
+    const input = event.target as HTMLInputElement;
+    this.customersStore.updateSearchTerm(input.value);
+  }
+}
+</file>
+
+<file path="src/app/features/customers/data-access/customers.store.ts">
+// src/app/features/customers/data-access/customers.store.ts
+
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { CustomersService } from './customers.service';
+import { Customer } from '../models/customer.model';
+import { ToastService } from '../../../services/toast.service';
+import { finalize } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class CustomersStore {
+  private readonly service = inject(CustomersService);
+  private readonly toast = inject(ToastService);
+
+  // Estados (Signals Privados para controle)
+  private readonly _customers = signal<Customer[]>([]);
+  private readonly _searchTerm = signal<string>('');
+
+  readonly selectedCustomer = signal<Customer | null>(null);
+  readonly loading = signal(false);
+  readonly displayLimit = signal(20);
+
+  // Selectors (Computed) - O que o componente consome
+  readonly customers = computed(() => this._customers());
+  readonly searchTerm = computed(() => this._searchTerm());
+  readonly totalUnits = computed(() => this._customers().length);
+  readonly totalEquipments = computed(() => {
+    return this._customers().reduce((acc, customer) => acc + (customer.equipments?.length || 0), 0);
+  });
+  readonly displayedCustomers = computed(() => {
+    return this.filteredCustomers().slice(0, this.displayLimit());
+  });
+
+  readonly maintenancesToday = computed(() => {
+    // Por enquanto retornamos um valor fixo ou baseado em alguma flag
+    // Exemplo: return this._customers().filter(c => c.hasPendingService).length;
+    return 8;
+  });
+
+  // O motor de busca reativo
+  readonly filteredCustomers = computed(() => {
+    const term = this._searchTerm().toLowerCase().trim();
+    const list = this._customers(); // Aqui ele lê do sinal privado
+    if (!term) return list;
+    return list.filter((c) => c.name.toLowerCase().includes(term));
+  });
+
+  loadMore() {
+    this.displayLimit.update((limit) => limit + 20);
+  }
+
+  updateSearchTerm(term: string) {
+    this._searchTerm.set(term);
+  }
+
+  loadAllCustomers() {
+    this.loading.set(true);
+
+    this.service
+      .getCustomers()
+      .pipe(
+        // O finalize roda se der certo OU se der erro. É infalível.
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe({
+        next: (data) => this._customers.set(data),
+        error: (err) => {
+          console.error('Erro:', err);
+          this.toast.showToast('Erro ao carregar dados', 'error');
+        },
+      });
+  }
+
+  addCustomer(customerData: Partial<Customer>) {
+    this.loading.set(true);
+    this.service.createCustomer(customerData).subscribe({
+      next: (newCustomer) => {
+        // Adiciona à lista mantendo o filtro ativo se houver
+        this._customers.update((all) => [...all, newCustomer]);
+        this.toast.showToast(`${newCustomer.name} cadastrado!`, 'success');
+      },
+      error: (err) => this.toast.showToast('Erro ao salvar condomínio', 'error'),
+      complete: () => this.loading.set(false),
+    });
+  }
+
+  selectCustomer(customer: Customer | null) {
+    this.selectedCustomer.set(customer);
+  }
+
+  clearSelection() {
+    this.selectedCustomer.set(null);
+  }
+}
+</file>
+
+<file path="src/app/features/estoque/estoque-list/estoque-list.component.html">
+<div class="min-h-screen bg-slate-50/50 p-4 md:p-8">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div
+        class="group bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <div class="p-2 bg-blue-50 rounded-lg text-blue-600">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+              />
+            </svg>
+          </div>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Geral</span>
+        </div>
+        <p class="text-sm font-medium text-slate-500">Total de Itens</p>
+        <h3 class="text-3xl font-black text-slate-900 mt-1 tracking-tight">{{ totalItens() }}</h3>
+      </div>
+
+      <div
+        class="group bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <div class="p-2 bg-red-50 rounded-lg text-red-600">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <span class="text-[10px] font-bold text-red-400 uppercase tracking-widest">Crítico</span>
+        </div>
+        <p class="text-sm font-medium text-slate-500">Abaixo do Mínimo</p>
+        <h3 class="text-3xl font-black text-red-600 mt-1 tracking-tight">
+          {{ itensAbaixoMinimo() }}
+        </h3>
+      </div>
+
+      <div
+        class="group bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <div class="p-2 bg-emerald-50 rounded-lg text-emerald-600">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3 1.343 3 3-1.343 3-3 3m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
+            >Financeiro</span
+          >
+        </div>
+        <p class="text-sm font-medium text-slate-500">Valor em Estoque</p>
+        <h3 class="text-3xl font-black text-slate-900 mt-1 tracking-tight">
+          {{ valorTotalEstoque() | currency: 'BRL' }}
+        </h3>
+      </div>
+
+      <button
+        (click)="openModal()"
+        class="group relative overflow-hidden bg-blue-600 p-6 rounded-3xl text-white shadow-xl shadow-blue-200 hover:shadow-blue-300 hover:-translate-y-1 transition-all duration-300 active:scale-95 text-left"
+      >
+        <div class="relative z-10 flex flex-col justify-between h-full">
+          <div
+            class="bg-white/20 w-10 h-10 rounded-xl flex items-center justify-center backdrop-blur-md mb-4"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+          </div>
+          <div>
+            <p class="text-blue-100 text-xs font-bold uppercase tracking-widest">Ação Rápida</p>
+            <h3 class="text-xl font-black tracking-tight">Nova Peça</h3>
+          </div>
+        </div>
+        <div
+          class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-colors"
+        ></div>
+      </button>
+    </div>
+
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="relative flex-1">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          <input
+            type="text"
+            placeholder="Procurar por nome ou código..."
+            (input)="onSearch($event)"
+            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-sm"
+          />
+        </div>
+        <div class="flex gap-2">
+          <select
+            class="flex-1 md:w-48 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Todas Categorias</option>
+            <option value="eletrica">Elétrica</option>
+            <option value="mecanica">Mecânica</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden"
+    >
+      <div class="max-h-[550px] overflow-y-auto scrollbar-thin">
+        <table class="w-full text-left border-collapse relative">
+          <thead class="sticky top-0 bg-slate-50 border-b border-slate-200 z-20">
+            <tr>
+              <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Peça
+              </th>
+              <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Código
+              </th>
+              <th
+                class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center"
+              >
+                Status
+              </th>
+              <th
+                class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center"
+              >
+                Estoque
+              </th>
+              <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Custo Un.
+              </th>
+              <th
+                class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right"
+              >
+                Ações
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            @for (item of store.filteredItems(); track item.id) {
+              <tr
+                [class]="
+                  item.currentQuantity <= item.minQuantity
+                    ? 'bg-red-50/50 hover:bg-red-100/50 transition-colors group'
+                    : 'hover:bg-slate-50/80 transition-colors group'
+                "
+              >
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden border border-slate-200 flex-shrink-0"
+                    >
+                      <img
+                        [src]="item.imageUrl || 'assets/placeholder-component.png'"
+                        class="w-full h-full object-cover"
+                      />
+                    </div>
+                    <span class="font-medium text-slate-700">{{ item.name }}</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm text-slate-500 font-mono">{{ item.code }}</td>
+                <td class="px-6 py-4 text-center">
+                  @if (item.currentQuantity <= item.minQuantity) {
+                    <span
+                      class="px-2.5 py-1 rounded-full bg-red-100 text-red-600 text-[10px] font-bold uppercase tracking-wider"
+                      >Crítico</span
+                    >
+                  } @else {
+                    <span
+                      class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-600 text-[10px] font-bold uppercase tracking-wider"
+                      >Ok</span
+                    >
+                  }
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-col items-center gap-1">
+                    <div
+                      class="flex items-center gap-2 bg-white p-1 rounded-xl border border-slate-200 shadow-sm"
+                    >
+                      <button
+                        (click)="updateQuantity(item, -1)"
+                        class="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-red-600 transition-all active:scale-90"
+                      >
+                        -
+                      </button>
+                      <span class="min-w-[30px] text-center text-sm font-black text-slate-800">{{
+                        item.currentQuantity
+                      }}</span>
+                      <button
+                        (click)="updateQuantity(item, 1)"
+                        class="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-emerald-600 transition-all active:scale-90"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter"
+                      >{{ item.unit }} disponível</span
+                    >
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm font-semibold text-slate-700">
+                  {{ item.costPrice | currency: 'BRL' }}
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <div
+                    class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <button
+                      (click)="openModal(item)"
+                      class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      title="Editar"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      (click)="store.deleteItem(item.id)"
+                      class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Excluir"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 md:hidden">
+      @for (item of store.filteredItems(); track item.id) {
+        <div
+          [class]="
+            item.currentQuantity <= item.minQuantity
+              ? 'bg-red-50/50 border-red-200 p-4 rounded-3xl border shadow-sm'
+              : 'bg-white p-4 rounded-3xl border border-slate-200 shadow-sm'
+          "
+        >
+          <div class="flex gap-4">
+            <div
+              class="w-20 h-20 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 flex-shrink-0"
+            >
+              <img
+                [src]="item.imageUrl || 'assets/placeholder-component.png'"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex justify-between items-start gap-2">
+                <h3 class="font-black text-slate-800 truncate leading-tight">{{ item.name }}</h3>
+                @if (item.currentQuantity <= item.minQuantity) {
+                  <span class="flex-shrink-0 w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                }
+              </div>
+              <p class="text-xs text-slate-500 font-mono mt-1 tracking-tighter">{{ item.code }}</p>
+
+              <div class="mt-4 flex items-center justify-between">
+                <div
+                  class="flex items-center gap-3 bg-white p-1.5 rounded-2xl border border-slate-100 shadow-sm"
+                >
+                  <button
+                    (click)="updateQuantity(item, -1)"
+                    class="w-8 h-8 flex items-center justify-center rounded-xl active:bg-red-50 text-slate-600"
+                  >
+                    -
+                  </button>
+                  <span class="font-black text-sm text-slate-800">{{ item.currentQuantity }}</span>
+                  <button
+                    (click)="updateQuantity(item, 1)"
+                    class="w-8 h-8 flex items-center justify-center rounded-xl active:bg-emerald-50 text-slate-600"
+                  >
+                    +
+                  </button>
+                </div>
+                <div class="text-right">
+                  <p class="text-[9px] text-slate-400 uppercase font-bold tracking-widest">Custo</p>
+                  <p class="font-black text-blue-600">{{ item.costPrice | currency: 'BRL' }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-slate-100">
+            <button
+              (click)="openModal(item)"
+              class="flex items-center justify-center py-2.5 bg-blue-50 text-blue-600 rounded-2xl font-bold text-xs active:scale-95 transition-all"
+            >
+              Editar
+            </button>
+            <button
+              (click)="store.deleteItem(item.id)"
+              class="flex items-center justify-center py-2.5 bg-red-50 text-red-600 rounded-2xl font-bold text-xs active:scale-95 transition-all"
+            >
+              Excluir
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (store.filteredItems().length === 0) {
+      <div class="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-300">
+        <div
+          class="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-8 h-8"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+            />
+          </svg>
+        </div>
+        <h3 class="text-lg font-black text-slate-800">Nenhum item encontrado</h3>
+        <p class="text-slate-500 text-sm">Tente ajustar seus filtros ou cadastrar uma nova peça.</p>
+      </div>
+    }
+  </div>
+</div>
+
+@if (isModalOpen()) {
+  <app-estoque-form (close)="closeModal()"></app-estoque-form>
+}
+</file>
+
+<file path="src/app/features/estoque/estoque-list/estoque-list.component.ts">
+import { Component, LOCALE_ID, OnInit, computed, inject, signal } from '@angular/core';
+import { CommonModule, registerLocaleData } from '@angular/common';
+import { StockStore } from '../stock.store';
+import { EstoqueFormComponent } from '../estoque-form/estoque-form.component';
+import { StockItem } from '../../../core/models/stock.interfaces';
+import localePt from '@angular/common/locales/pt';
+import { ToastService } from '../../../services/toast.service';
+
+registerLocaleData(localePt);
+
+@Component({
+  selector: 'app-estoque-list',
+  standalone: true,
+  imports: [CommonModule, EstoqueFormComponent],
+  providers: [{ provide: LOCALE_ID, useValue: 'pt-BR' }],
+  templateUrl: './estoque-list.component.html',
+})
+export class EstoqueListComponent implements OnInit {
+  protected readonly store = inject(StockStore);
+  private readonly toast = inject(ToastService);
+
+  searchTerm = signal<string>('');
+  isModalOpen = signal(false);
+
+  totalItens = computed(() => this.store.items().length);
+  itensAbaixoMinimo = computed(
+    () => this.store.items().filter((i) => i.currentQuantity <= i.minQuantity).length,
+  );
+  valorTotalEstoque = computed(() =>
+    this.store.items().reduce((acc, item) => acc + item.costPrice * item.currentQuantity, 0),
+  );
+  filteredItems = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    const allItems = this.store.items();
+
+    if (!term) return allItems;
+
+    return allItems.filter(
+      (item) =>
+        item.name.toLowerCase().includes(term) || item.category?.toLowerCase().includes(term),
+    );
+  });
+
+  ngOnInit() {
+    this.store.loadAll();
+  }
+
+  openModal(item?: StockItem) {
+    // 🟢 O PULO DO GATO: Enviamos o item para o STORE
+    // É de lá que o estoque-form vai ler os dados
+    this.store.selectedItem.set(item || null);
+    this.isModalOpen.set(true);
+  }
+
+  closeModal() {
+    this.isModalOpen.set(false);
+    // Limpa a seleção ao fechar para não abrir o lixo na próxima vez
+    this.store.selectedItem.set(null);
+  }
+
+  onSearch(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchTerm.set(value);
+
+    // 3. Opcional: Se sua store tiver um método de filtro interno, use-o:
+    this.store.setFilter(value);
+  }
+
+  updateSearch(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.searchTerm.set(input.value);
+  }
+
+  updateQuantity(item: any, amount: number) {
+    const newQuantity = item.currentQuantity + amount;
+
+    if (newQuantity < 0) return;
+
+    // Criamos o objeto com a nova quantidade
+    const updatedData = {
+      ...item,
+      currentQuantity: newQuantity,
+    };
+
+    // Passamos o ID como 1º argumento e o OBJETO como 2º argumento
+    this.store.updateItem(item.id, updatedData);
+
+    const acao = amount > 0 ? 'Entrada' : 'Saída';
+    this.toast.showToast(`${acao} de ${item.name} realizada!`, 'success');
+  }
+}
+</file>
+
+<file path="src/styles.scss">
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Seus estilos globais abaixo */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #f8fafc;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 5px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  75% {
+    transform: translateX(-4px);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* Animação suave para a mensagem de erro aparecer */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-error {
+  animation: slideDown 0.2s ease-out forwards;
+}
+</file>
+
+<file path="src/app/app.routes.ts">
+import { Routes } from '@angular/router';
+import { AppShellComponent } from './layout/app-shell/app-shell.component';
+
+export const routes: Routes = [
+  {
+    path: '',
+    component: AppShellComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'clientes',
+        pathMatch: 'full',
+      },
+      {
+        path: 'clientes',
+        loadComponent: () =>
+          import('./features/customers/customers-container/customers-container.component').then(
+            (m) => m.CustomersContainerComponent,
+          ),
+      },
+      {
+        path: 'orders', // Rota que configuramos no Sidebar
+        loadComponent: () =>
+          import('./features/orders/os-list/os-list.component').then((m) => m.OSListComponent),
+      },
+      {
+        path: 'estoque',
+        loadComponent: () =>
+          import('./features/estoque/estoque-list/estoque-list.component').then(
+            (m) => m.EstoqueListComponent,
+          ),
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+      },
+    ],
+  },
+  {
+    path: '**',
+    redirectTo: 'clientes',
+  },
+];
+</file>
+
+<file path="src/app/features/estoque/estoque-form/estoque-form.component.html">
+<div
+  class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-0 md:p-4 animate-in fade-in duration-200"
+>
+  <div
+    class="bg-white w-full h-full md:h-auto md:max-w-4xl md:max-h-[90vh] md:rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+  >
+    <div
+      class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 sticky top-0 z-10"
+    >
+      <div>
+        <h2 class="text-xl font-bold text-slate-800">
+          {{ isEditMode ? 'Editar Peça' : 'Cadastrar Nova Peça' }}
+        </h2>
+        <p class="text-xs text-slate-500 md:hidden italic">Preencha os campos abaixo</p>
+      </div>
+
+      <button
+        type="button"
+        (click)="close.emit()"
+        class="p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-400"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto overflow-x-hidden p-6 bg-white">
+      <form [formGroup]="stockForm" (ngSubmit)="onSubmit()" id="stockForm">
+        <div class="mb-8">
+          <label class="block text-sm font-bold text-slate-700 mb-3">Imagem do Produto</label>
+          <div
+            class="flex flex-col sm:flex-row items-center gap-6 p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200"
+          >
+            <div
+              class="relative group w-32 h-32 rounded-xl border-2 border-white shadow-md bg-white flex items-center justify-center overflow-hidden"
+            >
+              @if (imagePreview) {
+                <img [src]="imagePreview" class="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  (click)="removeImage()"
+                  class="absolute inset-0 bg-red-600/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="white"
+                    class="w-8 h-8"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                    />
+                  </svg>
+                </button>
+              } @else {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-12 h-12 text-slate-200"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                  />
+                </svg>
+              }
+            </div>
+
+            <div class="flex-1 w-full">
+              <input
+                type="file"
+                (change)="onFileSelected($event)"
+                accept="image/*"
+                class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer"
+              />
+              <p class="mt-2 text-[11px] text-slate-400">
+                Tamanho máximo recomendado: 1MB (JPG ou PNG)
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+          <div class="md:col-span-2">
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Nome da Peça *</label>
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="Ex: Motor Tração 5HP"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Código (SKU) *</label>
+            <input
+              type="text"
+              formControlName="code"
+              placeholder="Ex: MOT-001"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all uppercase"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Categoria *</label>
+            <input
+              type="text"
+              formControlName="category"
+              placeholder="Ex: Elétrica"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Qtd Atual *</label>
+            <div class="relative">
+              <input
+                type="number"
+                formControlName="currentQuantity"
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+              />
+              <span
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400"
+                >UN</span
+              >
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1"
+              >Qtd Mínima (Alerta) *</label
+            >
+            <input
+              type="number"
+              formControlName="minQuantity"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1"
+              >Preço de Custo (R$) *</label
+            >
+            <input
+              type="number"
+              formControlName="costPrice"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Localização</label>
+            <input
+              type="text"
+              formControlName="location"
+              placeholder="Ex: Prateleira A2"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div
+      class="p-6 border-t border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row gap-3 justify-end"
+    >
+      <button
+        type="button"
+        (click)="close.emit()"
+        class="order-2 sm:order-1 px-6 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-200 transition-all active:scale-95"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        form="stockForm"
+        [disabled]="!stockForm.valid"
+        class="order-1 sm:order-2 px-10 py-3 bg-blue-600 text-white rounded-xl font-black shadow-lg shadow-blue-200 hover:bg-blue-700 hover:-translate-y-0.5 transition-all active:scale-95 disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none"
+      >
+        {{ isEditMode ? 'Atualizar Peça' : 'Cadastrar Peça' }}
+      </button>
+    </div>
+  </div>
+</div>
+</file>
+
+</files>

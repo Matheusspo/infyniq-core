@@ -35,6 +35,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
       },
+      {
+        path: 'technicians',
+        loadComponent: () =>
+          import('./features/technicians/technician-list/technician-list.component').then(
+            (m) => m.TechnicianListComponent,
+          ),
+        title: 'Infyniq - Equipe Técnica',
+      },
     ],
   },
   {

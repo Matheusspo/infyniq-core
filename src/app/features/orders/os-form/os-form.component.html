@@ -1,138 +1,133 @@
-<div
-  class="fixed inset-0 z-[100] flex items-center justify-end bg-slate-900/40 backdrop-blur-sm transition-all"
->
-  <div
-    class="bg-white h-full w-full max-w-[550px] shadow-2xl flex flex-col animate-in slide-in-from-right duration-500 rounded-l-[48px] overflow-hidden"
+<div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex justify-end transition-all">
+  <form
+    [formGroup]="osForm"
+    (ngSubmit)="onSubmit()"
+    class="h-full w-full max-w-[550px] bg-white shadow-2xl shadow-blue-900/20 rounded-l-[48px] flex flex-col animate-in slide-in-from-right duration-500"
   >
-    <div
-      class="px-10 py-12 border-b border-slate-50 flex justify-between items-center bg-gradient-to-b from-slate-50/50 to-white"
-    >
-      <div>
-        <div class="flex items-center gap-2 mb-1">
-          <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-          <span class="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em]"
-            >Operacional</span
-          >
-        </div>
-        <h2 class="text-3xl font-black text-[#1e293b] tracking-tighter">
-          ABRIR <span class="text-slate-400">ORDEM DE SERVIÇO</span>
-        </h2>
-      </div>
-      <button (click)="onClose()" class="group p-4 hover:bg-slate-100 rounded-2xl transition-all">
-        <svg
-          class="w-6 h-6 text-slate-300 group-hover:text-slate-600"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="3"
-        >
-          <path d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
+    <header class="p-10 pb-6">
+      <span class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 block mb-1">
+        Gestão Técnica
+      </span>
+      <h2 class="text-3xl font-black text-slate-800 tracking-tighter">
+        {{ isEdit() ? 'Editar O.S.' : 'Nova Ordem' }}
+      </h2>
+    </header>
+
+    <div class="bg-black text-white text-[10px] p-2 mb-4 rounded overflow-auto">
+      DEBUG: {{ osForm.value | json }}
     </div>
 
-    <form
-      [formGroup]="osForm"
-      (ngSubmit)="onSubmit()"
-      class="flex-1 p-10 space-y-8 overflow-y-auto custom-scrollbar"
-    >
-      <div class="space-y-5">
-        <div>
-          <label
-            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
-            >Cliente / Condomínio</label
-          >
-          <select
-            formControlName="customerId"
-            class="w-full bg-slate-50 border-2 border-transparent focus:border-blue-500/10 focus:bg-white rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 outline-none transition-all appearance-none cursor-pointer"
-          >
-            <option value="">Selecione o Cliente</option>
-            @for (c of customers(); track c.id) {
-              <option [value]="c.id">{{ c.name }}</option>
-            }
-          </select>
-        </div>
-
-        <div>
-          <label
-            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
-            >Equipamento</label
-          >
-          <select
-            formControlName="equipmentId"
-            [attr.disabled]="!osForm.get('customerId')?.value ? true : null"
-            class="w-full bg-slate-50 border-2 border-transparent focus:border-blue-500/10 focus:bg-white rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 outline-none transition-all appearance-none disabled:opacity-30"
-          >
-            <option value="">Selecione o Elevador</option>
-            @for (e of filteredEquipments(); track e.id) {
-              <option [value]="e.id">{{ e.name }} - {{ e.brand }}</option>
-            }
-          </select>
-        </div>
-      </div>
-
-      <div class="h-px bg-gradient-to-r from-transparent via-slate-100 to-transparent"></div>
-
+    <div class="flex-1 overflow-y-auto px-10 space-y-6">
       <div class="grid grid-cols-2 gap-4">
-        <div>
+        <div class="group">
           <label
-            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
-            >Tipo de Serviço</label
+            class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 group-hover:text-blue-600"
           >
+            Tipo de Serviço
+          </label>
           <select
             formControlName="type"
-            class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/10 transition-all"
+            class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-3 focus:bg-white focus:border-blue-500/10 outline-none transition-all font-bold text-slate-700"
           >
-            <option value="PREVENTIVE">PREVENTIVA</option>
-            <option value="CORRECTIVE">CORRETIVA</option>
-            <option value="EMERGENCY">EMERGÊNCIA</option>
+            <option value="PREVENTIVE">Preventiva</option>
+            <option value="CORRECTIVE">Corretiva</option>
+            <option value="EMERGENCY">Emergencial</option>
           </select>
         </div>
-        <div>
+
+        <div class="flex items-center pt-6">
           <label
-            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
-            >Técnico Responsável</label
+            class="relative inline-flex items-center cursor-pointer active:scale-95 transition-all"
           >
-          <select
-            formControlName="technicianId"
-            class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/10 transition-all"
-          >
-            @for (t of technicians(); track t.id) {
-              <option [value]="t.id">{{ t.name }}</option>
-            }
-          </select>
+            <input type="checkbox" formControlName="isEmergency" class="sr-only peer" />
+            <div
+              class="w-11 h-6 bg-slate-200 peer-focus:ring-4 peer-focus:ring-amber-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-amber-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"
+            ></div>
+            <span class="ml-3 text-[10px] font-black text-slate-500 uppercase">Urgência</span>
+          </label>
         </div>
       </div>
 
       <div>
-        <label
-          class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2"
-          >Descrição do Problema / Serviço</label
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
+          >Condomínio / Cliente</label
+        >
+        <select
+          [compareWith]="compareFn"
+          formControlName="customerId"
+          class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-3 focus:bg-white focus:border-blue-500/10 outline-none font-bold text-slate-700"
+        >
+          <option value="">Selecione um cliente...</option>
+          @for (c of customers(); track c.id) {
+            <option [value]="c.id">{{ c.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
+          >Equipamento</label
+        >
+        <select
+          [compareWith]="compareFn"
+          formControlName="equipmentId"
+          class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-3 focus:bg-white focus:border-blue-500/10 outline-none font-bold text-slate-700"
+        >
+          <option value="">Selecione o equipamento...</option>
+          @for (e of filteredEquipments(); track e.id) {
+            <option [value]="e.id">{{ e.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
+          >Técnico Responsável</label
+        >
+        <select
+          [compareWith]="compareFn"
+          formControlName="technicianId"
+          class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-3 focus:bg-white focus:border-blue-500/10 outline-none font-bold text-slate-700"
+        >
+          <option value="">Atribuir a um técnico...</option>
+          @for (t of technicians(); track t.id) {
+            <option [value]="t.id">{{ t.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
+          >Descrição do Problema</label
         >
         <textarea
           formControlName="description"
           rows="4"
-          placeholder="Descreva detalhadamente o que precisa ser feito..."
-          class="w-full bg-slate-50 border-2 border-transparent focus:border-blue-500/10 focus:bg-white rounded-3xl px-6 py-4 text-sm font-bold text-slate-700 outline-none transition-all resize-none"
+          placeholder="Descreva o chamado ou ocorrência..."
+          class="w-full bg-slate-50 border-2 border-transparent rounded-[32px] px-6 py-4 focus:bg-white focus:border-blue-500/10 outline-none transition-all resize-none font-medium text-slate-700"
         ></textarea>
       </div>
-    </form>
+    </div>
 
-    <div class="p-10 border-t border-slate-50 bg-slate-50/30 flex items-center gap-4">
+    <footer class="p-10 pt-6 border-t border-slate-50 flex gap-3">
       <button
         type="button"
         (click)="onClose()"
-        class="flex-1 px-6 py-4 text-xs font-black text-slate-400 hover:text-slate-600 rounded-2xl uppercase tracking-widest"
+        class="flex-1 px-6 py-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-100 transition-all active:scale-95"
       >
         Cancelar
       </button>
       <button
-        (click)="onSubmit()"
-        [disabled]="osForm.invalid"
-        class="flex-[2] px-10 py-4 bg-[#1e293b] text-white rounded-2xl font-black text-xs uppercase tracking-[0.15em] shadow-xl shadow-slate-200 hover:bg-blue-600 hover:-translate-y-1 transition-all active:scale-95 disabled:opacity-30 disabled:translate-y-0"
+        type="submit"
+        [disabled]="loading() || osForm.invalid"
+        class="flex-[2] bg-[#1e293b] text-white px-6 py-4 rounded-2xl font-bold hover:bg-blue-600 disabled:opacity-50 transition-all"
       >
-        Gerar Ordem de Serviço
+        @if (loading()) {
+          Processando...
+        } @else {
+          {{ isEdit() ? 'Salvar Alterações' : 'Abrir Chamado' }}
+        }
       </button>
-    </div>
-  </div>
+    </footer>
+  </form>
 </div>

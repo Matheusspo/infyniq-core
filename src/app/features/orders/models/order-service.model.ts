@@ -1,19 +1,24 @@
-export type OSStatus = 'OPEN' | 'IN_PROGRESS' | 'PENDING_PARTS' | 'COMPLETED' | 'CANCELLED';
-export type OSType = 'PREVENTIVE' | 'CORRECTIVE' | 'INSTALLATION' | 'EMERGENCY';
+// src/app/features/orders/models/order-service.model.ts
+
+export type OSStatus = 'OPEN' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+export type OSType = 'PREVENTIVE' | 'CORRECTIVE' | 'EMERGENCY' | 'INSTALLATION';
 
 export interface OrderService {
   id: string;
-  osNumber: string; // Ex: OS-2024-001
+  osNumber: string; // Ex: "OS-2024-001"
   customerId: string;
-  customerName: string;
+  customerName: string; // Nome do Condomínio para o Card
   equipmentId: string;
-  equipmentName: string;
+  equipmentName: string; // Nome do Elevador para o Card
+  technicianId: string;
+  technicianName: string; // Nome do Técnico para o Card
   type: OSType;
   status: OSStatus;
   description: string;
-  technicianId: string;
-  technicianName: string;
+  isEmergency: boolean; // Controla o alerta Amber do Henrique
+
+  // Auditoria (Padrão ARCHITECTURE.md)
   createdAt: Date;
-  scheduledFor?: Date;
-  completedAt?: Date;
+  updatedAt: Date;
+  updatedBy: string;
 }
