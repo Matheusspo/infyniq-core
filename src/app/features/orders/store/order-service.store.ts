@@ -12,23 +12,26 @@ export class OrderServiceStore {
   readonly statusFilter = signal<OSStatus | 'ALL'>('ALL');
   readonly loading = signal(false);
 
-  // 1. ORDENAÇÃO: Mais recentes primeiro (Computed)
-  // Fazemos o sort aqui para que a listagem sempre reflita a ordem correta
+  // 1. Filtro e Ordenação (Mais recentes primeiro)
   readonly filteredOrders = computed(() => {
     const filter = this.statusFilter();
-    // Criamos uma cópia para ordenar sem mutar o signal original
     let orders = [...this.ordersSignal()].sort((a, b) => {
       const dateA = new Date(a.createdAt || 0).getTime();
       const dateB = new Date(b.createdAt || 0).getTime();
-      return dateB - dateA; // Decrescente: mais recente no topo
+      return dateB - dateA;
     });
 
     if (filter === 'ALL') return orders;
     return orders.filter((os) => os.status === filter);
   });
 
+  // ✨ 2. CONTADOR DE EMERGÊNCIAS (O que estava faltando)
+  // Conta ordens marcadas como emergência que não estão concluídas nem canceladas
   readonly emergencyCount = computed(
-    () => this.ordersSignal().filter((os) => os.isEmergency && os.status !== 'COMPLETED').length,
+    () =>
+      this.ordersSignal().filter(
+        (os) => os.isEmergency && os.status !== 'COMPLETED' && os.status !== 'CANCELLED',
+      ).length,
   );
 
   loadOrders() {
@@ -45,59 +48,65 @@ export class OrderServiceStore {
     });
   }
 
-  addOrder(uiOrder: any) {
-    // Destruturamos para NÃO enviar os nomes ao banco, mas guardá-los para a UI
-    const { customerName, technicianName, equipmentName, ...apiPayload } = uiOrder;
-
-    this.apiService.create(apiPayload).subscribe({
+  addOrder(payload: any) {
+    this.apiService.create(payload).subscribe({
       next: (serverCreatedOrder) => {
-        // 2. RESPONSÁVEL: Mesclamos os nomes da UI com os dados do servidor
-        const finalOrder = {
-          ...uiOrder, // Aqui pegamos os nomes que o usuário selecionou no form
-          ...serverCreatedOrder, // Aqui pegamos o ID e datas geradas pelo banco
-        };
-
-        // Adicionamos no início da lista (o computed fará a ordenação oficial depois)
-        this.ordersSignal.update((prev) => [finalOrder, ...prev]);
-        this.toast.showToast(`O.S. ${finalOrder.osNumber} criada com sucesso!`, 'success');
+        // Adicionamos a nova ordem ao sinal.
+        // O computed 'filteredOrders' cuidará de colocar no topo.
+        this.ordersSignal.update((prev) => [serverCreatedOrder, ...prev]);
+        this.toast.showToast(`O.S. ${serverCreatedOrder.osNumber} criada com sucesso!`, 'success');
       },
       error: (err) => {
-        const errorMsg = err.error?.message?.[0] || 'Erro ao conectar com o servidor';
-        this.toast.showToast(errorMsg, 'error');
+        const errorMsg = err.error?.message || 'Erro ao criar O.S.';
+        this.toast.showToast(Array.isArray(errorMsg) ? errorMsg[0] : errorMsg, 'error');
       },
     });
   }
 
-  updateOrder(uiOrder: any) {
+  updateOrder(payload: any) {
     this.loading.set(true);
-    const { customerName, technicianName, equipmentName, ...apiPayload } = uiOrder;
-
-    this.apiService.update(apiPayload.id, apiPayload).subscribe({
+    this.apiService.update(payload.id, payload).subscribe({
       next: (serverUpdatedOrder) => {
-        this.ordersSignal.update((prev) => {
-          const index = prev.findIndex((o) => o.id === uiOrder.id);
-          if (index === -1) return prev;
-
-          const newOrders = [...prev];
-          // Mantemos os nomes que já estavam na UI para não "limpar" o card
-          newOrders[index] = {
-            ...uiOrder,
-            ...serverUpdatedOrder,
-            // Garantimos que os nomes persistam caso o servidor não os envie
-            customerName: uiOrder.customerName,
-            technicianName: uiOrder.technicianName,
-            equipmentName: uiOrder.equipmentName,
-          };
-          return newOrders;
-        });
-
+        this.ordersSignal.update((prev) =>
+          prev.map((o) => (o.id === serverUpdatedOrder.id ? serverUpdatedOrder : o)),
+        );
         this.loading.set(false);
         this.toast.showToast(`O.S. atualizada com sucesso!`, 'success');
       },
       error: (err) => {
         this.loading.set(false);
-        const errorMsg = err.error?.message?.[0] || 'Erro ao atualizar no servidor';
-        this.toast.showToast(errorMsg, 'error');
+        const errorMsg = err.error?.message || 'Erro ao atualizar O.S.';
+        this.toast.showToast(Array.isArray(errorMsg) ? errorMsg[0] : errorMsg, 'error');
+      },
+    });
+  }
+
+  finalizeOrder(id: string) {
+    this.loading.set(true);
+
+    // Criamos o payload mínimo necessário
+    const payload = {
+      status: 'COMPLETED' as OSStatus,
+      updatedBy: 'Henrique (Admin)',
+    };
+
+    // Chamamos o serviço de API passando o ID separado do payload
+    this.apiService.update(id, payload).subscribe({
+      next: (serverUpdatedOrder) => {
+        // Atualizamos o sinal localmente substituindo o item antigo
+        this.ordersSignal.update((prev) =>
+          prev.map((o) => (o.id === serverUpdatedOrder.id ? serverUpdatedOrder : o)),
+        );
+        this.loading.set(false);
+        this.toast.showToast(
+          `O.S. ${serverUpdatedOrder.osNumber} finalizada e estoque baixado!`,
+          'success',
+        );
+      },
+      error: (err) => {
+        this.loading.set(false);
+        console.error('Erro ao finalizar:', err);
+        this.toast.showToast('Erro ao finalizar O.S.', 'error');
       },
     });
   }

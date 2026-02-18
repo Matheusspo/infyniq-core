@@ -25,6 +25,10 @@ export class OrderServiceApiService {
 
   // Atualiza a O.S. completa (corpo da mensagem)
   update(id: string, order: Partial<OrderService>): Observable<OrderService> {
-    return this.http.patch<OrderService>(`${this.API_URL}/${id}`, order);
+    // Garantimos que o ID não vá no corpo (body) para o NestJS não reclamar
+    const { id: _, ...payloadWithoutId } = order as any;
+
+    // A URL deve conter o ID: http://localhost:3000/service-orders/b211...
+    return this.http.patch<OrderService>(`${this.API_URL}/${id}`, payloadWithoutId);
   }
 }

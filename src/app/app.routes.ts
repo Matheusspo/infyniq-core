@@ -21,7 +21,9 @@ export const routes: Routes = [
       {
         path: 'orders', // Rota que configuramos no Sidebar
         loadComponent: () =>
-          import('./features/orders/os-list/os-list.component').then((m) => m.OSListComponent),
+          import('./features/orders/service-order-list/service-order-list.component').then(
+            (m) => m.OSListComponent,
+          ),
       },
       {
         path: 'estoque',

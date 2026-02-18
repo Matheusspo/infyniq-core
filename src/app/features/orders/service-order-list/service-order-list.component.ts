@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderServiceStore } from '../store/order-service.store';
-import { OSFormComponent } from '../os-form/os-form.component';
+import { OSFormComponent } from '../service-order-form/service-order-form.component';
 import { OrderService, OSStatus } from '../models/order-service.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TechniciansService } from '../../technicians/data-access/technicians.service';
@@ -11,12 +11,14 @@ import { Technician } from '../../technicians/models/technician.model';
   selector: 'app-os-list',
   standalone: true,
   imports: [CommonModule, OSFormComponent],
-  templateUrl: './os-list.component.html',
+  templateUrl: './service-order-list.component.html',
 })
 export class OSListComponent implements OnInit {
   // 1. Injeção de Dependências
   public osStore = inject(OrderServiceStore);
   private techService = inject(TechniciansService);
+
+  isDrawerOpen = signal(false);
 
   // 2. Estado do Componente
   showForm = signal(false);
@@ -58,6 +60,16 @@ export class OSListComponent implements OnInit {
 
   ngOnInit() {
     this.osStore.loadOrders(); // Busca os dados do backend ao iniciar
+  }
+
+  finalizeOS(os: OrderService) {
+    const confirmed = confirm(
+      `Deseja finalizar a O.S. ${os.osNumber}? Esta ação atualizará o estoque permanentemente.`,
+    );
+
+    if (confirmed) {
+      this.osStore.finalizeOrder(os.id);
+    }
   }
 
   /**
