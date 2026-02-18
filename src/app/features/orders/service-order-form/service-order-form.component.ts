@@ -1,4 +1,13 @@
-import { Component, inject, signal, Output, EventEmitter, OnInit, Input } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  Output,
+  EventEmitter,
+  OnInit,
+  Input,
+  NgZone,
+} from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { forkJoin } from 'rxjs';
@@ -23,6 +32,7 @@ export class OSFormComponent implements OnInit {
   private equipmentService = inject(EquipmentsService);
   private techService = inject(TechniciansService);
   protected stockStore = inject(StockStore);
+  private ngZone = inject(NgZone);
 
   @Output() close = new EventEmitter<void>();
 
@@ -45,13 +55,21 @@ export class OSFormComponent implements OnInit {
       this.currentId = os.id;
       this.isEdit.set(true);
       this.selectedParts.set(os.parts || []);
-      if (this.isDataReady()) this.fillFormForEdit(os);
+
+      // Se os dados já estão prontos, preenche agora
+      // Senão, será preenchido no ngOnInit quando os dados chegarem
+      if (this.isDataReady()) {
+        this.loadAndFillEquipments(os);
+      }
     } else {
       this.osToEdit = null;
       this.currentId = undefined;
       this.isEdit.set(false);
       this.selectedParts.set([]);
-      this.osForm.reset({ type: 'PREVENTIVE', isEmergency: false });
+      // Apenas limpa quando não há dados, evitando reset desnecessário
+      if (!this.osForm.pristine) {
+        this.osForm.reset({ type: 'PREVENTIVE', isEmergency: false });
+      }
     }
   }
 
@@ -77,19 +95,45 @@ export class OSFormComponent implements OnInit {
         this.technicians.set(technicians);
         this.isDataReady.set(true);
 
-        // Se for edição, preenche agora que os dados chegaram
-        if (this.osToEdit) this.fillFormForEdit(this.osToEdit);
+        // Se for edição, carrega equipamentos e preenche agora que os dados chegaram
+        if (this.osToEdit) {
+          this.loadAndFillEquipments(this.osToEdit);
+        }
       },
       error: (err) => console.error('Erro ao carregar dados do formulário:', err),
     });
 
     // 2. REATIVIDADE: Quando mudar o cliente, busca os equipamentos dele
     this.osForm.get('customerId')?.valueChanges.subscribe((cId) => {
-      if (cId) {
+      if (cId && !this.isEdit()) {
+        // Apenas busca equipamentos se NÃO estiver em modo edição (para evitar sobrescrever)
         this.equipmentService.getByCustomer(cId).subscribe((eqs) => {
           this.filteredEquipments.set(eqs);
         });
       }
+    });
+  }
+
+  // Carrega equipamentos e depois preenche o formulário
+  private loadAndFillEquipments(os: OrderService) {
+    const customerId = (os.customerId as any)?.id || (os.customerId as string);
+
+    if (!customerId) {
+      this.fillFormForEdit(os);
+      return;
+    }
+
+    this.equipmentService.getByCustomer(customerId).subscribe({
+      next: (equipments) => {
+        this.filteredEquipments.set(equipments);
+        // Agora que os equipamentos estão carregados, preenche o formulário
+        this.fillFormForEdit(os);
+      },
+      error: (err) => {
+        console.error('Erro ao carregar equipamentos:', err);
+        // Tenta preencher mesmo com erro
+        this.fillFormForEdit(os);
+      },
     });
   }
 
@@ -137,13 +181,18 @@ export class OSFormComponent implements OnInit {
   }
 
   private fillFormForEdit(os: any) {
-    this.osForm.patchValue({
-      type: os.type,
-      isEmergency: os.isEmergency,
-      description: os.description,
-      customerId: os.customerId?.id || os.customerId,
-      technicianId: os.technicianId?.id || os.technicianId,
-      equipmentId: os.equipmentId?.id || os.equipmentId,
-    });
+    // Usa patchValue sem emitir eventos para evitar race conditions
+    // Os equipamentos já estão carregados em filteredEquipments
+    this.osForm.patchValue(
+      {
+        type: os.type,
+        isEmergency: os.isEmergency,
+        description: os.description,
+        customerId: os.customerId?.id || os.customerId,
+        technicianId: os.technicianId?.id || os.technicianId,
+        equipmentId: os.equipmentId?.id || os.equipmentId,
+      },
+      { emitEvent: false },
+    );
   }
 }

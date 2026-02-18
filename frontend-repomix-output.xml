@@ -1,4 +1,4 @@
-This file is a merged representation of a subset of the codebase, containing specifically included files and files not matching ignore patterns, combined into a single document by Repomix.
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
 
 <file_summary>
 This section contains a summary of this file.
@@ -32,8 +32,7 @@ The content is organized as follows:
 <notes>
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
-- Only files matching these patterns are included: src/**/*, package.json, tsconfig.json, tailwind.config.js
-- Files matching these patterns are excluded: **/node_modules/**, **/dist/**, **/.git/**, **/tests/**
+- Only files matching these patterns are included: src/**/*
 - Files matching patterns in .gitignore are excluded
 - Files matching default ignore patterns are excluded
 - Files are sorted by Git change count (files with more changes are at the bottom)
@@ -42,7 +41,6 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
-package.json
 src/app/app.component.html
 src/app/app.component.ts
 src/app/app.config.ts
@@ -106,10 +104,10 @@ src/app/features/estoque/estoque-list/estoque-list.scss
 src/app/features/estoque/estoque-list/estoque-list.spec.ts
 src/app/features/estoque/stock.store.ts
 src/app/features/orders/models/order-service.model.ts
-src/app/features/orders/os-form/os-form.component.html
-src/app/features/orders/os-form/os-form.component.ts
-src/app/features/orders/os-list/os-list.component.html
-src/app/features/orders/os-list/os-list.component.ts
+src/app/features/orders/service-order-form/service-order-form.component.html
+src/app/features/orders/service-order-form/service-order-form.component.ts
+src/app/features/orders/service-order-list/service-order-list.component.html
+src/app/features/orders/service-order-list/service-order-list.component.ts
 src/app/features/orders/services/order-service.service.ts
 src/app/features/orders/store/order-service.store.ts
 src/app/features/technicians/data-access/technicians.service.ts
@@ -129,8 +127,6 @@ src/environments/environment.ts
 src/index.html
 src/main.ts
 src/styles.scss
-tailwind.config.js
-tsconfig.json
 </directory_structure>
 
 <files>
@@ -591,35 +587,771 @@ describe('EstoqueList', () => {
 });
 </file>
 
-<file path="src/app/features/orders/services/order-service.service.ts">
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+<file path="src/app/features/orders/service-order-form/service-order-form.component.html">
+<div
+  class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-300"
+>
+  <form
+    [formGroup]="osForm"
+    (ngSubmit)="onSubmit()"
+    class="bg-white w-full max-w-5xl max-h-[90vh] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] rounded-[48px] flex flex-col overflow-hidden border border-white"
+  >
+    <header class="p-8 border-b border-slate-50 flex justify-between items-start">
+      <div>
+        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600 block mb-1"
+          >Engenharia de Campo</span
+        >
+        <h2 class="text-3xl font-black text-slate-800 tracking-tighter">
+          {{ isEdit() ? 'Editar Ordem de Serviço' : 'Abertura de Chamado Técnico' }}
+        </h2>
+      </div>
+      <button
+        type="button"
+        (click)="onClose()"
+        class="p-3 hover:bg-slate-50 rounded-2xl transition-all group"
+      >
+        <i class="pi pi-times text-slate-400 group-hover:text-slate-900"></i>
+      </button>
+    </header>
+
+    <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+      <div class="grid grid-cols-12 gap-10">
+        <div class="col-span-12 lg:col-span-7 space-y-8">
+          <div class="grid grid-cols-2 gap-6">
+            <div class="group">
+              <label
+                class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 group-focus-within:text-blue-600"
+              >
+                Tipo de Serviço
+              </label>
+              <select
+                formControlName="type"
+                class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-4 focus:bg-white focus:border-blue-500/10 outline-none transition-all font-bold text-slate-700 active:scale-[0.98]"
+              >
+                <option value="PREVENTIVE">Manutenção Preventiva</option>
+                <option value="CORRECTIVE">Manutenção Corretiva</option>
+                <option value="EMERGENCY">Atendimento Emergencial</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col">
+              <label
+                class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
+                >Prioridade</label
+              >
+              <div
+                class="h-[60px] flex items-center bg-amber-50/50 rounded-2xl px-6 border-2 border-transparent hover:border-amber-100 transition-all"
+              >
+                <label class="relative inline-flex items-center cursor-pointer group">
+                  <input type="checkbox" formControlName="isEmergency" class="sr-only peer" />
+
+                  <div
+                    class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:bg-amber-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"
+                  ></div>
+
+                  <span
+                    class="ml-3 text-[10px] font-black text-amber-700 uppercase tracking-tight whitespace-nowrap"
+                  >
+                    Regime de Emergência
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="group">
+              <label
+                class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
+                >Condomínio / Cliente</label
+              >
+              <select
+                [compareWith]="compareFn"
+                formControlName="customerId"
+                class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-4 font-bold text-slate-700 focus:bg-white focus:border-blue-500/10 outline-none transition-all"
+              >
+                <option value="">Selecione o condomínio...</option>
+                @for (c of customers(); track c.id) {
+                  <option [value]="c.id">{{ c.name }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="group">
+                <label
+                  class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
+                  >Elevador / Equipamento</label
+                >
+                <select
+                  [compareWith]="compareFn"
+                  formControlName="equipmentId"
+                  class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-4 font-bold text-slate-700 focus:bg-white focus:border-blue-500/10 outline-none transition-all"
+                >
+                  <option value="">Selecione...</option>
+                  @for (e of filteredEquipments(); track e.id) {
+                    <option [value]="e.id">{{ e.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="group">
+                <label
+                  class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
+                  >Técnico Responsável</label
+                >
+                <select
+                  [compareWith]="compareFn"
+                  formControlName="technicianId"
+                  class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-4 font-bold text-slate-700 focus:bg-white focus:border-blue-500/10 outline-none transition-all"
+                >
+                  <option value="">Atribuir técnico...</option>
+                  @for (t of technicians(); track t.id) {
+                    <option [value]="t.id">{{ t.name }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="group">
+            <label
+              class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
+              >Relato do Problema</label
+            >
+            <textarea
+              formControlName="description"
+              rows="4"
+              class="w-full bg-slate-50 border-2 border-transparent rounded-[32px] px-6 py-4 focus:bg-white focus:border-blue-500/10 outline-none transition-all resize-none font-medium text-slate-700"
+              placeholder="Descreva o defeito ou a tarefa preventiva..."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-5 flex flex-col">
+          <div class="bg-slate-50 rounded-[40px] p-6 border border-slate-100 flex-1 flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <i class="pi pi-box text-white text-xs"></i>
+                </div>
+                <label class="text-[10px] font-black text-slate-800 uppercase tracking-widest"
+                  >Reserva de Peças</label
+                >
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <select
+                (change)="addPart($event)"
+                class="w-full bg-white border-2 border-slate-100 rounded-2xl px-4 py-3 font-bold text-slate-600 outline-none focus:border-blue-500 transition-all cursor-pointer"
+              >
+                <option value="">+ Adicionar item do estoque</option>
+                @for (item of stockStore.items(); track item.id) {
+                  <option [value]="item.id">
+                    {{ item.name }} (Qtd: {{ item.currentQuantity }})
+                  </option>
+                }
+              </select>
+            </div>
+
+            <div class="space-y-3 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
+              @for (part of selectedParts(); track part.id) {
+                <div
+                  class="flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-slate-100 animate-in zoom-in duration-200"
+                >
+                  <div class="flex items-center gap-3">
+                    <span
+                      class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 font-bold text-xs"
+                      >{{ part.requestedQuantity }}x</span
+                    >
+                    <span class="text-sm font-bold text-slate-700">{{ part.name }}</span>
+                  </div>
+                  <button
+                    type="button"
+                    (click)="removePart(part.id)"
+                    class="text-slate-300 hover:text-red-500 transition-colors"
+                  >
+                    <i class="pi pi-trash"></i>
+                  </button>
+                </div>
+              } @empty {
+                <div class="flex-1 flex flex-col items-center justify-center opacity-40 py-10">
+                  <i class="pi pi-search text-4xl mb-2"></i>
+                  <p class="text-[10px] font-black uppercase">Nenhum item reservado</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="p-8 bg-slate-50/50 border-t border-slate-50 flex justify-end gap-4">
+      <button
+        type="button"
+        (click)="onClose()"
+        class="px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-all"
+      >
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        [disabled]="loading() || osForm.invalid"
+        class="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl hover:bg-blue-600 disabled:opacity-50 transition-all"
+      >
+        {{ isEdit() ? 'Salvar Alterações' : 'Confirmar e Abrir O.S.' }}
+      </button>
+    </footer>
+  </form>
+</div>
+</file>
+
+<file path="src/app/features/orders/service-order-form/service-order-form.component.ts">
+import {
+  Component,
+  inject,
+  signal,
+  Output,
+  EventEmitter,
+  OnInit,
+  Input,
+  NgZone,
+} from '@angular/core';
+import { FormBuilder, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { forkJoin } from 'rxjs';
+
+import { OrderServiceStore } from '../store/order-service.store';
+import { CustomersService } from '../../customers/data-access/customers.service';
+import { EquipmentsService } from '../../customers/data-access/equipments.service';
+import { TechniciansService } from '../../technicians/data-access/technicians.service';
+import { OrderService } from '../models/order-service.model';
+import { StockStore } from '../../estoque/stock.store';
+
+@Component({
+  selector: 'app-os-form',
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule, FormsModule],
+  templateUrl: './service-order-form.component.html',
+})
+export class OSFormComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private orderStore = inject(OrderServiceStore);
+  private customerService = inject(CustomersService);
+  private equipmentService = inject(EquipmentsService);
+  private techService = inject(TechniciansService);
+  protected stockStore = inject(StockStore);
+  private ngZone = inject(NgZone);
+
+  @Output() close = new EventEmitter<void>();
+
+  isEdit = signal(false);
+  loading = signal(false);
+  isDataReady = signal(false);
+
+  // Signals que alimentam os selects do HTML
+  customers = signal<any[]>([]);
+  technicians = signal<any[]>([]);
+  filteredEquipments = signal<any[]>([]);
+  selectedParts = signal<any[]>([]);
+
+  private currentId?: string;
+  private osToEdit: OrderService | null = null;
+
+  @Input() set initialData(os: OrderService | null) {
+    if (os) {
+      this.osToEdit = os;
+      this.currentId = os.id;
+      this.isEdit.set(true);
+      this.selectedParts.set(os.parts || []);
+
+      // Se os dados já estão prontos, preenche agora
+      // Senão, será preenchido no ngOnInit quando os dados chegarem
+      if (this.isDataReady()) {
+        this.loadAndFillEquipments(os);
+      }
+    } else {
+      this.osToEdit = null;
+      this.currentId = undefined;
+      this.isEdit.set(false);
+      this.selectedParts.set([]);
+      // Apenas limpa quando não há dados, evitando reset desnecessário
+      if (!this.osForm.pristine) {
+        this.osForm.reset({ type: 'PREVENTIVE', isEmergency: false });
+      }
+    }
+  }
+
+  osForm = this.fb.group({
+    customerId: ['', Validators.required],
+    equipmentId: ['', Validators.required],
+    type: ['PREVENTIVE', Validators.required],
+    technicianId: ['', Validators.required],
+    description: ['', [Validators.required, Validators.minLength(10)]],
+    isEmergency: [false],
+  });
+
+  ngOnInit() {
+    this.stockStore.loadAll();
+
+    // 1. CARREGAMENTO INICIAL: Garante que os dados venham do banco
+    forkJoin({
+      customers: this.customerService.getCustomers(),
+      technicians: this.techService.getAll(),
+    }).subscribe({
+      next: ({ customers, technicians }) => {
+        this.customers.set(customers);
+        this.technicians.set(technicians);
+        this.isDataReady.set(true);
+
+        // Se for edição, carrega equipamentos e preenche agora que os dados chegaram
+        if (this.osToEdit) {
+          this.loadAndFillEquipments(this.osToEdit);
+        }
+      },
+      error: (err) => console.error('Erro ao carregar dados do formulário:', err),
+    });
+
+    // 2. REATIVIDADE: Quando mudar o cliente, busca os equipamentos dele
+    this.osForm.get('customerId')?.valueChanges.subscribe((cId) => {
+      if (cId && !this.isEdit()) {
+        // Apenas busca equipamentos se NÃO estiver em modo edição (para evitar sobrescrever)
+        this.equipmentService.getByCustomer(cId).subscribe((eqs) => {
+          this.filteredEquipments.set(eqs);
+        });
+      }
+    });
+  }
+
+  // Carrega equipamentos e depois preenche o formulário
+  private loadAndFillEquipments(os: OrderService) {
+    const customerId = (os.customerId as any)?.id || (os.customerId as string);
+
+    if (!customerId) {
+      this.fillFormForEdit(os);
+      return;
+    }
+
+    this.equipmentService.getByCustomer(customerId).subscribe({
+      next: (equipments) => {
+        this.filteredEquipments.set(equipments);
+        // Agora que os equipamentos estão carregados, preenche o formulário
+        this.fillFormForEdit(os);
+      },
+      error: (err) => {
+        console.error('Erro ao carregar equipamentos:', err);
+        // Tenta preencher mesmo com erro
+        this.fillFormForEdit(os);
+      },
+    });
+  }
+
+  addPart(event: any) {
+    const partId = event.target.value;
+    if (!partId) return;
+    const item = this.stockStore.items().find((p) => p.id === partId);
+    if (item) {
+      this.selectedParts.update((prev) => {
+        if (prev.find((p) => p.id === item.id)) return prev;
+        return [...prev, { id: item.id, name: item.name, requestedQuantity: 1 }];
+      });
+    }
+    event.target.value = '';
+  }
+
+  removePart(id: string) {
+    this.selectedParts.update((prev) => prev.filter((p) => p.id !== id));
+  }
+
+  onSubmit() {
+    if (this.osForm.invalid) return;
+    this.loading.set(true);
+    const data = {
+      ...this.osForm.getRawValue(),
+      parts: this.selectedParts(),
+      updatedBy: 'Henrique (Admin)',
+    };
+
+    if (this.isEdit()) this.orderStore.updateOrder({ ...data, id: this.currentId });
+    else this.orderStore.addOrder(data);
+
+    setTimeout(() => {
+      this.loading.set(false);
+      this.onClose();
+    }, 500);
+  }
+
+  onClose() {
+    this.close.emit();
+  }
+
+  compareFn(item1: any, item2: any): boolean {
+    return item1 && item2 ? item1.toString() === item2.toString() : item1 === item2;
+  }
+
+  private fillFormForEdit(os: any) {
+    // Usa patchValue sem emitir eventos para evitar race conditions
+    // Os equipamentos já estão carregados em filteredEquipments
+    this.osForm.patchValue(
+      {
+        type: os.type,
+        isEmergency: os.isEmergency,
+        description: os.description,
+        customerId: os.customerId?.id || os.customerId,
+        technicianId: os.technicianId?.id || os.technicianId,
+        equipmentId: os.equipmentId?.id || os.equipmentId,
+      },
+      { emitEvent: false },
+    );
+  }
+}
+</file>
+
+<file path="src/app/features/orders/service-order-list/service-order-list.component.html">
+<div class="p-10 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+    <div>
+      <h1 class="text-5xl font-black text-slate-800 tracking-tighter leading-none">
+        ORDENS DE <span class="text-blue-600">SERVIÇO</span>
+      </h1>
+      <div class="flex items-center gap-3 mt-2">
+        <p class="text-slate-400 font-black text-[10px] uppercase tracking-[0.3em]">
+          Gestão de Manutenção em Tempo Real
+        </p>
+        @if (osStore.emergencyCount() > 0) {
+          <span
+            class="animate-pulse bg-amber-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full"
+          >
+            {{ osStore.emergencyCount() }} URGÊNCIAS
+          </span>
+        }
+      </div>
+    </div>
+
+    <button
+      (click)="openNewOS()"
+      class="bg-[#1e293b] hover:bg-blue-600 text-white px-8 py-5 rounded-[24px] text-[11px] font-black transition-all flex items-center gap-4 shadow-2xl shadow-blue-900/20 active:scale-95 group"
+    >
+      <div class="bg-white/10 p-1 rounded-lg group-hover:bg-white/20 transition-colors">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+          <path d="M12 4v16m8-8H4" />
+        </svg>
+      </div>
+      ABRIR NOVA ORDEM
+    </button>
+  </div>
+
+  <div class="flex gap-3 overflow-x-auto pb-4 no-scrollbar">
+    @for (stat of ['ALL', 'OPEN', 'IN_PROGRESS', 'COMPLETED']; track stat) {
+      <button
+        (click)="filterBy(stat)"
+        [class]="
+          osStore.statusFilter() === stat
+            ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 border-blue-600'
+            : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200'
+        "
+        class="px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95"
+      >
+        {{ stat === 'ALL' ? 'Todas' : stat === 'IN_PROGRESS' ? 'Em Andamento' : stat }}
+      </button>
+    }
+  </div>
+
+  <div class="flex flex-col gap-3">
+    @for (os of filteredOrders(); track os.id) {
+      <div
+        class="group bg-white border-2 border-slate-50 p-4 pr-8 rounded-[28px] hover:border-blue-500/20 transition-all hover:shadow-xl hover:shadow-blue-900/5 flex items-center gap-6 relative overflow-hidden"
+      >
+        @if (os.isEmergency) {
+          <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-amber-500 animate-pulse"></div>
+        }
+
+        <div class="flex flex-col items-center min-w-[110px] border-r-2 border-slate-50 pr-6">
+          <span class="text-[10px] font-black text-blue-600 uppercase tracking-tighter opacity-70">
+            #{{ os.osNumber || 'OS-2024' }}
+          </span>
+          <div
+            [class]="getStatusClass(os.status)"
+            class="mt-1 px-3 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-tighter border text-center"
+          >
+            {{ os.status }}
+          </div>
+
+          <div class="mt-2 flex items-center gap-1.5 px-2 py-0.5 bg-slate-100/50 rounded-md">
+            <svg
+              class="w-3 h-3 text-slate-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="3"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span
+              class="text-[9px] font-black uppercase tracking-wide whitespace-nowrap text-slate-700"
+            >
+              {{ formatTimeDistance(os.createdAt) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-3 mb-1.5">
+            <h3 class="text-base font-black text-slate-900 tracking-tighter uppercase truncate">
+              {{ os.customerName }}
+            </h3>
+            <span
+              class="bg-blue-600 text-white text-[8px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest shadow-sm"
+            >
+              {{ os.type }}
+            </span>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center gap-2">
+              <p class="text-[11px] text-blue-700 font-extrabold uppercase tracking-tight truncate">
+                {{ os.equipmentName }}
+              </p>
+            </div>
+            <p class="text-[11px] text-slate-700 font-bold leading-tight">
+              <span class="text-slate-400 font-black mr-1">•</span>
+              {{ os.description || 'Sem descrição detalhada' }}
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="hidden lg:flex items-center gap-4 min-w-[200px] border-l-2 border-slate-50 pl-6"
+        >
+          <div
+            class="hidden lg:flex items-center gap-4 min-w-[200px] border-l-2 border-slate-50 pl-6"
+          >
+            <div
+              class="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center text-[10px] font-black text-white shadow-md shrink-0"
+            >
+              {{ (os.technicianName ? os.technicianName.substring(0, 2) : 'TK').toUpperCase() }}
+            </div>
+
+            <div class="flex flex-col">
+              <span
+                class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none"
+              >
+                Responsável
+              </span>
+              <span class="text-[11px] font-bold text-slate-700 leading-tight">
+                {{ os.technicianName || 'Não atribuído' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button
+            (click)="editOS(os)"
+            class="p-2 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-blue-600 transition-all"
+          >
+            <i class="pi pi-pencil"></i>
+          </button>
+
+          @if (os.status !== 'COMPLETED' && os.status !== 'CANCELLED') {
+            <button
+              (click)="finalizeOS(os)"
+              class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-500 px-3 py-1.5 rounded-xl border border-emerald-100 transition-all group"
+              title="Finalizar Ordem e Baixar Estoque"
+            >
+              <i class="pi pi-check text-emerald-600 group-hover:text-white text-xs"></i>
+              <span
+                class="text-[10px] font-black uppercase tracking-widest text-emerald-700 group-hover:text-white"
+              >
+                Finalizar
+              </span>
+            </button>
+          } @else if (os.status === 'COMPLETED') {
+            <div
+              class="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-xl opacity-60 cursor-not-allowed"
+            >
+              <i class="pi pi-lock text-slate-400 text-xs"></i>
+              <span class="text-[10px] font-black uppercase tracking-widest text-slate-500"
+                >Concluída</span
+              >
+            </div>
+          }
+        </div>
+      </div>
+    } @empty {
+      <div
+        class="py-20 flex flex-col items-center justify-center bg-slate-50/50 rounded-[48px] border-2 border-dashed border-slate-200"
+      >
+        <div class="bg-white p-6 rounded-[32px] shadow-xl shadow-slate-200 mb-4">
+          <svg
+            class="w-12 h-12 text-slate-300"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+        </div>
+        <h3 class="text-xl font-black text-slate-800 tracking-tighter">Nenhuma O.S. encontrada</h3>
+      </div>
+    }
+  </div>
+</div>
+
+@if (showForm()) {
+  <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[40]" (click)="closeForm()"></div>
+
+  <app-os-form [initialData]="selectedOS()" (close)="closeForm()" class="z-[50]"> </app-os-form>
+}
+</file>
+
+<file path="src/app/features/orders/service-order-list/service-order-list.component.ts">
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { OrderServiceStore } from '../store/order-service.store';
+import { OSFormComponent } from '../service-order-form/service-order-form.component';
 import { OrderService, OSStatus } from '../models/order-service.model';
-import { inject, Injectable } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { TechniciansService } from '../../technicians/data-access/technicians.service';
+import { Technician } from '../../technicians/models/technician.model';
 
-@Injectable({ providedIn: 'root' })
-export class OrderServiceApiService {
-  private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:3000/service-orders'; // Ajuste se sua porta for outra
+@Component({
+  selector: 'app-os-list',
+  standalone: true,
+  imports: [CommonModule, OSFormComponent],
+  templateUrl: './service-order-list.component.html',
+})
+export class OSListComponent implements OnInit {
+  // 1. Injeção de Dependências
+  public osStore = inject(OrderServiceStore);
+  private techService = inject(TechniciansService);
 
-  // Busca todas as ordens do JSON via Backend
-  getAll(): Observable<OrderService[]> {
-    return this.http.get<OrderService[]>(this.API_URL);
+  isDrawerOpen = signal(false);
+
+  // 2. Estado do Componente
+  showForm = signal(false);
+  selectedOS = signal<OrderService | null>(null);
+  statusFilter = this.osStore.statusFilter;
+
+  // 3. Busca de Técnicos (Transforma o Observable em Signal para o computed)
+  private technicians = toSignal(this.techService.getAll(), {
+    initialValue: [] as Technician[],
+  });
+
+  // 4. Lógica de Negócio Reativa (Ordenação + Join de Nomes)
+  readonly filteredOrders = computed(() => {
+    const filter = this.statusFilter();
+    const techs = this.technicians();
+
+    // Pegamos a lista bruta da store
+    // Importante: use o nome correto do sinal na sua store (ordersSignal ou similar)
+    // Se na store for public orders = signal(...), use this.osStore.orders()
+    const rawOrders = (this.osStore as any).ordersSignal?.() || [];
+
+    // Mapeamos as ordens injetando o nome do técnico "on-the-fly"
+    let ordersWithNames = rawOrders.map((os: OrderService) => ({
+      ...os,
+      technicianName: techs.find((t) => t.id === os.technicianId)?.name || 'Não atribuído',
+    }));
+
+    // Ordenação (Mais recentes primeiro: b - a)
+    ordersWithNames.sort((a: any, b: any) => {
+      const dateA = new Date(a.createdAt || 0).getTime();
+      const dateB = new Date(b.createdAt || 0).getTime();
+      return dateB - dateA;
+    });
+
+    // Filtro por Status
+    if (filter === 'ALL') return ordersWithNames;
+    return ordersWithNames.filter((os: any) => os.status === filter);
+  });
+
+  ngOnInit() {
+    this.osStore.loadOrders(); // Busca os dados do backend ao iniciar
   }
 
-  // Envia a nova O.S. para o Backend
-  create(order: Partial<OrderService>): Observable<OrderService> {
-    return this.http.post<OrderService>(this.API_URL, order);
+  finalizeOS(os: OrderService) {
+    const confirmed = confirm(
+      `Deseja finalizar a O.S. ${os.osNumber}? Esta ação atualizará o estoque permanentemente.`,
+    );
+
+    if (confirmed) {
+      this.osStore.finalizeOrder(os.id);
+    }
   }
 
-  // Atualiza o status (ex: para CONCLUIDA)
-  updateStatus(id: string, status: OSStatus): Observable<OrderService> {
-    return this.http.patch<OrderService>(`${this.API_URL}/${id}/status`, { status });
+  /**
+   * Abre o formulário para uma nova O.S.
+   */
+  openNewOS() {
+    this.selectedOS.set(null);
+    this.showForm.set(true);
   }
 
-  // Atualiza a O.S. completa (corpo da mensagem)
-  update(id: string, order: Partial<OrderService>): Observable<OrderService> {
-    return this.http.patch<OrderService>(`${this.API_URL}/${id}`, order);
+  /**
+   * Fecha o formulário e limpa seleção
+   */
+  closeForm() {
+    this.showForm.set(false);
+    this.selectedOS.set(null);
+  }
+
+  /**
+   * Abre o formulário preenchido para edição
+   */
+  editOS(os: OrderService) {
+    this.selectedOS.set(os);
+    this.showForm.set(true);
+  }
+
+  /**
+   * Altera o filtro de visualização
+   */
+  filterBy(status: any) {
+    this.osStore.statusFilter.set(status as OSStatus | 'ALL');
+  }
+
+  /**
+   * Cores dinâmicas para as badges de status
+   */
+  getStatusClass(status: string): string {
+    const baseClasses = 'border ';
+    const statusMap: Record<string, string> = {
+      OPEN: 'bg-blue-50 text-blue-600 border-blue-100',
+      IN_PROGRESS: 'bg-amber-50 text-amber-600 border-amber-100',
+      COMPLETED: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+      CANCELLED: 'bg-slate-50 text-slate-400 border-slate-100',
+    };
+
+    return baseClasses + (statusMap[status] || 'bg-slate-50 text-slate-500 border-slate-200');
+  }
+
+  /**
+   * Formatação de tempo relativo (ex: há 2 horas)
+   */
+  formatTimeDistance(date: string | Date): string {
+    if (!date) return '---';
+    const start = new Date(date).getTime();
+    const now = new Date().getTime();
+    const diffInMinutes = Math.floor((now - start) / (1000 * 60));
+
+    if (diffInMinutes < 1) return 'agora';
+    if (diffInMinutes < 60) return `há ${diffInMinutes} min`;
+
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `há ${diffInHours} ${diffInHours === 1 ? 'hora' : 'horas'}`;
+
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `há ${diffInDays} ${diffInDays === 1 ? 'dia' : 'dias'}`;
   }
 }
 </file>
@@ -1391,63 +2123,6 @@ export const environment = {
 };
 </file>
 
-<file path="tailwind.config.js">
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    './src/**/*.{html,ts}', // Isso diz ao Tailwind para ler seus componentes Angular
-  ],
-  theme: {
-    extend: {
-      colors: {
-        // Cores personalizadas para a Repair Elevadores
-        primary: '#1e40af',
-        secondary: '#64748b',
-        critical: '#ef4444',
-      },
-    },
-  },
-  plugins: [],
-};
-</file>
-
-<file path="tsconfig.json">
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
-{
-  "compileOnSave": false,
-  "compilerOptions": {
-    "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "skipLibCheck": true,
-    "isolatedModules": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "target": "ES2022",
-    "module": "preserve"
-  },
-  "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "typeCheckHostBindings": true,
-    "strictTemplates": true
-  },
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
-  ]
-}
-</file>
-
 <file path="src/app/app.config.ts">
 import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core'; // Nome atualizado
 import { provideRouter } from '@angular/router';
@@ -1873,782 +2548,39 @@ describe('DashboardComponent', () => {
 });
 </file>
 
-<file path="src/app/features/orders/models/order-service.model.ts">
-// src/app/features/orders/models/order-service.model.ts
-
-export type OSStatus = 'OPEN' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-export type OSType = 'PREVENTIVE' | 'CORRECTIVE' | 'EMERGENCY' | 'INSTALLATION';
-
-export interface OrderService {
-  id: string;
-  osNumber: string; // Ex: "OS-2024-001"
-  customerId: string;
-  customerName: string; // Nome do Condomínio para o Card
-  equipmentId: string;
-  equipmentName: string; // Nome do Elevador para o Card
-  technicianId: string;
-  technicianName: string; // Nome do Técnico para o Card
-  type: OSType;
-  status: OSStatus;
-  description: string;
-  isEmergency: boolean; // Controla o alerta Amber do Henrique
-
-  // Auditoria (Padrão ARCHITECTURE.md)
-  createdAt: Date;
-  updatedAt: Date;
-  updatedBy: string;
-}
-</file>
-
-<file path="src/app/features/orders/os-form/os-form.component.html">
-<div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex justify-end transition-all">
-  <form
-    [formGroup]="osForm"
-    (ngSubmit)="onSubmit()"
-    class="h-full w-full max-w-[550px] bg-white shadow-2xl shadow-blue-900/20 rounded-l-[48px] flex flex-col animate-in slide-in-from-right duration-500"
-  >
-    <header class="p-10 pb-6">
-      <span class="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 block mb-1">
-        Gestão Técnica
-      </span>
-      <h2 class="text-3xl font-black text-slate-800 tracking-tighter">
-        {{ isEdit() ? 'Editar O.S.' : 'Nova Ordem' }}
-      </h2>
-    </header>
-
-    <div class="bg-black text-white text-[10px] p-2 mb-4 rounded overflow-auto">
-      DEBUG: {{ osForm.value | json }}
-    </div>
-
-    <div class="flex-1 overflow-y-auto px-10 space-y-6">
-      <div class="grid grid-cols-2 gap-4">
-        <div class="group">
-          <label
-            class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 group-hover:text-blue-600"
-          >
-            Tipo de Serviço
-          </label>
-          <select
-            formControlName="type"
-            class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-3 focus:bg-white focus:border-blue-500/10 outline-none transition-all font-bold text-slate-700"
-          >
-            <option value="PREVENTIVE">Preventiva</option>
-            <option value="CORRECTIVE">Corretiva</option>
-            <option value="EMERGENCY">Emergencial</option>
-          </select>
-        </div>
-
-        <div class="flex items-center pt-6">
-          <label
-            class="relative inline-flex items-center cursor-pointer active:scale-95 transition-all"
-          >
-            <input type="checkbox" formControlName="isEmergency" class="sr-only peer" />
-            <div
-              class="w-11 h-6 bg-slate-200 peer-focus:ring-4 peer-focus:ring-amber-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-amber-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"
-            ></div>
-            <span class="ml-3 text-[10px] font-black text-slate-500 uppercase">Urgência</span>
-          </label>
-        </div>
-      </div>
-
-      <div>
-        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
-          >Condomínio / Cliente</label
-        >
-        <select
-          [compareWith]="compareFn"
-          formControlName="customerId"
-          class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-3 focus:bg-white focus:border-blue-500/10 outline-none font-bold text-slate-700"
-        >
-          <option value="">Selecione um cliente...</option>
-          @for (c of customers(); track c.id) {
-            <option [value]="c.id">{{ c.name }}</option>
-          }
-        </select>
-      </div>
-
-      <div>
-        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
-          >Equipamento</label
-        >
-        <select
-          [compareWith]="compareFn"
-          formControlName="equipmentId"
-          class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-3 focus:bg-white focus:border-blue-500/10 outline-none font-bold text-slate-700"
-        >
-          <option value="">Selecione o equipamento...</option>
-          @for (e of filteredEquipments(); track e.id) {
-            <option [value]="e.id">{{ e.name }}</option>
-          }
-        </select>
-      </div>
-
-      <div>
-        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
-          >Técnico Responsável</label
-        >
-        <select
-          [compareWith]="compareFn"
-          formControlName="technicianId"
-          class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-3 focus:bg-white focus:border-blue-500/10 outline-none font-bold text-slate-700"
-        >
-          <option value="">Atribuir a um técnico...</option>
-          @for (t of technicians(); track t.id) {
-            <option [value]="t.id">{{ t.name }}</option>
-          }
-        </select>
-      </div>
-
-      <div>
-        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2"
-          >Descrição do Problema</label
-        >
-        <textarea
-          formControlName="description"
-          rows="4"
-          placeholder="Descreva o chamado ou ocorrência..."
-          class="w-full bg-slate-50 border-2 border-transparent rounded-[32px] px-6 py-4 focus:bg-white focus:border-blue-500/10 outline-none transition-all resize-none font-medium text-slate-700"
-        ></textarea>
-      </div>
-    </div>
-
-    <footer class="p-10 pt-6 border-t border-slate-50 flex gap-3">
-      <button
-        type="button"
-        (click)="onClose()"
-        class="flex-1 px-6 py-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-100 transition-all active:scale-95"
-      >
-        Cancelar
-      </button>
-      <button
-        type="submit"
-        [disabled]="loading() || osForm.invalid"
-        class="flex-[2] bg-[#1e293b] text-white px-6 py-4 rounded-2xl font-bold hover:bg-blue-600 disabled:opacity-50 transition-all"
-      >
-        @if (loading()) {
-          Processando...
-        } @else {
-          {{ isEdit() ? 'Salvar Alterações' : 'Abrir Chamado' }}
-        }
-      </button>
-    </footer>
-  </form>
-</div>
-</file>
-
-<file path="src/app/features/orders/os-form/os-form.component.ts">
-import { Component, inject, signal, Output, EventEmitter, OnInit, Input } from '@angular/core'; // CORRIGIDO: Tudo do @angular/core
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { forkJoin } from 'rxjs';
-
-// Imports de Serviço e Model
-import { OrderServiceStore } from '../store/order-service.store';
-import { CustomersService } from '../../customers/data-access/customers.service';
-import { EquipmentsService } from '../../customers/data-access/equipments.service';
-import { Equipment } from '../../customers/models/equipment.model';
-import { Customer } from '../../customers/models/customer.model';
-import { TechniciansService } from '../../technicians/data-access/technicians.service';
-import { Technician } from '../../technicians/models/technician.model';
-import { OrderService } from '../models/order-service.model';
-
-@Component({
-  selector: 'app-os-form',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './os-form.component.html',
-})
-export class OSFormComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private orderStore = inject(OrderServiceStore);
-  private customerService = inject(CustomersService);
-  private equipmentService = inject(EquipmentsService);
-  private techService = inject(TechniciansService);
-
-  @Output() close = new EventEmitter<void>();
-
-  isEdit = signal(false);
-  loading = signal(false);
-  isDataReady = signal(false);
-
-  customers = signal<Customer[]>([]);
-  technicians = signal<Technician[]>([]);
-  filteredEquipments = signal<Equipment[]>([]);
-
-  private currentId?: string;
-  private osToEdit: OrderService | null = null;
-
-  @Input() set initialData(os: OrderService | null) {
-    if (os) {
-      this.osToEdit = os;
-      this.currentId = os.id;
-      this.isEdit.set(true);
-      if (this.isDataReady()) {
-        this.fillFormForEdit(os);
-      }
-    } else {
-      this.osToEdit = null;
-      this.currentId = undefined;
-      this.isEdit.set(false);
-      this.osForm.reset({ type: 'PREVENTIVE', isEmergency: false });
-      this.filteredEquipments.set([]);
-    }
-  }
-
-  osForm = this.fb.group({
-    customerId: ['', Validators.required],
-    equipmentId: ['', Validators.required],
-    type: ['PREVENTIVE', Validators.required],
-    technicianId: ['', Validators.required],
-    description: ['', [Validators.required, Validators.minLength(10)]],
-    isEmergency: [false],
-  });
-
-  ngOnInit() {
-    // Carrega dependências globais
-    forkJoin({
-      customers: this.customerService.getCustomers(),
-      technicians: this.techService.getAll(),
-    }).subscribe(
-      ({ customers, technicians }: { customers: Customer[]; technicians: Technician[] }) => {
-        this.customers.set(customers);
-        this.technicians.set(technicians);
-        this.isDataReady.set(true);
-
-        if (this.osToEdit) {
-          this.fillFormForEdit(this.osToEdit);
-        }
-      },
-    );
-
-    // Monitora mudança de cliente (somente manual)
-    this.osForm.get('customerId')?.valueChanges.subscribe((customerId: any) => {
-      if (customerId && !this.loading()) {
-        this.loadEquipments(customerId.toString());
-      }
-    });
-  }
-
-  private loadEquipments(customerId: string) {
-    this.equipmentService.getByCustomer(customerId).subscribe((equipments: Equipment[]) => {
-      this.filteredEquipments.set(equipments);
-    });
-  }
-  onSubmit() {
-    if (this.osForm.invalid) return;
-    this.loading.set(true);
-
-    const formValue = this.osForm.getRawValue();
-
-    // 1. DADOS LIMPOS: Apenas IDs e informações de serviço
-    // Removemos customerName, equipmentName e technicianName daqui
-    const cleanData = {
-      type: formValue.type,
-      isEmergency: formValue.isEmergency,
-      description: formValue.description,
-      customerId: formValue.customerId,
-      equipmentId: formValue.equipmentId,
-      technicianId: formValue.technicianId,
-      updatedBy: 'Admin Henrique', // OBRIGATÓRIO pelo seu backend
-    };
-
-    if (this.isEdit()) {
-      // 2. NA EDIÇÃO (PATCH/PUT)
-      const updatePayload = {
-        ...cleanData,
-        id: this.currentId,
-      };
-      this.orderStore.updateOrder(updatePayload as any);
-    } else {
-      // 3. NA CRIAÇÃO (POST)
-      // Enviamos apenas o cleanData.
-      // O backend gerará id, createdAt, updatedAt e status automaticamente.
-      this.orderStore.addOrder(cleanData as any);
-    }
-
-    setTimeout(() => {
-      this.loading.set(false);
-      this.onClose();
-    }, 500);
-  }
-  // Métodos onClose e onSubmit permanecem os mesmos...
-  onClose() {
-    this.close.emit();
-  }
-
-  private fillFormForEdit(os: any) {
-    const extractId = (val: any) => {
-      if (!val) return '';
-      if (typeof val === 'object') return val.id || val._id || '';
-      return val;
-    };
-
-    let cId = extractId(os.customerId);
-    let tId = extractId(os.technicianId);
-    let eId = extractId(os.equipmentId);
-
-    // LOGICA DE EMERGÊNCIA: Se o ID for "1" e não existir na lista,
-    // pega o ID do primeiro cliente real para o campo não ficar vazio
-    const clienteExiste = this.customers().some((c) => c.id === cId);
-    if (!clienteExiste && this.customers().length > 0) {
-      console.warn('ID "1" não encontrado. Usando ID do primeiro cliente da lista para teste.');
-      cId = this.customers()[0].id;
-    }
-
-    this.equipmentService.getByCustomer(cId).subscribe((equipments: Equipment[]) => {
-      this.filteredEquipments.set(equipments);
-
-      setTimeout(() => {
-        this.osForm.patchValue(
-          {
-            type: os.type,
-            isEmergency: os.isEmergency,
-            description: os.description,
-            customerId: cId,
-            technicianId: tId,
-            equipmentId: eId,
-          },
-          { emitEvent: false },
-        );
-      }, 200);
-    });
-  }
-
-  compareFn(item1: any, item2: any): boolean {
-    // Se os dois existirem, comparamos como string para evitar erro de tipo (String vs Number)
-    return item1 && item2 ? item1.toString() === item2.toString() : item1 === item2;
-  }
-}
-</file>
-
-<file path="src/app/features/orders/os-list/os-list.component.html">
-<div class="p-10 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-    <div>
-      <h1 class="text-5xl font-black text-slate-800 tracking-tighter leading-none">
-        ORDENS DE <span class="text-blue-600">SERVIÇO</span>
-      </h1>
-      <div class="flex items-center gap-3 mt-2">
-        <p class="text-slate-400 font-black text-[10px] uppercase tracking-[0.3em]">
-          Gestão de Manutenção em Tempo Real
-        </p>
-        @if (osStore.emergencyCount() > 0) {
-          <span
-            class="animate-pulse bg-amber-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full"
-          >
-            {{ osStore.emergencyCount() }} URGÊNCIAS
-          </span>
-        }
-      </div>
-    </div>
-
-    <button
-      (click)="openNewOS()"
-      class="bg-[#1e293b] hover:bg-blue-600 text-white px-8 py-5 rounded-[24px] text-[11px] font-black transition-all flex items-center gap-4 shadow-2xl shadow-blue-900/20 active:scale-95 group"
-    >
-      <div class="bg-white/10 p-1 rounded-lg group-hover:bg-white/20 transition-colors">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-          <path d="M12 4v16m8-8H4" />
-        </svg>
-      </div>
-      ABRIR NOVA ORDEM
-    </button>
-  </div>
-
-  <div class="flex gap-3 overflow-x-auto pb-4 no-scrollbar">
-    @for (stat of ['ALL', 'OPEN', 'IN_PROGRESS', 'COMPLETED']; track stat) {
-      <button
-        (click)="filterBy(stat)"
-        [class]="
-          osStore.statusFilter() === stat
-            ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 border-blue-600'
-            : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200'
-        "
-        class="px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap active:scale-95"
-      >
-        {{ stat === 'ALL' ? 'Todas' : stat === 'IN_PROGRESS' ? 'Em Andamento' : stat }}
-      </button>
-    }
-  </div>
-
-  <div class="flex flex-col gap-3">
-    @for (os of filteredOrders(); track os.id) {
-      <div
-        class="group bg-white border-2 border-slate-50 p-4 pr-8 rounded-[28px] hover:border-blue-500/20 transition-all hover:shadow-xl hover:shadow-blue-900/5 flex items-center gap-6 relative overflow-hidden"
-      >
-        @if (os.isEmergency) {
-          <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-amber-500 animate-pulse"></div>
-        }
-
-        <div class="flex flex-col items-center min-w-[110px] border-r-2 border-slate-50 pr-6">
-          <span class="text-[10px] font-black text-blue-600 uppercase tracking-tighter opacity-70">
-            #{{ os.osNumber || 'OS-2024' }}
-          </span>
-          <div
-            [class]="getStatusClass(os.status)"
-            class="mt-1 px-3 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-tighter border text-center"
-          >
-            {{ os.status }}
-          </div>
-
-          <div class="mt-2 flex items-center gap-1.5 px-2 py-0.5 bg-slate-100/50 rounded-md">
-            <svg
-              class="w-3 h-3 text-slate-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="3"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span
-              class="text-[9px] font-black uppercase tracking-wide whitespace-nowrap text-slate-700"
-            >
-              {{ formatTimeDistance(os.createdAt) }}
-            </span>
-          </div>
-        </div>
-
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-3 mb-1.5">
-            <h3 class="text-base font-black text-slate-900 tracking-tighter uppercase truncate">
-              {{ os.customerName }}
-            </h3>
-            <span
-              class="bg-blue-600 text-white text-[8px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest shadow-sm"
-            >
-              {{ os.type }}
-            </span>
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <div class="flex items-center gap-2">
-              <p class="text-[11px] text-blue-700 font-extrabold uppercase tracking-tight truncate">
-                {{ os.equipmentName }}
-              </p>
-            </div>
-            <p class="text-[11px] text-slate-700 font-bold leading-tight">
-              <span class="text-slate-400 font-black mr-1">•</span>
-              {{ os.description || 'Sem descrição detalhada' }}
-            </p>
-          </div>
-        </div>
-
-        <div
-          class="hidden lg:flex items-center gap-4 min-w-[200px] border-l-2 border-slate-50 pl-6"
-        >
-          <div
-            class="hidden lg:flex items-center gap-4 min-w-[200px] border-l-2 border-slate-50 pl-6"
-          >
-            <div
-              class="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center text-[10px] font-black text-white shadow-md shrink-0"
-            >
-              {{ (os.technicianName ? os.technicianName.substring(0, 2) : 'TK').toUpperCase() }}
-            </div>
-
-            <div class="flex flex-col">
-              <span
-                class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none"
-              >
-                Responsável
-              </span>
-              <span class="text-[11px] font-bold text-slate-700 leading-tight">
-                {{ os.technicianName || 'Não atribuído' }}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0"
-        >
-          <button
-            (click)="editOS(os)"
-            class="bg-slate-50 hover:bg-[#1e293b] hover:text-white text-slate-600 p-3 rounded-2xl transition-all active:scale-90 group/btn border border-slate-100"
-          >
-            <svg
-              class="w-5 h-5 group-hover/btn:translate-x-1 transition-transform"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2.5"
-            >
-              <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    } @empty {
-      <div
-        class="py-20 flex flex-col items-center justify-center bg-slate-50/50 rounded-[48px] border-2 border-dashed border-slate-200"
-      >
-        <div class="bg-white p-6 rounded-[32px] shadow-xl shadow-slate-200 mb-4">
-          <svg
-            class="w-12 h-12 text-slate-300"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-        </div>
-        <h3 class="text-xl font-black text-slate-800 tracking-tighter">Nenhuma O.S. encontrada</h3>
-      </div>
-    }
-  </div>
-</div>
-
-@if (showForm()) {
-  <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[40]" (click)="closeForm()"></div>
-
-  <app-os-form [initialData]="selectedOS()" (close)="closeForm()" class="z-[50]"> </app-os-form>
-}
-</file>
-
-<file path="src/app/features/orders/os-list/os-list.component.ts">
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { OrderServiceStore } from '../store/order-service.store';
-import { OSFormComponent } from '../os-form/os-form.component';
+<file path="src/app/features/orders/services/order-service.service.ts">
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { OrderService, OSStatus } from '../models/order-service.model';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { TechniciansService } from '../../technicians/data-access/technicians.service';
-import { Technician } from '../../technicians/models/technician.model';
-
-@Component({
-  selector: 'app-os-list',
-  standalone: true,
-  imports: [CommonModule, OSFormComponent],
-  templateUrl: './os-list.component.html',
-})
-export class OSListComponent implements OnInit {
-  // 1. Injeção de Dependências
-  public osStore = inject(OrderServiceStore);
-  private techService = inject(TechniciansService);
-
-  isDrawerOpen = signal(false);
-
-  // 2. Estado do Componente
-  showForm = signal(false);
-  selectedOS = signal<OrderService | null>(null);
-  statusFilter = this.osStore.statusFilter;
-
-  // 3. Busca de Técnicos (Transforma o Observable em Signal para o computed)
-  private technicians = toSignal(this.techService.getAll(), {
-    initialValue: [] as Technician[],
-  });
-
-  // 4. Lógica de Negócio Reativa (Ordenação + Join de Nomes)
-  readonly filteredOrders = computed(() => {
-    const filter = this.statusFilter();
-    const techs = this.technicians();
-
-    // Pegamos a lista bruta da store
-    // Importante: use o nome correto do sinal na sua store (ordersSignal ou similar)
-    // Se na store for public orders = signal(...), use this.osStore.orders()
-    const rawOrders = (this.osStore as any).ordersSignal?.() || [];
-
-    // Mapeamos as ordens injetando o nome do técnico "on-the-fly"
-    let ordersWithNames = rawOrders.map((os: OrderService) => ({
-      ...os,
-      technicianName: techs.find((t) => t.id === os.technicianId)?.name || 'Não atribuído',
-    }));
-
-    // Ordenação (Mais recentes primeiro: b - a)
-    ordersWithNames.sort((a: any, b: any) => {
-      const dateA = new Date(a.createdAt || 0).getTime();
-      const dateB = new Date(b.createdAt || 0).getTime();
-      return dateB - dateA;
-    });
-
-    // Filtro por Status
-    if (filter === 'ALL') return ordersWithNames;
-    return ordersWithNames.filter((os: any) => os.status === filter);
-  });
-
-  ngOnInit() {
-    this.osStore.loadOrders(); // Busca os dados do backend ao iniciar
-  }
-
-  /**
-   * Abre o formulário para uma nova O.S.
-   */
-  openNewOS() {
-    this.selectedOS.set(null);
-    this.showForm.set(true);
-  }
-
-  /**
-   * Fecha o formulário e limpa seleção
-   */
-  closeForm() {
-    this.showForm.set(false);
-    this.selectedOS.set(null);
-  }
-
-  /**
-   * Abre o formulário preenchido para edição
-   */
-  editOS(os: OrderService) {
-    this.selectedOS.set(os);
-    this.showForm.set(true);
-  }
-
-  /**
-   * Altera o filtro de visualização
-   */
-  filterBy(status: any) {
-    this.osStore.statusFilter.set(status as OSStatus | 'ALL');
-  }
-
-  /**
-   * Cores dinâmicas para as badges de status
-   */
-  getStatusClass(status: string): string {
-    const baseClasses = 'border ';
-    const statusMap: Record<string, string> = {
-      OPEN: 'bg-blue-50 text-blue-600 border-blue-100',
-      IN_PROGRESS: 'bg-amber-50 text-amber-600 border-amber-100',
-      COMPLETED: 'bg-emerald-50 text-emerald-600 border-emerald-100',
-      CANCELLED: 'bg-slate-50 text-slate-400 border-slate-100',
-    };
-
-    return baseClasses + (statusMap[status] || 'bg-slate-50 text-slate-500 border-slate-200');
-  }
-
-  /**
-   * Formatação de tempo relativo (ex: há 2 horas)
-   */
-  formatTimeDistance(date: string | Date): string {
-    if (!date) return '---';
-    const start = new Date(date).getTime();
-    const now = new Date().getTime();
-    const diffInMinutes = Math.floor((now - start) / (1000 * 60));
-
-    if (diffInMinutes < 1) return 'agora';
-    if (diffInMinutes < 60) return `há ${diffInMinutes} min`;
-
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24) return `há ${diffInHours} ${diffInHours === 1 ? 'hora' : 'horas'}`;
-
-    const diffInDays = Math.floor(diffInHours / 24);
-    return `há ${diffInDays} ${diffInDays === 1 ? 'dia' : 'dias'}`;
-  }
-}
-</file>
-
-<file path="src/app/features/orders/store/order-service.store.ts">
-import { Injectable, signal, computed, inject } from '@angular/core';
-import { OrderService, OSStatus } from '../models/order-service.model';
-import { OrderServiceApiService } from '../services/order-service.service';
-import { ToastService } from '../../../services/toast.service';
+import { inject, Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
-export class OrderServiceStore {
-  private apiService = inject(OrderServiceApiService);
-  private toast = inject(ToastService);
+export class OrderServiceApiService {
+  private http = inject(HttpClient);
+  private readonly API_URL = 'http://localhost:3000/service-orders'; // Ajuste se sua porta for outra
 
-  private ordersSignal = signal<OrderService[]>([]);
-  readonly statusFilter = signal<OSStatus | 'ALL'>('ALL');
-  readonly loading = signal(false);
-
-  // 1. ORDENAÇÃO: Mais recentes primeiro (Computed)
-  // Fazemos o sort aqui para que a listagem sempre reflita a ordem correta
-  readonly filteredOrders = computed(() => {
-    const filter = this.statusFilter();
-    // Criamos uma cópia para ordenar sem mutar o signal original
-    let orders = [...this.ordersSignal()].sort((a, b) => {
-      const dateA = new Date(a.createdAt || 0).getTime();
-      const dateB = new Date(b.createdAt || 0).getTime();
-      return dateB - dateA; // Decrescente: mais recente no topo
-    });
-
-    if (filter === 'ALL') return orders;
-    return orders.filter((os) => os.status === filter);
-  });
-
-  readonly emergencyCount = computed(
-    () => this.ordersSignal().filter((os) => os.isEmergency && os.status !== 'COMPLETED').length,
-  );
-
-  loadOrders() {
-    this.loading.set(true);
-    this.apiService.getAll().subscribe({
-      next: (orders) => {
-        this.ordersSignal.set(orders);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        console.error('Erro ao carregar ordens:', err);
-        this.loading.set(false);
-      },
-    });
+  // Busca todas as ordens do JSON via Backend
+  getAll(): Observable<OrderService[]> {
+    return this.http.get<OrderService[]>(this.API_URL);
   }
 
-  addOrder(uiOrder: any) {
-    // Destruturamos para NÃO enviar os nomes ao banco, mas guardá-los para a UI
-    const { customerName, technicianName, equipmentName, ...apiPayload } = uiOrder;
-
-    this.apiService.create(apiPayload).subscribe({
-      next: (serverCreatedOrder) => {
-        // 2. RESPONSÁVEL: Mesclamos os nomes da UI com os dados do servidor
-        const finalOrder = {
-          ...uiOrder, // Aqui pegamos os nomes que o usuário selecionou no form
-          ...serverCreatedOrder, // Aqui pegamos o ID e datas geradas pelo banco
-        };
-
-        // Adicionamos no início da lista (o computed fará a ordenação oficial depois)
-        this.ordersSignal.update((prev) => [finalOrder, ...prev]);
-        this.toast.showToast(`O.S. ${finalOrder.osNumber} criada com sucesso!`, 'success');
-      },
-      error: (err) => {
-        const errorMsg = err.error?.message?.[0] || 'Erro ao conectar com o servidor';
-        this.toast.showToast(errorMsg, 'error');
-      },
-    });
+  // Envia a nova O.S. para o Backend
+  create(order: Partial<OrderService>): Observable<OrderService> {
+    return this.http.post<OrderService>(this.API_URL, order);
   }
 
-  updateOrder(uiOrder: any) {
-    this.loading.set(true);
-    const { customerName, technicianName, equipmentName, ...apiPayload } = uiOrder;
+  // Atualiza o status (ex: para CONCLUIDA)
+  updateStatus(id: string, status: OSStatus): Observable<OrderService> {
+    return this.http.patch<OrderService>(`${this.API_URL}/${id}/status`, { status });
+  }
 
-    this.apiService.update(apiPayload.id, apiPayload).subscribe({
-      next: (serverUpdatedOrder) => {
-        this.ordersSignal.update((prev) => {
-          const index = prev.findIndex((o) => o.id === uiOrder.id);
-          if (index === -1) return prev;
+  // Atualiza a O.S. completa (corpo da mensagem)
+  update(id: string, order: Partial<OrderService>): Observable<OrderService> {
+    // Garantimos que o ID não vá no corpo (body) para o NestJS não reclamar
+    const { id: _, ...payloadWithoutId } = order as any;
 
-          const newOrders = [...prev];
-          // Mantemos os nomes que já estavam na UI para não "limpar" o card
-          newOrders[index] = {
-            ...uiOrder,
-            ...serverUpdatedOrder,
-            // Garantimos que os nomes persistam caso o servidor não os envie
-            customerName: uiOrder.customerName,
-            technicianName: uiOrder.technicianName,
-            equipmentName: uiOrder.equipmentName,
-          };
-          return newOrders;
-        });
-
-        this.loading.set(false);
-        this.toast.showToast(`O.S. atualizada com sucesso!`, 'success');
-      },
-      error: (err) => {
-        this.loading.set(false);
-        const errorMsg = err.error?.message?.[0] || 'Erro ao atualizar no servidor';
-        this.toast.showToast(errorMsg, 'error');
-      },
-    });
+    // A URL deve conter o ID: http://localhost:3000/service-orders/b211...
+    return this.http.patch<OrderService>(`${this.API_URL}/${id}`, payloadWithoutId);
   }
 }
 </file>
@@ -2660,63 +2592,6 @@ import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component'; // Verifique se este ficheiro existe
 
 bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err));
-</file>
-
-<file path="package.json">
-{
-  "name": "infyniq-core",
-  "version": "0.0.0",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
-  },
-  "prettier": {
-    "printWidth": 100,
-    "singleQuote": true,
-    "overrides": [
-      {
-        "files": "*.html",
-        "options": {
-          "parser": "angular"
-        }
-      }
-    ]
-  },
-  "private": true,
-  "dependencies": {
-    "@angular/common": "^20.3.0",
-    "@angular/compiler": "^20.3.0",
-    "@angular/core": "^20.3.0",
-    "@angular/forms": "^20.3.0",
-    "@angular/platform-browser": "^20.3.0",
-    "@angular/router": "^20.3.0",
-    "@primeuix/themes": "^1.2.5",
-    "ngx-mask": "^21.0.1",
-    "primeicons": "^7.0.0",
-    "primeng": "^20.3.0",
-    "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
-  },
-  "devDependencies": {
-    "@angular/build": "^20.3.9",
-    "@angular/cli": "^20.3.9",
-    "@angular/compiler-cli": "^20.3.0",
-    "@types/jasmine": "~5.1.0",
-    "autoprefixer": "^10.4.24",
-    "jasmine-core": "~5.9.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.17",
-    "typescript": "~5.9.2"
-  }
-}
 </file>
 
 <file path="src/app/app.component.html">
@@ -3861,6 +3736,171 @@ export class StockStore {
 
   setFilter(text: string) {
     this.filterText.set(text);
+  }
+}
+</file>
+
+<file path="src/app/features/orders/models/order-service.model.ts">
+// src/app/features/orders/models/order-service.model.ts
+
+export type OSStatus = 'OPEN' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+export type OSType = 'PREVENTIVE' | 'CORRECTIVE' | 'EMERGENCY' | 'INSTALLATION';
+
+/**
+ * Interface para representar as peças reservadas/utilizadas na O.S.
+ * Essencial para o controle do Almoxarifado do Henrique.
+ */
+export interface OrderServicePart {
+  id: string;
+  name: string;
+  requestedQuantity: number;
+  currentQuantity?: number; // Para exibição de saldo no momento da seleção
+}
+
+export interface OrderService {
+  id: string;
+  osNumber: string; // Ex: "OS-2024-001"
+
+  // Relacionamentos (IDs)
+  customerId: string;
+  equipmentId: string;
+  technicianId: string;
+
+  // Cache para UI (Evita lookups constantes para renderizar cards)
+  customerName: string; // Nome do Condomínio
+  equipmentName: string; // Nome do Elevador
+  technicianName: string; // Nome do Técnico
+
+  // Dados do Serviço
+  type: OSType;
+  status: OSStatus;
+  description: string;
+  isEmergency: boolean; // Controla o alerta Amber do Henrique
+
+  /** * ✨ Vínculo com Estoque
+   * Lista de peças que serão reservadas ou baixadas
+   */
+  parts?: OrderServicePart[];
+
+  // Auditoria (Conforme ARCHITECTURE.md)
+  createdAt: Date;
+  updatedAt: Date;
+  updatedBy: string;
+}
+</file>
+
+<file path="src/app/features/orders/store/order-service.store.ts">
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { OrderService, OSStatus } from '../models/order-service.model';
+import { OrderServiceApiService } from '../services/order-service.service';
+import { ToastService } from '../../../services/toast.service';
+
+@Injectable({ providedIn: 'root' })
+export class OrderServiceStore {
+  private apiService = inject(OrderServiceApiService);
+  private toast = inject(ToastService);
+
+  private ordersSignal = signal<OrderService[]>([]);
+  readonly statusFilter = signal<OSStatus | 'ALL'>('ALL');
+  readonly loading = signal(false);
+
+  // 1. Filtro e Ordenação (Mais recentes primeiro)
+  readonly filteredOrders = computed(() => {
+    const filter = this.statusFilter();
+    let orders = [...this.ordersSignal()].sort((a, b) => {
+      const dateA = new Date(a.createdAt || 0).getTime();
+      const dateB = new Date(b.createdAt || 0).getTime();
+      return dateB - dateA;
+    });
+
+    if (filter === 'ALL') return orders;
+    return orders.filter((os) => os.status === filter);
+  });
+
+  // ✨ 2. CONTADOR DE EMERGÊNCIAS (O que estava faltando)
+  // Conta ordens marcadas como emergência que não estão concluídas nem canceladas
+  readonly emergencyCount = computed(
+    () =>
+      this.ordersSignal().filter(
+        (os) => os.isEmergency && os.status !== 'COMPLETED' && os.status !== 'CANCELLED',
+      ).length,
+  );
+
+  loadOrders() {
+    this.loading.set(true);
+    this.apiService.getAll().subscribe({
+      next: (orders) => {
+        this.ordersSignal.set(orders);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Erro ao carregar ordens:', err);
+        this.loading.set(false);
+      },
+    });
+  }
+
+  addOrder(payload: any) {
+    this.apiService.create(payload).subscribe({
+      next: (serverCreatedOrder) => {
+        // Adicionamos a nova ordem ao sinal.
+        // O computed 'filteredOrders' cuidará de colocar no topo.
+        this.ordersSignal.update((prev) => [serverCreatedOrder, ...prev]);
+        this.toast.showToast(`O.S. ${serverCreatedOrder.osNumber} criada com sucesso!`, 'success');
+      },
+      error: (err) => {
+        const errorMsg = err.error?.message || 'Erro ao criar O.S.';
+        this.toast.showToast(Array.isArray(errorMsg) ? errorMsg[0] : errorMsg, 'error');
+      },
+    });
+  }
+
+  updateOrder(payload: any) {
+    this.loading.set(true);
+    this.apiService.update(payload.id, payload).subscribe({
+      next: (serverUpdatedOrder) => {
+        this.ordersSignal.update((prev) =>
+          prev.map((o) => (o.id === serverUpdatedOrder.id ? serverUpdatedOrder : o)),
+        );
+        this.loading.set(false);
+        this.toast.showToast(`O.S. atualizada com sucesso!`, 'success');
+      },
+      error: (err) => {
+        this.loading.set(false);
+        const errorMsg = err.error?.message || 'Erro ao atualizar O.S.';
+        this.toast.showToast(Array.isArray(errorMsg) ? errorMsg[0] : errorMsg, 'error');
+      },
+    });
+  }
+
+  finalizeOrder(id: string) {
+    this.loading.set(true);
+
+    // Criamos o payload mínimo necessário
+    const payload = {
+      status: 'COMPLETED' as OSStatus,
+      updatedBy: 'Henrique (Admin)',
+    };
+
+    // Chamamos o serviço de API passando o ID separado do payload
+    this.apiService.update(id, payload).subscribe({
+      next: (serverUpdatedOrder) => {
+        // Atualizamos o sinal localmente substituindo o item antigo
+        this.ordersSignal.update((prev) =>
+          prev.map((o) => (o.id === serverUpdatedOrder.id ? serverUpdatedOrder : o)),
+        );
+        this.loading.set(false);
+        this.toast.showToast(
+          `O.S. ${serverUpdatedOrder.osNumber} finalizada e estoque baixado!`,
+          'success',
+        );
+      },
+      error: (err) => {
+        this.loading.set(false);
+        console.error('Erro ao finalizar:', err);
+        this.toast.showToast('Erro ao finalizar O.S.', 'error');
+      },
+    });
   }
 }
 </file>
@@ -5069,78 +5109,6 @@ export class EstoqueListComponent implements OnInit {
 }
 </file>
 
-<file path="src/styles.scss">
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Seus estilos globais abaixo */
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background-color: #f8fafc;
-}
-
-@keyframes bounce-in {
-  0% {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.animate-bounce-in {
-  animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.scrollbar-thin::-webkit-scrollbar {
-  width: 5px;
-}
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #e2e8f0;
-  border-radius: 10px;
-}
-
-@keyframes shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-4px);
-  }
-  50% {
-    transform: translateX(4px);
-  }
-  75% {
-    transform: translateX(-4px);
-  }
-}
-
-.animate-shake {
-  animation: shake 0.4s ease-in-out;
-}
-
-/* Animação suave para a mensagem de erro aparecer */
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-error {
-  animation: slideDown 0.2s ease-out forwards;
-}
-</file>
-
 <file path="src/app/features/estoque/estoque-form/estoque-form.component.html">
 <div
   class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-0 md:p-4 animate-in fade-in duration-200"
@@ -5348,6 +5316,80 @@ body {
 </div>
 </file>
 
+<file path="src/styles.scss">
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'primeicons/primeicons.css';
+
+/* Seus estilos globais abaixo */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #f8fafc;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 5px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  75% {
+    transform: translateX(-4px);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* Animação suave para a mensagem de erro aparecer */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-error {
+  animation: slideDown 0.2s ease-out forwards;
+}
+</file>
+
 <file path="src/app/app.routes.ts">
 import { Routes } from '@angular/router';
 import { AppShellComponent } from './layout/app-shell/app-shell.component';
@@ -5372,7 +5414,9 @@ export const routes: Routes = [
       {
         path: 'orders', // Rota que configuramos no Sidebar
         loadComponent: () =>
-          import('./features/orders/os-list/os-list.component').then((m) => m.OSListComponent),
+          import('./features/orders/service-order-list/service-order-list.component').then(
+            (m) => m.OSListComponent,
+          ),
       },
       {
         path: 'estoque',
