@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { CustomersStore } from '../../data-access/customers.store';
 import { Customer } from '../../models/customer.model';
 import { PhonePipe } from '../../../../pipe/phone.pipe';
+import { NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 
 @Component({
   selector: 'app-customers-list',
   standalone: true,
-  imports: [CommonModule, PhonePipe],
+  imports: [CommonModule, PhonePipe, NgxMaskPipe],
   templateUrl: './customers-list.component.html',
+  providers: [provideNgxMask()],
 })
 export class CustomersListComponent {
   public readonly store = inject(CustomersStore);
@@ -16,6 +18,12 @@ export class CustomersListComponent {
   @Input() customers: Customer[] = [];
 
   @Output() select = new EventEmitter<Customer>();
+  @Output() edit = new EventEmitter<Customer>();
+
+  onEdit(event: Event, customer: Customer) {
+    event.stopPropagation();
+    this.edit.emit(customer);
+  }
 
   onSelect(customer: Customer) {
     this.select.emit(customer);

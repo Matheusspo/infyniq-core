@@ -83,6 +83,22 @@ export class CustomersStore {
     });
   }
 
+  updateCustomer(id: string, data: Partial<Customer>) {
+    this.loading.set(true);
+    this.service
+      .updateCustomer(id, data)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this._customers.update((list) =>
+            list.map((c) => (c.id === id ? { ...c, ...updated } : c)),
+          );
+          this.toast.showToast('Condomínio atualizado!', 'success');
+        },
+        error: (err) => this.toast.showToast('Erro ao atualizar', 'error'),
+      });
+  }
+
   selectCustomer(customer: Customer | null) {
     this.selectedCustomer.set(customer);
   }

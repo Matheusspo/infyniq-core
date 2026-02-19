@@ -19,6 +19,10 @@ export class CustomersService {
     return this.http.post<Customer>(`${this.apiUrl}/customers`, customer);
   }
 
+  updateCustomer(id: string, customer: Partial<Customer>) {
+    return this.http.patch<Customer>(`${this.apiUrl}/customers/${id}`, customer);
+  }
+
   addEquipment(equipment: Partial<Equipment>): Observable<Equipment> {
     return this.http.post<Equipment>(`${this.apiUrl}/equipments`, equipment);
   }

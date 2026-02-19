@@ -8,6 +8,7 @@ import { EquipmentDashboardComponent } from '../components/equipment-dashboard/e
 import { EquipmentFormComponent } from '../components/equipment-form/equipment-form.component'; // 👈 Importe o form novo
 import { CustomersListComponent } from '../components/customers-list/customers-list.component';
 import { CustomerFormComponent } from '../components/customer-form/customer-form.component';
+import { Customer } from '../models/customer.model';
 import { CreateEquipmentDto, Equipment } from '../models/equipment.model';
 import { ToastService } from '../../../services/toast.service';
 
@@ -33,6 +34,9 @@ export class CustomersContainerComponent {
   showCustomerForm = signal(false);
   showEquipmentForm = signal(false);
   selectedEquipment = signal<Equipment | null>(null);
+  
+  // Estado para edição de cliente
+  customerToEdit = signal<Customer | null>(null);
 
   viewMode = signal<'LIST' | 'DETAIL'>('LIST');
 
@@ -46,23 +50,37 @@ export class CustomersContainerComponent {
   }
 
   onCustomerSelect(customer: any) {
-    console.log('Objeto recebido no clique:', customer); // Verifique se o 'id' existe aqui!
     this.customersStore.selectCustomer(customer);
 
     if (customer && customer.id) {
       this.equipmentsStore.loadByCustomer(customer.id);
       this.viewMode.set('DETAIL');
-    } else {
-      console.error('ERRO: O cliente selecionado não possui um ID válido!', customer);
     }
   }
 
-  onSaveCustomer(customerData: any) {
-    // 1. Chama a store para persistir no backend/JSON
-    this.customersStore.addCustomer(customerData);
+  // --- Métodos de Cliente ---
+  onOpenNewCustomer() {
+    this.customerToEdit.set(null);
+    this.showCustomerForm.set(true);
+  }
 
-    // 2. Fecha o modal de cadastro de cliente
+  onEditCustomer(customer: Customer) {
+    this.customerToEdit.set(customer);
+    this.showCustomerForm.set(true);
+  }
+
+  onSaveCustomer(customerData: any) {
+    const editing = this.customerToEdit();
+    
+    if (editing) {
+       this.customersStore.updateCustomer(editing.id, customerData);
+    } else {
+       this.customersStore.addCustomer(customerData);
+    }
+
+    // Fecha o modal
     this.showCustomerForm.set(false);
+    this.customerToEdit.set(null);
   }
 
   // --- Métodos de Equipamento ---

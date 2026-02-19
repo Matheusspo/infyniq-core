@@ -1,29 +1,45 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderServiceStore } from '../store/order-service.store';
+import { CustomersStore } from '../../customers/data-access/customers.store';
 import { OSFormComponent } from '../service-order-form/service-order-form.component';
 import { OrderService, OSStatus } from '../models/order-service.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TechniciansService } from '../../technicians/data-access/technicians.service';
 import { Technician } from '../../technicians/models/technician.model';
+import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'app-os-list',
   standalone: true,
-  imports: [CommonModule, OSFormComponent],
+  imports: [CommonModule, OSFormComponent, ConfirmationModalComponent],
   templateUrl: './service-order-list.component.html',
 })
 export class OSListComponent implements OnInit {
   // 1. Injeção de Dependências
-  public osStore = inject(OrderServiceStore);
-  private techService = inject(TechniciansService);
+  public readonly osStore = inject(OrderServiceStore);
+  private readonly techService = inject(TechniciansService);
+  private readonly customersStore = inject(CustomersStore); // Injetando store de clientes
 
   isDrawerOpen = signal(false);
 
   // 2. Estado do Componente
   showForm = signal(false);
+  
+  // Controle do Modal de Confirmação
+  showConfirmation = signal(false);
+  confirmationData = signal<{
+    title: string;
+    message: string;
+    action: () => void;
+    type: 'danger' | 'info' | 'success';
+  } | null>(null);
+
   selectedOS = signal<OrderService | null>(null);
-  statusFilter = this.osStore.statusFilter;
+  
+  // Filtro local, se quisermos desconectar da store, mas aqui mantemos sync
+  // statusFilter = this.osStore.statusFilter; 
+  searchQuery = signal('');
 
   // 3. Busca de Técnicos (Transforma o Observable em Signal para o computed)
   private technicians = toSignal(this.techService.getAll(), {
@@ -32,19 +48,24 @@ export class OSListComponent implements OnInit {
 
   // 4. Lógica de Negócio Reativa (Ordenação + Join de Nomes)
   readonly filteredOrders = computed(() => {
-    const filter = this.statusFilter();
+    const filter = this.osStore.statusFilter(); // Lendo direto da store
+    const query = this.searchQuery().toLowerCase().trim();
     const techs = this.technicians();
+    const customers = this.customersStore.customers(); // Obtendo lista de clientes
 
     // Pegamos a lista bruta da store
-    // Importante: use o nome correto do sinal na sua store (ordersSignal ou similar)
-    // Se na store for public orders = signal(...), use this.osStore.orders()
     const rawOrders = (this.osStore as any).ordersSignal?.() || [];
 
-    // Mapeamos as ordens injetando o nome do técnico "on-the-fly"
-    let ordersWithNames = rawOrders.map((os: OrderService) => ({
-      ...os,
-      technicianName: techs.find((t) => t.id === os.technicianId)?.name || 'Não atribuído',
-    }));
+    // Mapeamos as ordens injetando nomes
+    let ordersWithNames = rawOrders.map((os: OrderService) => {
+      const customer = customers.find(c => c.id === os.customerId);
+      return {
+        ...os,
+        technicianName: techs.find((t) => t.id === os.technicianId)?.name || 'Não atribuído',
+        customerName: customer?.name || 'Cliente não encontrado',
+        customerAddress: customer?.address || '', // Preenchendo endereço também
+      };
+    });
 
     // Ordenação (Mais recentes primeiro: b - a)
     ordersWithNames.sort((a: any, b: any) => {
@@ -53,23 +74,53 @@ export class OSListComponent implements OnInit {
       return dateB - dateA;
     });
 
-    // Filtro por Status
-    if (filter === 'ALL') return ordersWithNames;
-    return ordersWithNames.filter((os: any) => os.status === filter);
+    // 1. Filtro por Status
+    let result = ordersWithNames;
+    if (filter !== 'ALL') {
+      result = result.filter((os: any) => os.status === filter);
+    }
+
+    // 2. Filtro por Texto (Search)
+    if (query) {
+      result = result.filter((os: any) => 
+        os.customerName?.toLowerCase().includes(query) ||
+        os.equipmentName?.toLowerCase().includes(query) ||
+        os.osNumber?.toLowerCase().includes(query) ||
+        os.description?.toLowerCase().includes(query)
+      );
+    }
+
+    return result;
   });
 
   ngOnInit() {
     this.osStore.loadOrders(); // Busca os dados do backend ao iniciar
+    this.customersStore.loadAllCustomers(); // Garante que temos os clientes para o Join
   }
 
-  finalizeOS(os: OrderService) {
-    const confirmed = confirm(
-      `Deseja finalizar a O.S. ${os.osNumber}? Esta ação atualizará o estoque permanentemente.`,
-    );
+  initiateFinalizeOS(os: OrderService) {
+    this.confirmationData.set({
+      title: 'Finalizar O.S.?',
+      message: `Deseja finalizar a O.S. #${os.osNumber}? Esta ação irá baixar o estoque utilizado e marcar o serviço como concluído.`,
+      type: 'success', // ou 'info', mas success faz sentido para concluir
+      action: () => {
+        this.osStore.finalizeOrder(os.id);
+        this.closeConfirmation();
+      }
+    });
+    this.showConfirmation.set(true);
+  }
 
-    if (confirmed) {
-      this.osStore.finalizeOrder(os.id);
+  onConfirmAction() {
+    const data = this.confirmationData();
+    if (data && data.action) {
+      data.action();
     }
+  }
+
+  closeConfirmation() {
+    this.showConfirmation.set(false);
+    this.confirmationData.set(null);
   }
 
   /**
@@ -94,6 +145,14 @@ export class OSListComponent implements OnInit {
   editOS(os: OrderService) {
     this.selectedOS.set(os);
     this.showForm.set(true);
+  }
+
+  /**
+   * Atualiza o termo de busca
+   */
+  onSearch(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.searchQuery.set(input.value);
   }
 
   /**
@@ -135,5 +194,25 @@ export class OSListComponent implements OnInit {
 
     const diffInDays = Math.floor(diffInHours / 24);
     return `há ${diffInDays} ${diffInDays === 1 ? 'dia' : 'dias'}`;
+  }
+  translateStatus(status: string): string {
+    const map: Record<string, string> = {
+      OPEN: 'Aberto',
+      IN_PROGRESS: 'Em Andamento',
+      COMPLETED: 'Concluído',
+      CANCELLED: 'Cancelado',
+      ALL: 'Todas'
+    };
+    return map[status] || status;
+  }
+
+  translateType(type: string): string {
+    const map: Record<string, string> = {
+      PREVENTIVE: 'Preventiva',
+      CORRECTIVE: 'Corretiva',
+      EMERGENCY: 'Emergência',
+      INSTALLATION: 'Instalação'
+    };
+    return map[type] || type;
   }
 }

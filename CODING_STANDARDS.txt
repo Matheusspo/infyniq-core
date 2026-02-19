@@ -1,0 +1,463 @@
+================================================================================
+  INFYNIQ SERVICE - PADRÕES DE CODIFICAÇÃO
+================================================================================
+
+📋 GUIA RÁPIDO DE PADRÕES PARA O PROJETO
+
+================================================================================
+1. ESTRUTURA DE PASTAS
+================================================================================
+
+Cada módulo em sua própria pasta:
+  modules/[nome-modulo]/
+  ├── [nome].module.ts
+  ├── [nome].controller.ts
+  ├── [nome].service.ts
+  ├── dto/
+  │   ├── create-[nome].dto.ts
+  │   ├── update-[nome].dto.ts
+  │   └── index.ts
+  ├── entities/
+  │   ├── [nome].entity.ts
+  │   └── index.ts
+  └── repositories/
+      └── in-memory-[nome].repository.ts
+
+Convenções:
+  - Pastas: kebab-case (exemplo: customer-service)
+  - Arquivos: kebab-case.ts (exemplo: create-customer.dto.ts)
+  - Diretórios comuns: dto/, entities/, repositories/, services/
+
+================================================================================
+2. NOMENCLATURA
+================================================================================
+
+Classes/Interfaces:
+  ✅ CreateCustomerDto    (PascalCase)
+  ✅ UpdateCustomerDto
+  ✅ Customer
+  ✅ CustomerService
+  ✅ CustomersController
+  ❌ create_customer_dto (snake_case)
+  ❌ createCustomerDTO   (inconsistente)
+
+Propriedades/Métodos:
+  ✅ firstName           (camelCase)
+  ✅ getFullName()
+  ✅ isActive
+  ❌ FirstName           (PascalCase)
+  ❌ get_full_name()     (snake_case)
+
+Arquivo/Pas:
+  ✅ create-customer.dto.ts    (kebab-case)
+  ✅ customer.entity.ts
+  ✅ customers.controller.ts
+  ❌ CreateCustomer.dto.ts     (PascalCase)
+  ❌ customer_entity.ts        (snake_case)
+
+================================================================================
+3. DTOs - VALIDAÇÃO COM CLASS-VALIDATOR
+================================================================================
+
+Sempre use decoradores @Is*, sempre complete as validações:
+
+✅ CORRETO:
+
+  import { IsString, IsEmail, MinLength, IsOptional } from 'class-validator';
+
+  export class CreateCustomerDto {
+    @IsString()
+    @MinLength(3, { message: 'Nome deve ter pelo menos 3 caracteres' })
+    name: string;
+
+    @IsEmail()
+    email: string;
+
+    @IsOptional()
+    @IsString()
+    phone?: string;
+  }
+
+❌ EVITAR:
+
+  export class CreateCustomerDto {
+    name: string;     // Sem validação
+    email: string;
+    phone?: string;
+  }
+
+================================================================================
+4. ENTITIES - MODELOS DE DOMÍNIO
+================================================================================
+
+Sempre inclua auditoria:
+
+✅ CORRETO:
+
+  export interface Customer {
+    id: string;
+    name: string;
+    email: string;
+    createdAt: Date;
+    updatedAt: Date;
+    updatedBy?: string;  // IMPORTANTE: auditoria
+  }
+
+❌ EVITAR:
+
+  export interface Customer {
+    id: string;
+    name: string;
+    email: string;
+    // Sem createdAt/updatedAt
+  }
+
+================================================================================
+5. SERVICES - LÓGICA DE NEGÓCIO
+================================================================================
+
+✅ CORRETO:
+
+  @Injectable()
+  export class CustomerService {
+    constructor(
+      private readonly customerRepository: CustomerRepository,
+      private readonly logger: LoggerService,
+    ) {}
+
+    async create(dto: CreateCustomerDto): Promise<Customer> {
+      this.logger.log('Criando novo cliente: ' + dto.email);
+      
+      const customer = await this.customerRepository.create(dto);
+      
+      this.logger.log('Cliente criado: ' + customer.id);
+      return customer;
+    }
+
+    async update(
+      id: string,
+      dto: UpdateCustomerDto,
+      updatedBy: string = 'system',
+    ): Promise<Customer> {
+      this.logger.log(`Atualizando ${id} por ${updatedBy}`);
+      return this.customerRepository.update(id, dto, updatedBy);
+    }
+  }
+
+Regras:
+  - Toda operação deve registrar com logger
+  - Sempre passe updatedBy para repositório
+  - Nunca acesse diretamente fs ou console
+  - Sempre validar regras de negócio antes de persistir
+
+================================================================================
+6. REPOSITORIES - PERSISTÊNCIA
+================================================================================
+
+✅ CORRETO:
+
+  @Injectable()
+  export class InMemoryCustomerRepository {
+    private customers: Customer[] = [];
+    private readonly fileName = 'customers.json';
+
+    constructor(private jsonDbService: JsonDbService) {
+      this.loadFromFile();
+    }
+
+    async create(data: CreateCustomerDto): Promise<Customer> {
+      const customer: Customer = {
+        id: uuid(),
+        ...data,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      
+      this.customers.push(customer);
+      await this.saveToFile();
+      return customer;
+    }
+
+    async update(
+      id: string,
+      data: Partial<Customer>,
+      updatedBy: string = 'system',
+    ): Promise<Customer> {
+      const index = this.customers.findIndex(c => c.id === id);
+      if (index === -1) throw new Error('Não encontrado');
+
+      this.customers[index] = {
+        ...this.customers[index],
+        ...data,
+        updatedAt: new Date(),
+        updatedBy,  // IMPORTANTE: auditoria
+      };
+
+      await this.saveToFile();
+      return this.customers[index];
+    }
+
+    private async saveToFile(): Promise<void> {
+      await this.jsonDbService.writeFile(this.fileName, this.customers);
+    }
+  }
+
+Regras:
+  - ✅ Use JsonDbService para I/O
+  - ✅ Sempre salve updatedAt e updatedBy
+  - ❌ Nunca use fs direto
+  - ❌ Nunca use console.log
+
+================================================================================
+7. CONTROLLERS - ENDPOINTS REST
+================================================================================
+
+✅ CORRETO:
+
+  @Controller('customers')
+  export class CustomersController {
+    constructor(private readonly customerService: CustomerService) {}
+
+    @Post()
+    @HttpCode(201)
+    create(@Body() dto: CreateCustomerDto) {
+      return this.customerService.create(dto);
+    }
+
+    @Get()
+    findAll() {
+      return this.customerService.findAll();
+    }
+
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+      return this.customerService.findById(id);
+    }
+
+    @Patch(':id')
+    update(
+      @Param('id') id: string,
+      @Body() dto: UpdateCustomerDto,
+    ) {
+      return this.customerService.update(id, dto, 'system');
+    }
+
+    @Delete(':id')
+    @HttpCode(204)
+    delete(@Param('id') id: string) {
+      return this.customerService.delete(id);
+    }
+  }
+
+Padrão de Endpoints:
+  POST   /customers          → create()
+  GET    /customers          → findAll()
+  GET    /customers/:id      → findOne()
+  PATCH  /customers/:id      → update()
+  DELETE /customers/:id      → delete()
+
+Regras:
+  - ✅ DTOs validam input automaticamente
+  - ✅ Delegue lógica para Service
+  - ✅ Use @HttpCode para status apropriado
+  - ❌ Nunca implemente lógica no Controller
+
+================================================================================
+8. LOGGING
+================================================================================
+
+✅ SEMPRE USE LoggerService:
+
+  constructor(private logger: LoggerService) {}
+
+  async create(dto: CreateCustomerDto): Promise<Customer> {
+    this.logger.log('Criando cliente...');
+    // ... lógica
+    this.logger.log('Cliente criado com sucesso');
+    return customer;
+  }
+
+❌ NUNCA USE:
+
+  console.log('Criando cliente...');
+  console.error('Erro ao criar');
+
+================================================================================
+9. VALIDAÇÕES
+================================================================================
+
+3 CAMADAS DE VALIDAÇÃO:
+
+1. DTO (Sintaxe)
+   @IsString()
+   @MinLength(3)
+   name: string;
+
+2. Service (Regra de Negócio)
+   if (existingCustomer) {
+     throw new ConflictException('Email já existe');
+   }
+
+3. Repository (Integridade)
+   if (index === -1) {
+     throw new Error('Não encontrado');
+   }
+
+================================================================================
+10. AUDITORIA
+================================================================================
+
+SEMPRE INCLUIR EM ENTITIES:
+  - createdAt: Date
+  - updatedAt: Date
+  - updatedBy?: string ('system' por padrão)
+
+SEMPRE ATUALIZAR EM UPDATES:
+  updatedAt: new Date()
+  updatedBy: updatedBy  // Passado como parâmetro
+
+EXEMPLO:
+  async update(
+    id: string,
+    data: Partial<Entity>,
+    updatedBy: string = 'system',  ← Parâmetro obrigatório
+  ): Promise<Entity> {
+    entity.updatedAt = new Date();
+    entity.updatedBy = updatedBy;   ← Sempre persistir
+    return entity;
+  }
+
+================================================================================
+11. TRATAMENTO DE ERROS
+================================================================================
+
+✅ CORRETO:
+
+  import { NotFoundException } from '@nestjs/common';
+
+  try {
+    const customer = await this.repo.findById(id);
+    if (!customer) {
+      throw new NotFoundException('Cliente não encontrado');
+    }
+  } catch (error) {
+    this.logger.error('Erro ao buscar cliente', error);
+    throw error;
+  }
+
+❌ EVITAR:
+
+  if (!customer) console.log('not found');
+  throw new Error('Erro genérico');
+
+================================================================================
+12. ESTRUTURA DE MÓDULO COMPLETA
+================================================================================
+
+Exemplo: Module = Customers
+
+customers.module.ts:
+  @Module({
+    imports: [DatabaseModule],
+    controllers: [CustomersController],
+    providers: [CustomersService, InMemoryCustomerRepository],
+    exports: [CustomersService],
+  })
+  export class CustomersModule {}
+
+customers.controller.ts:
+  @Controller('customers')
+  export class CustomersController {
+    constructor(private service: CustomersService) {}
+    // endpoints
+  }
+
+customers.service.ts:
+  @Injectable()
+  export class CustomersService {
+    constructor(
+      private repo: InMemoryCustomerRepository,
+      private logger: LoggerService,
+    ) {}
+    // lógica de negócio
+  }
+
+repositories/in-memory-customer.repository.ts:
+  @Injectable()
+  export class InMemoryCustomerRepository {
+    constructor(private jsonDbService: JsonDbService) {}
+    // persistência
+  }
+
+entities/customer.entity.ts:
+  export interface Customer { ... }
+
+dto/create-customer.dto.ts:
+  export class CreateCustomerDto { ... }
+
+dto/update-customer.dto.ts:
+  export class UpdateCustomerDto { ... }
+
+================================================================================
+13. IMPORTS & EXPORTS
+================================================================================
+
+✅ USE index.ts COMO BARREL EXPORT:
+
+  // modules/customers/index.ts
+  export * from './customers.module';
+  export * from './dto';
+  export * from './entities';
+
+  // modules/customers/dto/index.ts
+  export { CreateCustomerDto } from './create-customer.dto';
+  export { UpdateCustomerDto } from './update-customer.dto';
+
+  // Uso:
+  import { CustomersModule, CreateCustomerDto } from './modules/customers';
+
+================================================================================
+14. CHECKLIST ANTES DE COMMITAR
+================================================================================
+
+□ Arquivo segue nomenclatura (kebab-case)
+□ Classes em PascalCase, propriedades em camelCase
+□ DTOs com @Is* decoradores completos
+□ Entities com createdAt, updatedAt, updatedBy
+□ Services com logger.log em operações importantes
+□ Controllers delegam para Services
+□ Repositories usam JsonDbService
+□ Nenhum console.log() no código
+□ updateBy sempre passado e persistido em updates
+□ Testes (quando aplicável)
+□ Build compila sem erros: npm run build
+
+================================================================================
+15. QUICK REFERENCE - NOVO MÓDULO
+================================================================================
+
+1. Criar pasta: modules/novo-modulo/
+2. Criar estrutura:
+   - novo-modulo.module.ts
+   - novo-modulo.controller.ts
+   - novo-modulo.service.ts
+   - entities/novo-modulo.entity.ts
+   - dto/create-novo-modulo.dto.ts
+   - dto/update-novo-modulo.dto.ts
+   - repositories/in-memory-novo-modulo.repository.ts
+
+3. Copiar padrão de novo módulo existente (customers, equipments, stock)
+4. Adaptar Entity, DTOs, Service, Repository
+5. Registrar no app.module.ts
+6. Build: npm run build
+7. Testar endpoints
+
+================================================================================
+
+Versão: 1.0
+Última atualização: 16/02/2026
+Mantido por: Equipe Infyniq
+
+Para dúvidas, consulte ARCHITECTURE.md ou BACKEND_SPEC.md
+
+================================================================================

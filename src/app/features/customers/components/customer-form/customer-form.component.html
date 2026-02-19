@@ -3,9 +3,11 @@
 >
   <div class="flex justify-between items-center px-8 py-4 border-b border-slate-50 bg-slate-50/30">
     <div>
-      <h2 class="text-lg font-black text-slate-800 tracking-tight uppercase">Novo Condomínio</h2>
+      <h2 class="text-lg font-black text-slate-800 tracking-tight uppercase">
+        {{ customerToEdit ? 'Editar Condomínio' : 'Novo Condomínio' }}
+      </h2>
       <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-        Cadastro de Unidade
+        {{ customerToEdit ? 'Alteração de Dados' : 'Cadastro de Unidade' }}
       </p>
     </div>
     <button
@@ -24,21 +26,8 @@
   </div>
 
   <form [formGroup]="customerForm" (ngSubmit)="onSubmit()" class="p-8 space-y-5">
-    <div class="group">
-      <label
-        class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block group-focus-within:text-blue-500 transition-colors"
-      >
-        Nome do Condomínio *
-      </label>
-      <input
-        formControlName="name"
-        type="text"
-        placeholder="Ex: Edifício Solar das Palmeiras"
-        class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
-      />
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <!-- Identificação Principal -->
+    <div class="space-y-5">
       <div class="group">
         <label
           class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block group-focus-within:text-blue-500 transition-colors"
@@ -48,6 +37,7 @@
         <input
           formControlName="name"
           type="text"
+          placeholder="Ex: Edifício Solar das Palmeiras"
           [class.border-red-200]="
             customerForm.get('name')?.invalid && customerForm.get('name')?.touched
           "
@@ -71,6 +61,7 @@
           <input
             formControlName="document"
             mask="00.000.000/0000-00"
+            placeholder="00.000.000/0000-00"
             [class.border-red-200]="
               customerForm.get('document')?.invalid && customerForm.get('document')?.touched
             "
@@ -93,6 +84,7 @@
           <input
             formControlName="contactName"
             type="text"
+            placeholder="Síndico ou Gestor"
             [class.border-red-200]="
               customerForm.get('contactName')?.invalid && customerForm.get('contactName')?.touched
             "
@@ -111,48 +103,51 @@
       </div>
     </div>
 
-    <div class="group">
-      <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
-        >Endereço Completo *</label
-      >
-      <input
-        formControlName="address"
-        type="text"
-        placeholder="Rua, Número, Bairro, Cidade"
-        class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
-      />
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <!-- Contato e Endereço -->
+    <div class="space-y-5 pt-5 border-t border-slate-50">
       <div class="group">
         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
-          >Telefone</label
+          >Endereço Completo *</label
         >
         <input
-          formControlName="phone"
-          mask="(00) 00000-0000"
-          placeholder="(00) 00000-0000"
+          formControlName="address"
+          type="text"
+          placeholder="Rua, Número, Bairro, Cidade"
           class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
         />
       </div>
-      <div class="group">
-        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
-          >E-mail</label
-        >
-        <input
-          formControlName="email"
-          type="email"
-          placeholder="contato@condominio.com"
-          class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
-        />
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="group">
+          <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
+            >Telefone</label
+          >
+          <input
+            formControlName="phone"
+            mask="(00) 00000-0000"
+            placeholder="(00) 00000-0000"
+            class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
+          />
+        </div>
+        <div class="group">
+          <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block"
+            >E-mail</label
+          >
+          <input
+            formControlName="email"
+            type="email"
+            placeholder="contato@condominio.com"
+            class="w-full bg-slate-50 border-2 border-transparent rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:border-blue-500/20 transition-all"
+          />
+        </div>
       </div>
     </div>
 
-    <div class="flex items-center justify-between pt-6 border-t border-slate-50">
+    <div class="flex items-center justify-end gap-4 pt-6 mt-6 border-t border-slate-50">
       <button
         type="button"
         (click)="close()"
-        class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-all"
+        class="px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all"
       >
         Cancelar
       </button>
@@ -160,10 +155,9 @@
       <button
         type="submit"
         [disabled]="customerForm.invalid"
-        (click)="(customerForm.invalid ? null : null)"
-        class="px-10 py-3 bg-[#1e293b] text-white text-[10px] font-black uppercase tracking-[2px] rounded-xl shadow-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
+        class="px-10 py-3 bg-[#1e293b] text-white text-[10px] font-black uppercase tracking-[2px] rounded-xl shadow-lg hover:bg-blue-600 hover:-translate-y-0.5 transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:translate-y-0 active:scale-95"
       >
-        Confirmar Cadastro
+        {{ customerToEdit ? 'Salvar Alterações' : 'Confirmar Cadastro' }}
       </button>
     </div>
   </form>

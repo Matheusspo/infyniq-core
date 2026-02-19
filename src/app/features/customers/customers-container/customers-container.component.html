@@ -12,7 +12,7 @@
         </div>
 
         <button
-          (click)="showCustomerForm.set(true)"
+          (click)="onOpenNewCustomer()"
           class="flex items-center gap-3 bg-[#1e293b] hover:bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold transition-all shadow-xl shadow-slate-200 active:scale-95"
         >
           <svg
@@ -51,6 +51,7 @@
           <app-customers-list
             [customers]="customersStore.filteredCustomers()"
             (select)="onCustomerSelect($event)"
+            (edit)="onEditCustomer($event)"
           >
           </app-customers-list>
         </div>
@@ -74,7 +75,11 @@
       class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-4"
     >
       <div class="animate-in zoom-in-95 duration-200 w-full max-w-2xl">
-        <app-customer-form (save)="onSaveCustomer($event)" (cancel)="showCustomerForm.set(false)">
+        <app-customer-form 
+          [customerToEdit]="customerToEdit()" 
+          (save)="onSaveCustomer($event)" 
+          (cancel)="showCustomerForm.set(false)"
+        >
         </app-customer-form>
       </div>
     </div>

@@ -1,0 +1,2776 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: src/**/*
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+src/app.controller.spec.ts
+src/app.controller.ts
+src/app.module.ts
+src/app.service.ts
+src/core/config/config.service.ts
+src/core/config/index.ts
+src/core/database/database.module.ts
+src/core/database/factories/index.ts
+src/core/database/factories/repository.factory.ts
+src/core/database/index.ts
+src/core/database/json-db.service.ts
+src/core/database/repositories/equipment-repository.abstract.ts
+src/core/database/repositories/index.ts
+src/core/database/repositories/service-order-repository.abstract.ts
+src/core/index.ts
+src/core/logging/index.ts
+src/core/logging/logger.service.ts
+src/main.ts
+src/modules/customers/customers.controller.spec.ts
+src/modules/customers/customers.controller.ts
+src/modules/customers/customers.module.ts
+src/modules/customers/customers.service.spec.ts
+src/modules/customers/customers.service.ts
+src/modules/customers/dto/create-customer.dto.ts
+src/modules/customers/dto/update-customer.dto.ts
+src/modules/customers/entities/customer.entity.ts
+src/modules/equipments/dto/create-equipment.dto.ts
+src/modules/equipments/dto/service-order.dto.ts
+src/modules/equipments/entities/equipment.entity.ts
+src/modules/equipments/entities/service-order.entity.ts
+src/modules/equipments/equipments.controller.ts
+src/modules/equipments/equipments.module.ts
+src/modules/equipments/repositories/in-memory-equipment.repository.ts
+src/modules/equipments/repositories/in-memory-service-order.repository.ts
+src/modules/equipments/service-order.controller.ts
+src/modules/equipments/services/equipment.service.ts
+src/modules/equipments/services/service-order.service.ts
+src/modules/stock/dto/create-movement.dto.ts
+src/modules/stock/dto/create-stock-item.dto.ts
+src/modules/stock/dto/update-stock-item.dto.ts
+src/modules/stock/entities/stock-item.entity.ts
+src/modules/stock/entities/stock-movement.entity.ts
+src/modules/stock/repositories/in-memory-stock.repository.ts
+src/modules/stock/repositories/stock-repository.abstract.ts
+src/modules/stock/stock.controller.spec.ts
+src/modules/stock/stock.controller.ts
+src/modules/stock/stock.module.ts
+src/modules/stock/stock.service.spec.ts
+src/modules/stock/stock.service.ts
+src/modules/technicians/dto/create-technician.dto.ts
+src/modules/technicians/technicians.controller.ts
+src/modules/technicians/technicians.module.ts
+src/modules/technicians/technicians.service.ts
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/app.controller.spec.ts">
+import { Test, TestingModule } from '@nestjs/testing';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+
+describe('AppController', () => {
+  let appController: AppController;
+
+  beforeEach(async () => {
+    const app: TestingModule = await Test.createTestingModule({
+      controllers: [AppController],
+      providers: [AppService],
+    }).compile();
+
+    appController = app.get<AppController>(AppController);
+  });
+
+  describe('root', () => {
+    it('should return "Hello World!"', () => {
+      expect(appController.getHello()).toBe('Hello World!');
+    });
+  });
+});
+</file>
+
+<file path="src/app.controller.ts">
+import { Controller, Get } from '@nestjs/common';
+import { AppService } from './app.service';
+
+@Controller()
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @Get()
+  getHello(): string {
+    return this.appService.getHello();
+  }
+}
+</file>
+
+<file path="src/app.service.ts">
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class AppService {
+  getHello(): string {
+    return 'Hello World!';
+  }
+}
+</file>
+
+<file path="src/core/config/config.service.ts">
+// src/core/config/config.service.ts
+import { Injectable } from '@nestjs/common';
+import { join } from 'path';
+
+export interface DatabaseConfig {
+  dataDir: string;
+  equipmentsFile: string;
+  serviceOrdersFile: string;
+  stockFile: string;
+  customersFile: string;
+}
+
+export interface LogConfig {
+  level: 'debug' | 'info' | 'warn' | 'error';
+  context: boolean; // Mostrar contexto nos logs
+}
+
+export interface AppConfig {
+  port: number;
+  env: 'development' | 'production' | 'test';
+}
+
+/**
+ * ConfigService: Centraliza todas as configurações da aplicação
+ * Garante consistência de paths e configurações em toda a aplicação
+ */
+@Injectable()
+export class ConfigService {
+  private readonly appConfig: AppConfig;
+  private readonly databaseConfig: DatabaseConfig;
+  private readonly logConfig: LogConfig;
+
+  constructor() {
+    const env = (process.env.NODE_ENV || 'development') as AppConfig['env'];
+    const port = parseInt(process.env.PORT || '3000', 10);
+    const logLevel = (process.env.LOG_LEVEL || 'info') as LogConfig['level'];
+    const dataDir = join(process.cwd(), 'data');
+
+    this.appConfig = {
+      port,
+      env,
+    };
+
+    this.databaseConfig = {
+      dataDir,
+      equipmentsFile: join(dataDir, 'equipments.json'),
+      serviceOrdersFile: join(dataDir, 'service-orders.json'),
+      stockFile: join(dataDir, 'stock.json'),
+      customersFile: join(dataDir, 'customers.json'),
+    };
+
+    this.logConfig = {
+      level: logLevel,
+      context: env === 'development',
+    };
+  }
+
+  /**
+   * Retorna configurações da aplicação
+   */
+  getAppConfig(): AppConfig {
+    return this.appConfig;
+  }
+
+  /**
+   * Retorna configurações de banco de dados
+   */
+  getDatabaseConfig(): DatabaseConfig {
+    return this.databaseConfig;
+  }
+
+  /**
+   * Retorna configurações de logging
+   */
+  getLogConfig(): LogConfig {
+    return this.logConfig;
+  }
+
+  /**
+   * Acesso rápido ao caminho de um arquivo específico
+   */
+  getFilePath(
+    file: 'equipments' | 'serviceOrders' | 'stock' | 'customers',
+  ): string {
+    const paths: Record<string, string> = {
+      equipments: this.databaseConfig.equipmentsFile,
+      serviceOrders: this.databaseConfig.serviceOrdersFile,
+      stock: this.databaseConfig.stockFile,
+      customers: this.databaseConfig.customersFile,
+    };
+    return paths[file];
+  }
+
+  /**
+   * Verifica se está em produção
+   */
+  isProd(): boolean {
+    return this.appConfig.env === 'production';
+  }
+
+  /**
+   * Verifica se está em desenvolvimento
+   */
+  isDev(): boolean {
+    return this.appConfig.env === 'development';
+  }
+
+  /**
+   * Retorna o diretório de dados
+   */
+  getDataDir(): string {
+    return this.databaseConfig.dataDir;
+  }
+}
+</file>
+
+<file path="src/core/config/index.ts">
+// src/core/config/index.ts
+export { ConfigService } from './config.service';
+export type { AppConfig, DatabaseConfig, LogConfig } from './config.service';
+</file>
+
+<file path="src/core/database/factories/index.ts">
+// src/core/database/factories/index.ts
+export { RepositoryFactory } from './repository.factory';
+export type { RepositoryType, RepositoryImpl } from './repository.factory';
+</file>
+
+<file path="src/core/database/json-db.service.ts">
+import { Injectable } from '@nestjs/common';
+import * as fs from 'fs/promises';
+import * as path from 'path';
+
+export interface AuditMetadata {
+  updatedBy?: string;
+  updatedAt?: Date;
+}
+
+@Injectable()
+export class JsonDbService {
+  private readonly dataPath: string;
+
+  constructor() {
+    this.dataPath = path.join(process.cwd(), 'data');
+    this.ensureDataDirectory();
+  }
+
+  /**
+   * Garante que o diretório de dados existe
+   */
+  private async ensureDataDirectory(): Promise<void> {
+    try {
+      await fs.mkdir(this.dataPath, { recursive: true });
+    } catch (error) {
+      console.error('Erro ao criar diretório de dados:', error);
+    }
+  }
+
+  /**
+   * Lê um arquivo JSON
+   */
+  async readFile<T>(fileName: string, defaultValue?: T): Promise<T> {
+    const filePath = path.join(this.dataPath, fileName);
+    try {
+      const data = await fs.readFile(filePath, 'utf-8');
+      return JSON.parse(data);
+    } catch (error) {
+      if (defaultValue !== undefined) {
+        return defaultValue;
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Escreve dados em um arquivo JSON
+   */
+  async writeFile<T>(fileName: string, data: T): Promise<void> {
+    const filePath = path.join(this.dataPath, fileName);
+    try {
+      await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    } catch (error) {
+      console.error(`Erro ao salvar ${fileName}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Lê um arquivo JSON e aplica transformações
+   */
+  async readAndTransform<T, R>(
+    fileName: string,
+    transform: (data: T) => R,
+    defaultValue?: T,
+  ): Promise<R> {
+    const data = await this.readFile(fileName, defaultValue);
+    return transform(data);
+  }
+
+  /**
+   * Faz update de um arquivo aplicando uma função de transformação
+   */
+  async updateFile<T>(
+    fileName: string,
+    update: (data: T) => T,
+    defaultValue?: T,
+  ): Promise<T> {
+    const data = await this.readFile(fileName, defaultValue);
+    const updated = update(data);
+    await this.writeFile(fileName, updated);
+    return updated;
+  }
+
+  /**
+   * Adiciona audit metadata ao dado sendo salvo
+   */
+  addAuditMetadata<T extends object>(
+    data: T,
+    updatedBy: string = 'system',
+  ): T & AuditMetadata {
+    return {
+      ...data,
+      updatedBy,
+      updatedAt: new Date(),
+    };
+  }
+
+  /**
+   * Lê arquivo e retorna com metadados de auditoria
+   */
+  async readFileWithAudit<T>(fileName: string, defaultValue?: T): Promise<T> {
+    const data = await this.readFile(fileName, defaultValue);
+    return this.addAuditMetadata(data as object) as T;
+  }
+}
+</file>
+
+<file path="src/core/database/repositories/equipment-repository.abstract.ts">
+// src/core/database/repositories/equipment-repository.abstract.ts
+import { Equipment } from '../../../modules/equipments/entities/equipment.entity';
+import { CreateEquipmentDto } from '../../../modules/equipments/dto/create-equipment.dto';
+
+export abstract class EquipmentRepository {
+  abstract create(data: CreateEquipmentDto): Promise<Equipment>;
+  abstract findById(id: string): Promise<Equipment | null>;
+  abstract findAll(): Promise<Equipment[]>;
+  abstract findByCustomer(customerId: string): Promise<Equipment[]>;
+  abstract update(id: string, data: Partial<Equipment>): Promise<Equipment>;
+  abstract delete(id: string): Promise<void>;
+}
+</file>
+
+<file path="src/core/database/repositories/index.ts">
+// src/core/database/repositories/index.ts
+export { EquipmentRepository } from './equipment-repository.abstract';
+export { ServiceOrderRepository } from './service-order-repository.abstract';
+</file>
+
+<file path="src/core/index.ts">
+// src/core/index.ts
+export * from './config';
+export * from './logging';
+export * from './database';
+</file>
+
+<file path="src/core/logging/index.ts">
+// src/core/logging/index.ts
+export { LoggerService } from './logger.service';
+export type { LogLevel } from './logger.service';
+</file>
+
+<file path="src/core/logging/logger.service.ts">
+// src/core/logging/logger.service.ts
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '../config/config.service';
+
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+/**
+ * LoggerService: Centraliza todo logging da aplicação
+ * Garante consistência de formato e permite fácil customização
+ *
+ * Uso:
+ * - this.logger.log('Mensagem', 'ServicosDeEquipamentos');
+ * - this.logger.error('Erro', 'equipamento-repository');
+ * - this.logger.warn('Aviso', 'service-order-service');
+ * - this.logger.debug('Debug', 'stock-service');
+ */
+@Injectable()
+export class LoggerService {
+  private logger: Logger;
+  private readonly isDev: boolean;
+  private readonly logLevel: LogLevel;
+
+  constructor(private configService: ConfigService) {
+    this.logger = new Logger();
+    this.isDev = configService.isDev();
+    this.logLevel = configService.getLogConfig().level;
+  }
+
+  /**
+   * Log simples (info)
+   */
+  log(message: string, context?: string): void {
+    if (this.shouldLog('info')) {
+      this.logger.log(this.formatMessage(message), context);
+    }
+  }
+
+  /**
+   * Log de erro
+   */
+  error(message: string, trace?: string, context?: string): void {
+    if (this.shouldLog('error')) {
+      this.logger.error(this.formatMessage(message), trace, context);
+    }
+  }
+
+  /**
+   * Log de aviso
+   */
+  warn(message: string, context?: string): void {
+    if (this.shouldLog('warn')) {
+      this.logger.warn(this.formatMessage(message), context);
+    }
+  }
+
+  /**
+   * Log de debug (apenas em desenvolvimento)
+   */
+  debug(message: string, context?: string): void {
+    if (this.shouldLog('debug') && this.isDev) {
+      this.logger.debug(this.formatMessage(message), context);
+    }
+  }
+
+  /**
+   * Log detalhado com dados adicionais
+   */
+  verbose(message: string, data?: any, context?: string): void {
+    if (this.isDev) {
+      const formatted = data
+        ? `${message} | ${JSON.stringify(data, null, 2)}`
+        : message;
+      this.logger.debug(this.formatMessage(formatted), context);
+    }
+  }
+
+  /**
+   * Formata a mensagem com timestamp em desenvolvimento
+   */
+  private formatMessage(message: string): string {
+    if (!this.isDev) return message;
+    const timestamp = new Date().toISOString();
+    return `[${timestamp}] ${message}`;
+  }
+
+  /**
+   * Determina se deve fazer log baseado no nível configurado
+   */
+  private shouldLog(level: LogLevel): boolean {
+    const levels: Record<LogLevel, number> = {
+      debug: 0,
+      info: 1,
+      warn: 2,
+      error: 3,
+    };
+
+    return levels[level] >= levels[this.logLevel];
+  }
+}
+</file>
+
+<file path="src/modules/customers/customers.controller.spec.ts">
+import { Test, TestingModule } from '@nestjs/testing';
+import { CustomersController } from './customers.controller';
+import { CustomersService } from './customers.service';
+
+describe('CustomersController', () => {
+  let controller: CustomersController;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [CustomersController],
+      providers: [CustomersService],
+    }).compile();
+
+    controller = module.get<CustomersController>(CustomersController);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+});
+</file>
+
+<file path="src/modules/customers/customers.service.spec.ts">
+import { Test, TestingModule } from '@nestjs/testing';
+import { CustomersService } from './customers.service';
+
+describe('CustomersService', () => {
+  let service: CustomersService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [CustomersService],
+    }).compile();
+
+    service = module.get<CustomersService>(CustomersService);
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+});
+</file>
+
+<file path="src/modules/customers/dto/update-customer.dto.ts">
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateCustomerDto } from './create-customer.dto';
+
+export class UpdateCustomerDto extends PartialType(CreateCustomerDto) {}
+</file>
+
+<file path="src/modules/equipments/services/equipment.service.ts">
+// src/modules/equipments/services/equipment.service.ts
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Equipment, EquipmentStatus } from '../entities/equipment.entity';
+import { EquipmentRepository } from '../../../core/database/repositories';
+import { CreateEquipmentDto } from '../dto/create-equipment.dto';
+import { LoggerService } from '../../../core/logging/logger.service';
+
+@Injectable()
+export class EquipmentService {
+  constructor(
+    private readonly equipmentRepository: EquipmentRepository,
+    private readonly logger: LoggerService,
+  ) {}
+
+  async create(data: CreateEquipmentDto): Promise<Equipment> {
+    this.logger.debug(
+      `Criando novo equipamento: ${data.name}`,
+      'EquipmentService',
+    );
+    const equipment = await this.equipmentRepository.create(data);
+    this.logger.log(
+      `Equipamento criado com sucesso: ${equipment.id}`,
+      'EquipmentService',
+    );
+    return equipment;
+  }
+
+  async findByCustomer(customerId: string): Promise<Equipment[]> {
+    this.logger.debug(
+      `Buscando equipamentos do cliente: ${customerId}`,
+      'EquipmentService',
+    );
+    return this.equipmentRepository.findByCustomer(customerId);
+  }
+
+  async findAll(): Promise<Equipment[]> {
+    return this.equipmentRepository.findAll();
+  }
+
+  async findById(id: string): Promise<Equipment> {
+    const equipment = await this.equipmentRepository.findById(id);
+    if (!equipment) {
+      throw new NotFoundException(`Equipamento com ID ${id} não encontrado`);
+    }
+    return equipment;
+  }
+
+  async update(id: string, data: Partial<Equipment>): Promise<Equipment> {
+    return this.equipmentRepository.update(id, data);
+  }
+
+  async delete(id: string): Promise<void> {
+    this.logger.debug(`Deletando equipamento: ${id}`, 'EquipmentService');
+    await this.equipmentRepository.delete(id);
+    this.logger.log(
+      `Equipamento deletado com sucesso: ${id}`,
+      'EquipmentService',
+    );
+  }
+}
+</file>
+
+<file path="src/modules/stock/dto/create-movement.dto.ts">
+// src/stock/dto/create-movement.dto.ts
+import { IsString, IsNumber, IsEnum, IsOptional, Min } from 'class-validator';
+import { MovementType } from '../entities/stock-movement.entity';
+
+export class CreateMovementDto {
+  @IsString()
+  stockItemId: string;
+
+  @IsEnum(MovementType)
+  type: MovementType;
+
+  @IsNumber()
+  @Min(0.01)
+  quantity: number;
+
+  @IsString()
+  reason: string;
+
+  @IsString()
+  @IsOptional()
+  reference?: string;
+
+  @IsString()
+  @IsOptional()
+  technicianId?: string;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  cost?: number;
+}
+</file>
+
+<file path="src/modules/stock/dto/create-stock-item.dto.ts">
+// src/stock/dto/create-stock-item.dto.ts
+import { IsString, IsNumber, IsOptional, Min } from 'class-validator';
+
+export class CreateStockItemDto {
+  @IsString()
+  code: string;
+
+  @IsString()
+  name: string;
+
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @IsString()
+  category: string;
+
+  @IsNumber()
+  @Min(0)
+  currentQuantity: number;
+
+  @IsNumber()
+  @Min(0)
+  minQuantity: number;
+
+  @IsString()
+  unit: string;
+
+  @IsString()
+  @IsOptional()
+  supplier?: string;
+
+  @IsNumber()
+  @Min(0)
+  costPrice: number;
+
+  @IsString()
+  @IsOptional()
+  location?: string;
+}
+</file>
+
+<file path="src/modules/stock/dto/update-stock-item.dto.ts">
+// src/stock/dto/update-stock-item.dto.ts
+import {
+  IsEnum,
+  IsOptional,
+  IsNumber,
+  IsString,
+  IsBoolean,
+} from 'class-validator';
+import { ABCCategory } from '../entities/stock-item.entity';
+
+export class UpdateStockItemDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  code?: string;
+
+  @IsOptional()
+  @IsEnum(ABCCategory)
+  category?: ABCCategory;
+
+  @IsOptional()
+  @IsBoolean()
+  isCritical?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  minQuantity?: number;
+
+  @IsOptional()
+  @IsNumber()
+  reservedQuantity?: number; // Já preparando para a melhoria de reservas
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
+}
+</file>
+
+<file path="src/modules/stock/entities/stock-movement.entity.ts">
+// src/stock/entities/stock-movement.entity.ts
+export enum MovementType {
+  ENTRADA = 'entrada',
+  SAIDA = 'saida',
+  AJUSTE = 'ajuste',
+  TRANSFERENCIA = 'transferencia' // Nova regra de negócio
+}
+export class StockMovement {
+  id: string;
+  stockItemId: string;
+  type: MovementType;
+  quantity: number;
+  previousQuantity: number;
+  newQuantity: number;
+  reason: string;
+  reference?: string;
+  technicianId?: string;
+  cost?: number;
+  createdAt: Date;
+  createdBy: string;
+}
+</file>
+
+<file path="src/modules/stock/repositories/stock-repository.abstract.ts">
+// src/stock/repositories/stock-repository.abstract.ts
+import { StockItem } from '../entities/stock-item.entity';
+import { StockMovement } from '../entities/stock-movement.entity';
+
+export abstract class StockRepository {
+  abstract findAllItems(): Promise<StockItem[]>;
+  abstract findItemById(id: string): Promise<StockItem | null>;
+  abstract findItemByCode(code: string): Promise<StockItem | null>;
+  abstract createItem(item: Omit<StockItem, 'id'>): Promise<StockItem>;
+  abstract updateItem(id: string, item: Partial<StockItem>): Promise<StockItem>;
+  abstract deleteItem(id: string): Promise<void>;
+  
+  abstract createMovement(movement:Omit<StockMovement, 'id' | 'createdAt'>): Promise<StockMovement>;
+  abstract findMovementsByItemId(itemId: string): Promise<StockMovement[]>;
+  abstract findMovementsByDateRange(start: Date, end: Date): Promise<StockMovement[]>;
+  abstract findByLocation(location: string): Promise<StockItem[]>;
+}
+</file>
+
+<file path="src/modules/stock/stock.controller.spec.ts">
+import { Test, TestingModule } from '@nestjs/testing';
+import { StockController } from './stock.controller';
+
+describe('StockController', () => {
+  let controller: StockController;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [StockController],
+    }).compile();
+
+    controller = module.get<StockController>(StockController);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+});
+</file>
+
+<file path="src/modules/stock/stock.controller.ts">
+// src/stock/stock.controller.ts
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  Query,
+  HttpCode,
+  HttpStatus,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { StockService } from './stock.service';
+import { diskStorage } from 'multer';
+import type { Multer } from 'multer';
+import { extname } from 'path';
+import { CreateStockItemDto } from './dto/create-stock-item.dto';
+import { UpdateStockItemDto } from './dto/update-stock-item.dto';
+import { CreateMovementDto } from './dto/create-movement.dto';
+
+@Controller('stock')
+export class StockController {
+  constructor(private readonly stockService: StockService) {}
+
+  @Get('items')
+  async findAllItems() {
+    return this.stockService.findAllItems();
+  }
+
+  @Get('items/low-stock')
+  async findLowStockItems() {
+    return this.stockService.getLowStockItems();
+  }
+
+  @Get('items/:id')
+  async findItemById(@Param('id') id: string) {
+    return this.stockService.findItemById(id);
+  }
+
+  @Post('items')
+  async createItem(@Body() createDto: CreateStockItemDto) {
+    return this.stockService.createItem(createDto);
+  }
+
+  @Put('items/:id')
+  async updateItem(
+    @Param('id') id: string,
+    @Body() updateDto: UpdateStockItemDto,
+  ) {
+    return this.stockService.updateItem(id, updateDto);
+  }
+
+  @Delete('items/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteItem(@Param('id') id: string) {
+    return this.stockService.deleteItem(id);
+  }
+
+  @Post('movements')
+  async createMovement(@Body() createDto: CreateMovementDto) {
+    return this.stockService.createMovement(createDto);
+  }
+
+  @Get('items/:id/history')
+  async getItemHistory(@Param('id') id: string) {
+    return this.stockService.getItemHistory(id);
+  }
+
+  @Get('items/by-location')
+  async findByLocation(@Query('location') location: string) {
+    return this.stockService.findByLocation(location);
+  }
+
+  @Post('items/:id/reserve')
+  async reserve(@Param('id') id: string, @Body('quantity') quantity: number) {
+    return this.stockService.reserveForOS(id, quantity);
+  }
+
+  @Post('items/:id/confirm-reserve')
+  async confirmReserve(
+    @Param('id') id: string,
+    @Body() body: { quantity: number; technicianId: string },
+  ) {
+    return this.stockService.confirmReserveOut(
+      id,
+      body.quantity,
+      body.technicianId,
+    );
+  }
+
+  @Delete('items/:id/reserve')
+  async cancelReserve(
+    @Param('id') id: string,
+    @Body('quantity') quantity: number,
+  ) {
+    return this.stockService.cancelReservation(id, quantity);
+  }
+
+  @Get('alerts/proactive')
+  async getAlerts() {
+    return this.stockService.getProactiveAlerts();
+  }
+
+  @Post(':id/upload-image')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/stock', // Pasta local, mas recomendo S3 futuramente
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(null, `${uniqueSuffix}${extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
+  async uploadImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Multer.File,
+  ) {
+    const imageUrl = `/uploads/stock/${file.filename}`;
+    return this.stockService.updateItem(id, { imageUrl });
+  }
+}
+</file>
+
+<file path="src/modules/stock/stock.service.spec.ts">
+import { Test, TestingModule } from '@nestjs/testing';
+import { StockService } from './stock.service';
+
+describe('StockService', () => {
+  let service: StockService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [StockService],
+    }).compile();
+
+    service = module.get<StockService>(StockService);
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+});
+</file>
+
+<file path="src/modules/stock/stock.service.ts">
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import { StockRepository } from './repositories/stock-repository.abstract';
+import { StockItem } from './entities/stock-item.entity';
+import { StockMovement, MovementType } from './entities/stock-movement.entity';
+import { CreateStockItemDto } from './dto/create-stock-item.dto';
+import { UpdateStockItemDto } from './dto/update-stock-item.dto';
+import { CreateMovementDto } from './dto/create-movement.dto';
+import { ABCCategory } from './entities/stock-item.entity';
+
+@Injectable()
+export class StockService {
+  constructor(private readonly stockRepository: StockRepository) {}
+
+  async findAllItems(): Promise<StockItem[]> {
+    return this.stockRepository.findAllItems();
+  }
+
+  async findItemById(id: string): Promise<StockItem> {
+    const item = await this.stockRepository.findItemById(id);
+    if (!item) {
+      throw new NotFoundException('Item não encontrado');
+    }
+    return item;
+  }
+
+  async createItem(createDto: CreateStockItemDto): Promise<StockItem> {
+    // Verificar se código já existe
+    const existingItem = await this.stockRepository.findItemByCode(
+      createDto.code,
+    );
+    if (existingItem) {
+      throw new ConflictException('Código do item já existe');
+    }
+
+    return this.stockRepository.createItem({
+      ...createDto,
+      category: createDto.category as ABCCategory,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      reservedQuantity: 0,
+      availableQuantity: createDto.currentQuantity,
+      isCritical: false,
+      leadTimeDays: 0,
+    });
+  }
+
+  async updateItem(
+    id: string,
+    updateDto: UpdateStockItemDto,
+  ): Promise<StockItem> {
+    await this.findItemById(id); // Verifica se existe
+
+    if (updateDto.code) {
+      const existingItem = await this.stockRepository.findItemByCode(
+        updateDto.code,
+      );
+      if (existingItem && existingItem.id !== id) {
+        throw new ConflictException('Código do item já existe');
+      }
+    }
+
+    return this.stockRepository.updateItem(id, updateDto);
+  }
+
+  async deleteItem(id: string): Promise<void> {
+    await this.findItemById(id); // Verifica se existe
+    return this.stockRepository.deleteItem(id);
+  }
+
+  async createMovement(createDto: CreateMovementDto): Promise<StockMovement> {
+    const item = await this.findItemById(createDto.stockItemId);
+
+    const previousQuantity = item.currentQuantity; //
+    let newQuantity = previousQuantity;
+    let newLocation = item.location;
+
+    if (createDto.type === MovementType.TRANSFERENCIA) {
+      if (!createDto.technicianId) {
+        throw new BadRequestException(
+          'Técnico de destino é obrigatório para transferência',
+        );
+      }
+      // Na transferência para a van, a quantidade global não muda,
+      // mas o local físico sim.
+      newLocation = `VAN-${createDto.technicianId}`;
+    } else if (createDto.type === MovementType.ENTRADA) {
+      newQuantity = previousQuantity + createDto.quantity; //
+    } else if (createDto.type === MovementType.SAIDA) {
+      newQuantity = previousQuantity - createDto.quantity; //
+      if (newQuantity < 0) {
+        throw new BadRequestException('Quantidade insuficiente em estoque'); //
+      }
+    } else if (createDto.type === MovementType.AJUSTE) {
+      newQuantity = createDto.quantity; //
+    }
+
+    await this.stockRepository.updateItem(item.id, {
+      currentQuantity: newQuantity,
+      location: newLocation,
+      updatedAt: new Date(),
+    }); //
+
+    return this.stockRepository.createMovement({
+      ...createDto,
+      previousQuantity,
+      newQuantity,
+      createdBy: 'system', // Em produção, viria do usuário autenticado
+    });
+  }
+
+  async getItemHistory(itemId: string): Promise<StockMovement[]> {
+    await this.findItemById(itemId); // Verifica se existe
+    return this.stockRepository.findMovementsByItemId(itemId);
+  }
+
+  async getLowStockItems(): Promise<StockItem[]> {
+    const items = await this.stockRepository.findAllItems();
+    return items.filter((item) => item.currentQuantity <= item.minQuantity);
+  }
+
+  async findByLocation(location: string): Promise<StockItem[]> {
+    if (!location) {
+      throw new BadRequestException('O parâmetro location é obrigatório');
+    }
+
+    return this.stockRepository.findByLocation(location);
+  }
+
+  async reserveForOS(itemId: string, quantity: number): Promise<StockItem> {
+    const item = await this.findItemById(itemId);
+
+    // Regra de Negócio: Disponibilidade = Físico - Reservado
+    const reservedQuantity = item.reservedQuantity || 0;
+    const available = item.currentQuantity - reservedQuantity;
+
+    if (available < quantity) {
+      throw new BadRequestException(
+        `Saldo insuficiente para reserva. Disponível: ${available}, Solicitado: ${quantity}`,
+      );
+    }
+
+    return this.stockRepository.updateItem(itemId, {
+      reservedQuantity: reservedQuantity + quantity,
+      updatedAt: new Date(),
+    });
+  }
+
+  /**
+   * EFETIVAÇÃO: Transforma reserva em saída real (baixa física).
+   */
+  async confirmReserveOut(
+    itemId: string,
+    quantity: number,
+    technicianId: string,
+  ): Promise<StockMovement> {
+    const item = await this.findItemById(itemId);
+    const reserved = item.reservedQuantity || 0;
+
+    if (reserved < quantity) {
+      throw new BadRequestException(
+        'Quantidade solicitada maior que a reserva atual.',
+      );
+    }
+
+    // Atualiza o item: reduz o físico e limpa a reserva
+    const previousQuantity = item.currentQuantity;
+    const newQuantity = previousQuantity - quantity;
+
+    await this.stockRepository.updateItem(itemId, {
+      currentQuantity: newQuantity,
+      reservedQuantity: reserved - quantity,
+      updatedAt: new Date(),
+    });
+
+    // Registra a movimentação de SAÍDA real no histórico
+    return this.stockRepository.createMovement({
+      stockItemId: itemId,
+      type: MovementType.SAIDA,
+      quantity,
+      previousQuantity,
+      newQuantity,
+      reason: `Efetivação de reserva para O.S.`,
+      technicianId,
+      createdBy: 'system',
+    });
+  }
+
+  /**
+   * CANCELAMENTO: Devolve a reserva para o saldo disponível.
+   */
+  async cancelReservation(
+    itemId: string,
+    quantity: number,
+  ): Promise<StockItem> {
+    const item = await this.findItemById(itemId);
+    const currentReserved = item.reservedQuantity || 0;
+
+    const newReserved = Math.max(0, currentReserved - quantity);
+
+    return this.stockRepository.updateItem(itemId, {
+      reservedQuantity: newReserved,
+      updatedAt: new Date(),
+    });
+  }
+
+  async getProactiveAlerts() {
+    const items = await this.stockRepository.findAllItems();
+
+    return items.map((item) => {
+      const isLow = item.currentQuantity <= item.minQuantity;
+      const isCriticalRisk = item.isCritical && isLow;
+
+      // Sugestão de status para o Angular Signals
+      let alertStatus: 'NORMAL' | 'WARNING' | 'CRITICAL' = 'NORMAL';
+      if (isCriticalRisk) alertStatus = 'CRITICAL';
+      else if (isLow || item.category === ABCCategory.A)
+        alertStatus = 'WARNING';
+
+      return {
+        ...item,
+        alertStatus,
+        reorderSuggested: isLow,
+      };
+    });
+  }
+}
+</file>
+
+<file path="src/modules/technicians/dto/create-technician.dto.ts">
+// server/src/technicians/dto/create-technician.dto.ts
+import { IsString, IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
+
+export class CreateTechnicianDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  phone: string;
+
+  @IsString()
+  @IsNotEmpty()
+  specialty: string;
+
+  @IsOptional()
+  isActive?: boolean;
+}
+</file>
+
+<file path="src/modules/technicians/technicians.controller.ts">
+// server/src/technicians/technicians.controller.ts
+import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
+import { TechniciansService } from './technicians.service';
+import { CreateTechnicianDto } from './dto/create-technician.dto';
+
+@Controller('technicians')
+export class TechniciansController {
+  constructor(private readonly techService: TechniciansService) {}
+
+  @Get()
+  findAll() {
+    return this.techService.findAll();
+  }
+
+  @Post()
+  create(@Body() dto: CreateTechnicianDto) {
+    return this.techService.create(dto);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() dto: Partial<CreateTechnicianDto>) {
+    return this.techService.update(id, dto);
+  }
+}
+</file>
+
+<file path="src/modules/technicians/technicians.module.ts">
+import { Module } from '@nestjs/common';
+import { TechniciansController } from './technicians.controller';
+import { TechniciansService } from './technicians.service';
+
+@Module({
+  controllers: [TechniciansController],
+  providers: [TechniciansService],
+  // Exportamos o service caso outros módulos precisem validar técnicos no futuro
+  exports: [TechniciansService],
+})
+export class TechniciansModule {}
+</file>
+
+<file path="src/modules/technicians/technicians.service.ts">
+// server/src/technicians/technicians.service.ts
+import { Injectable, NotFoundException } from '@nestjs/common';
+import * as fs from 'fs';
+import * as path from 'path';
+import { v4 as uuid } from 'uuid';
+import { CreateTechnicianDto } from './dto/create-technician.dto';
+
+@Injectable()
+export class TechniciansService {
+  private readonly dbPath = path.join(
+    process.cwd(),
+    'data',
+    'technicians.json',
+  );
+
+  private readDb(): any[] {
+    const data = fs.readFileSync(this.dbPath, 'utf-8');
+    return JSON.parse(data);
+  }
+
+  private writeDb(data: any[]) {
+    fs.writeFileSync(this.dbPath, JSON.stringify(data, null, 2));
+  }
+
+  findAll() {
+    return this.readDb();
+  }
+
+  create(dto: CreateTechnicianDto) {
+    const db = this.readDb();
+    const newTech = { id: uuid(), ...dto, isActive: dto.isActive ?? true };
+    db.push(newTech);
+    this.writeDb(db);
+    return newTech;
+  }
+
+  update(id: string, dto: Partial<CreateTechnicianDto>) {
+    const db = this.readDb();
+    const index = db.findIndex((t) => t.id === id);
+    if (index === -1) throw new NotFoundException('Técnico não encontrado');
+
+    db[index] = { ...db[index], ...dto };
+    this.writeDb(db);
+    return db[index];
+  }
+}
+</file>
+
+<file path="src/core/database/database.module.ts">
+// src/core/database/database.module.ts
+import { Module } from '@nestjs/common';
+import { ConfigService } from '../config/config.service';
+import { LoggerService } from '../logging/logger.service';
+import { RepositoryFactory } from './factories/repository.factory';
+import { EquipmentRepository } from './repositories/equipment-repository.abstract';
+import { ServiceOrderRepository } from './repositories/service-order-repository.abstract';
+import { InMemoryEquipmentRepository } from '../../modules/equipments/repositories/in-memory-equipment.repository';
+import { InMemoryServiceOrderRepository } from '../../modules/equipments/repositories/in-memory-service-order.repository';
+import { JsonDbService } from './json-db.service';
+
+/**
+ * DatabaseModule: Centraliza toda a lógica de persistência da aplicação
+ *
+ * Responsabilidades:
+ * - Registra todos os repositórios abstratos
+ * - Fornece factory para criação dinâmica de repositórios
+ * - Garante consistência de configuração em todos os repositórios
+ * - Facilita testes e mocks
+ *
+ * Uso em outros módulos:
+ * @Module({
+ *   imports: [DatabaseModule],
+ *   // ... rest of module
+ * })
+ */
+@Module({
+  providers: [
+    // Configuração centralizada
+    ConfigService,
+
+    // Logging centralizado
+    LoggerService,
+
+    // Serviço de persistência JSON
+    JsonDbService,
+
+    // Factory para criar repositórios dinamicamente
+    RepositoryFactory,
+
+    // Repositório abstrato de Equipamentos com provider de implementação
+    {
+      provide: EquipmentRepository,
+      useFactory: (factory: RepositoryFactory): EquipmentRepository => {
+        return factory.createRepository('equipment', 'inMemory');
+      },
+      inject: [RepositoryFactory],
+    },
+
+    // Repositório abstrato de Ordens de Serviço com provider de implementação
+    {
+      provide: ServiceOrderRepository,
+      useFactory: (factory: RepositoryFactory): ServiceOrderRepository => {
+        return factory.createRepository('serviceOrder', 'inMemory');
+      },
+      inject: [RepositoryFactory],
+    },
+  ],
+  exports: [
+    // Exporta para outros módulos poderem usar
+    ConfigService,
+    LoggerService,
+    JsonDbService,
+    RepositoryFactory,
+    EquipmentRepository,
+    ServiceOrderRepository,
+  ],
+})
+export class DatabaseModule {}
+</file>
+
+<file path="src/core/database/factories/repository.factory.ts">
+// src/core/database/factories/repository.factory.ts
+import { Injectable } from '@nestjs/common';
+import { InMemoryEquipmentRepository } from '../../../modules/equipments/repositories/in-memory-equipment.repository';
+import { InMemoryServiceOrderRepository } from '../../../modules/equipments/repositories/in-memory-service-order.repository';
+import { EquipmentRepository } from '../repositories/equipment-repository.abstract';
+import { ServiceOrderRepository } from '../repositories/service-order-repository.abstract';
+import { ConfigService } from '../../config/config.service';
+import { LoggerService } from '../../logging/logger.service';
+import { JsonDbService } from '../json-db.service';
+
+export type RepositoryType = 'equipment' | 'serviceOrder';
+export type RepositoryImpl = 'inMemory'; // Future: 'database', 'redis', etc
+
+/**
+ * RepositoryFactory: Factory Pattern para criação dinâmica de repositórios
+ *
+ * Benefícios:
+ * - Desacoplamento entre a aplicação e as implementações de repositório
+ * - Fácil trocar entre diferentes implementações (inMemory, database, etc)
+ * - Centralização da lógica de instanciação
+ * - Facilita testes unitários com mocks
+ *
+ * Uso:
+ * - this.factory.createRepository<EquipmentRepository>('equipment', 'inMemory');
+ */
+@Injectable()
+export class RepositoryFactory {
+  private readonly defaultImplementation: RepositoryImpl = 'inMemory';
+
+  constructor(
+    private configService: ConfigService,
+    private loggerService: LoggerService,
+    private jsonDbService: JsonDbService,
+  ) {
+    this.loggerService.log(
+      `RepositoryFactory inicializado com implementação padrão: ${this.defaultImplementation}`,
+      'RepositoryFactory',
+    );
+  }
+
+  /**
+   * Cria uma instância de repositório
+   */
+  createRepository<T>(
+    type: RepositoryType,
+    implementation?: RepositoryImpl,
+  ): T {
+    const impl = implementation || this.defaultImplementation;
+
+    this.loggerService.debug(
+      `Criando repositório: ${type} (${impl})`,
+      'RepositoryFactory',
+    );
+
+    switch (type) {
+      case 'equipment':
+        return this.createEquipmentRepository(impl) as T;
+      case 'serviceOrder':
+        return this.createServiceOrderRepository(impl) as T;
+      default:
+        throw new Error(`Repositório desconhecido: ${type}`);
+    }
+  }
+
+  /**
+   * Factory para EquipmentRepository
+   */
+  private createEquipmentRepository(impl: RepositoryImpl): EquipmentRepository {
+    switch (impl) {
+      case 'inMemory':
+        return new InMemoryEquipmentRepository(this.jsonDbService);
+      // Future implementations
+      // case 'database':
+      //   return new DatabaseEquipmentRepository(this.configService);
+      // case 'redis':
+      //   return new RedisEquipmentRepository(this.configService);
+      default:
+        throw new Error(`Implementação desconhecida: ${impl}`);
+    }
+  }
+
+  /**
+   * Factory para ServiceOrderRepository
+   */
+  private createServiceOrderRepository(
+    impl: RepositoryImpl,
+  ): ServiceOrderRepository {
+    switch (impl) {
+      case 'inMemory':
+        return new InMemoryServiceOrderRepository(this.configService);
+      // Future implementations
+      // case 'database':
+      //   return new DatabaseServiceOrderRepository(this.configService);
+      default:
+        throw new Error(`Implementação desconhecida: ${impl}`);
+    }
+  }
+
+  /**
+   * Retorna a implementação padrão
+   */
+  getDefaultImplementation(): RepositoryImpl {
+    return this.defaultImplementation;
+  }
+}
+</file>
+
+<file path="src/core/database/index.ts">
+// src/core/database/index.ts
+export * from './repositories';
+export { RepositoryFactory } from './factories';
+export type { RepositoryType, RepositoryImpl } from './factories';
+export { DatabaseModule } from './database.module';
+export { JsonDbService } from './json-db.service';
+</file>
+
+<file path="src/core/database/repositories/service-order-repository.abstract.ts">
+// src/core/database/repositories/service-order-repository.abstract.ts
+import { ServiceOrder } from '../../../modules/equipments/entities/service-order.entity';
+import {
+  CreateServiceOrderDto,
+  OSStatus,
+} from 'src/modules/equipments/dto/service-order.dto';
+
+export interface OSItemInput {
+  stockItemId: string;
+  quantity: number;
+  wasInstalled: boolean;
+}
+
+export abstract class ServiceOrderRepository {
+  abstract create(data: CreateServiceOrderDto): Promise<ServiceOrder>;
+  abstract findById(id: string): Promise<ServiceOrder | null>;
+  abstract findAll(
+    equipmentId?: string,
+    technicianId?: string,
+  ): Promise<ServiceOrder[]>;
+  abstract updateStatus(id: string, status: OSStatus): Promise<ServiceOrder>;
+  abstract update(
+    id: string,
+    data: Partial<ServiceOrder>,
+  ): Promise<ServiceOrder>;
+
+  // Método crucial para o fluxo de peças que o Service chama
+  abstract addItem(osId: string, item: OSItemInput): Promise<ServiceOrder>;
+}
+</file>
+
+<file path="src/modules/customers/customers.controller.ts">
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { CustomersService } from './customers.service';
+
+@Controller('customers')
+export class CustomersController {
+  constructor(private readonly customersService: CustomersService) {}
+
+  @Post()
+  create(@Body() createCustomerDto: any) {
+    return this.customersService.create(createCustomerDto);
+  }
+
+  @Get()
+  findAll() {
+    return this.customersService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.customersService.findOne(id);
+  }
+}
+</file>
+
+<file path="src/modules/customers/customers.module.ts">
+import { Module } from '@nestjs/common';
+import { CustomersService } from './customers.service';
+import { CustomersController } from './customers.controller';
+
+@Module({
+  controllers: [CustomersController],
+  providers: [CustomersService],
+  exports: [CustomersService],
+})
+export class CustomersModule {}
+</file>
+
+<file path="src/modules/customers/customers.service.ts">
+import { Injectable, NotFoundException } from '@nestjs/common';
+import * as fs from 'fs/promises';
+import { join } from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import { Customer } from './entities/customer.entity';
+
+@Injectable()
+export class CustomersService {
+  // Caminho para o seu "banco de dados" JSON
+  private readonly filePath = join(process.cwd(), 'data', 'customers.json');
+
+  // Helper para ler o arquivo
+  private async readDb(): Promise<Customer[]> {
+    try {
+      const data = await fs.readFile(this.filePath, 'utf-8');
+      return JSON.parse(data);
+    } catch (error) {
+      return []; // Retorna vazio se o arquivo não existir
+    }
+  }
+
+  // Helper para escrever no arquivo
+  private async writeDb(customers: Customer[]): Promise<void> {
+    await fs.writeFile(this.filePath, JSON.stringify(customers, null, 2));
+  }
+
+  async findAll(): Promise<Customer[]> {
+    return this.readDb();
+  }
+
+  async findOne(id: string): Promise<Customer> {
+    const customers = await this.readDb();
+    const customer = customers.find((c) => c.id === id);
+    if (!customer) throw new NotFoundException('Cliente não encontrado');
+    return customer;
+  }
+
+  async create(data: any): Promise<Customer> {
+    const customers = await this.readDb();
+    const newCustomer: Customer = {
+      id: uuidv4(),
+      ...data,
+      isActive: true,
+      createdAt: new Date().toISOString(),
+    };
+    customers.push(newCustomer);
+    await this.writeDb(customers);
+    return newCustomer;
+  }
+}
+</file>
+
+<file path="src/modules/customers/dto/create-customer.dto.ts">
+import { IsEmail, IsString, MinLength } from 'class-validator';
+
+// src/modules/customers/dto/create-customer.dto.ts
+export class CreateCustomerDto {
+  @IsString()
+  @MinLength(3)
+  name: string;
+
+  @IsString()
+  document: string;
+
+  @IsString()
+  address: string;
+
+  @IsEmail()
+  email: string;
+}
+</file>
+
+<file path="src/modules/equipments/dto/service-order.dto.ts">
+import {
+  IsString,
+  IsNotEmpty,
+  IsEnum,
+  IsBoolean,
+  IsOptional,
+  MinLength,
+  IsArray,
+  ValidateNested,
+  IsNumber,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+
+// DTO para as peças dentro da OS
+class ServiceOrderPartDto {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsNumber()
+  requestedQuantity: number;
+}
+
+export type OSStatus = 'OPEN' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+export type OSType = 'PREVENTIVE' | 'CORRECTIVE' | 'EMERGENCY' | 'INSTALLATION';
+
+export class CreateServiceOrderDto {
+  @IsString()
+  @IsNotEmpty({ message: 'O ID do cliente é obrigatório' })
+  customerId: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'O ID do equipamento é obrigatório' })
+  equipmentId: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'O técnico precisa ser atribuído' })
+  technicianId: string;
+
+  @IsEnum(['PREVENTIVE', 'CORRECTIVE', 'EMERGENCY', 'INSTALLATION'], {
+    message: 'Tipo de serviço inválido',
+  })
+  type: OSType;
+
+  @IsString()
+  @MinLength(10, { message: 'A descrição deve ter pelo menos 10 caracteres' })
+  description: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isEmergency: boolean = false;
+
+  @IsString()
+  @IsNotEmpty()
+  updatedBy: string;
+
+  // ✨ NOVO: Validação das peças
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => ServiceOrderPartDto)
+  parts?: ServiceOrderPartDto[];
+}
+
+export class UpdateServiceOrderDto {
+  // Adicionamos esses campos como opcionais para evitar o erro "property should not exist"
+  @IsString()
+  @IsOptional()
+  customerId?: string;
+
+  @IsString()
+  @IsOptional()
+  equipmentId?: string;
+
+  @IsString()
+  @IsOptional()
+  technicianId?: string;
+
+  @IsEnum(['OPEN', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'])
+  @IsOptional()
+  status?: OSStatus;
+
+  @IsEnum(['PREVENTIVE', 'CORRECTIVE', 'EMERGENCY', 'INSTALLATION'])
+  @IsOptional()
+  type?: OSType;
+
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isEmergency?: boolean;
+
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => ServiceOrderPartDto)
+  parts?: ServiceOrderPartDto[];
+
+  @IsString()
+  @IsNotEmpty()
+  updatedBy: string; // Mantemos obrigatório para auditoria
+}
+</file>
+
+<file path="src/modules/equipments/repositories/in-memory-equipment.repository.ts">
+// src/modules/equipments/repositories/in-memory-equipment.repository.ts
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import { Equipment, EquipmentStatus } from '../entities/equipment.entity';
+import { EquipmentRepository } from '../../../core/database/repositories';
+import { CreateEquipmentDto } from '../dto/create-equipment.dto';
+import { JsonDbService } from '../../../core/database/json-db.service';
+import { v4 as uuid } from 'uuid';
+
+@Injectable()
+export class InMemoryEquipmentRepository implements EquipmentRepository {
+  private equipments: Equipment[] = [];
+  private readonly logger = new Logger(InMemoryEquipmentRepository.name);
+  private readonly fileName = 'equipments.json';
+
+  constructor(private jsonDbService: JsonDbService) {
+    this.loadFromFile();
+  }
+
+  private async loadFromFile(): Promise<void> {
+    try {
+      this.equipments = await this.jsonDbService.readFile(this.fileName, []);
+    } catch (error) {
+      this.logger.error('Erro ao carregar equipamentos:', error);
+      this.equipments = [];
+    }
+  }
+
+  private async saveToFile(): Promise<void> {
+    try {
+      await this.jsonDbService.writeFile(this.fileName, this.equipments);
+    } catch (error) {
+      this.logger.error('Erro ao salvar equipamentos:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Valida campos obrigatórios do Prontuário do Elevador
+   */
+  private validateEquipmentFields(data: CreateEquipmentDto): void {
+    if (!data.brand || data.brand.trim() === '') {
+      throw new BadRequestException('Marca (brand) é obrigatória');
+    }
+
+    if (!data.model || data.model.trim() === '') {
+      throw new BadRequestException('Modelo (model) é obrigatório');
+    }
+
+    // Validar ano se fornecido
+    if (data.technicalSpecs?.manufactureYear !== undefined) {
+      const year = data.technicalSpecs.manufactureYear;
+      const currentYear = new Date().getFullYear();
+      if (year < 1900 || year > currentYear) {
+        throw new BadRequestException(
+          `Ano de fabricação deve estar entre 1900 e ${currentYear}`,
+        );
+      }
+    }
+  }
+
+  async create(data: CreateEquipmentDto): Promise<Equipment> {
+    // Validar campos obrigatórios
+    this.validateEquipmentFields(data);
+
+    const newEquip: Equipment = {
+      id: uuid(),
+      customerId: data.customerId,
+      name: data.name,
+      brand: data.brand.trim(),
+      model: data.model.trim(),
+      serialNumber: data.serialNumber || 'N/A',
+      position: data.position || 'Não informada',
+      technicalSpecs: data.technicalSpecs,
+      status: data.status || EquipmentStatus.OPERATIONAL,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      lastPreventiveDate: data.lastPreventiveDate
+        ? new Date(data.lastPreventiveDate)
+        : undefined,
+      nextPreventiveDate: data.nextPreventiveDate
+        ? new Date(data.nextPreventiveDate)
+        : undefined,
+    };
+
+    this.equipments.push(newEquip);
+    await this.saveToFile();
+
+    this.logger.debug(
+      `Equipamento criado: ${newEquip.id} - ${newEquip.brand} ${newEquip.model}`,
+    );
+    return newEquip;
+  }
+
+  async findById(id: string): Promise<Equipment | null> {
+    return this.equipments.find((e) => e.id === id) || null;
+  }
+
+  async findByCustomer(customerId: string): Promise<Equipment[]> {
+    if (this.equipments.length === 0) {
+      await this.loadFromFile();
+    }
+
+    const filtered = this.equipments.filter(
+      (e) => String(e.customerId).trim() === String(customerId).trim(),
+    );
+
+    this.logger.debug(
+      `Equipamentos encontrados para cliente ${customerId}: ${filtered.length}`,
+    );
+    return filtered;
+  }
+
+  async findAll(): Promise<Equipment[]> {
+    return this.equipments;
+  }
+
+  async update(
+    id: string,
+    data: Partial<Equipment>,
+    updatedBy: string = 'system',
+  ): Promise<Equipment> {
+    const index = this.equipments.findIndex((e) => e.id === id);
+    if (index === -1) throw new Error('Equipamento não encontrado');
+
+    this.equipments[index] = {
+      ...this.equipments[index],
+      ...data,
+      updatedAt: new Date(),
+      updatedBy, // Auditoria: quem fez a atualização
+    };
+
+    await this.saveToFile();
+
+    this.logger.debug(`Equipamento atualizado: ${id} por ${updatedBy}`);
+    return this.equipments[index];
+  }
+
+  async delete(id: string): Promise<void> {
+    const index = this.equipments.findIndex((e) => e.id === id);
+    if (index === -1) throw new Error('Equipamento não encontrado');
+
+    this.equipments = this.equipments.filter((e) => e.id !== id);
+    await this.saveToFile();
+
+    this.logger.debug(`Equipamento deletado: ${id}`);
+  }
+}
+</file>
+
+<file path="src/modules/equipments/repositories/in-memory-service-order.repository.ts">
+// src/modules/equipments/repositories/in-memory-service-order.repository.ts
+
+import { Injectable, NotFoundException } from '@nestjs/common';
+import * as fs from 'fs/promises';
+import { join } from 'path';
+import { ServiceOrderRepository } from '../../../core/database/repositories';
+import { ConfigService } from '../../../core/config/config.service';
+import { OSStatus } from 'src/modules/equipments/dto/service-order.dto';
+import { OSItemInput } from 'src/core/database/repositories/service-order-repository.abstract';
+
+import { CreateServiceOrderDto } from '../dto/service-order.dto';
+import { ServiceOrder } from '../entities/service-order.entity';
+
+@Injectable()
+export class InMemoryServiceOrderRepository implements ServiceOrderRepository {
+  private readonly filePath: string;
+  private orders: ServiceOrder[] = [];
+
+  constructor(private configService: ConfigService) {
+    this.filePath = configService.getFilePath('serviceOrders');
+    this.loadFromFile();
+  }
+
+  private async loadFromFile() {
+    try {
+      const data = await fs.readFile(this.filePath, 'utf-8');
+      this.orders = JSON.parse(data);
+    } catch (error) {
+      this.orders = [];
+      await this.ensureDirectoryExists();
+    }
+  }
+
+  private async saveToFile() {
+    await this.ensureDirectoryExists();
+    await fs.writeFile(this.filePath, JSON.stringify(this.orders, null, 2));
+  }
+
+  private async ensureDirectoryExists() {
+    const dir = join(process.cwd(), 'data');
+    try {
+      await fs.mkdir(dir, { recursive: true });
+    } catch (error) {
+      // Directory already exists
+    }
+  }
+
+  async create(data: CreateServiceOrderDto): Promise<ServiceOrder> {
+    // CORREÇÃO: Preenchimento de todos os campos obrigatórios da ServiceOrder Entity
+    const newOrder: ServiceOrder = {
+      id: crypto.randomUUID(),
+      osNumber: `OS-${Date.now().toString().slice(-4)}`, // Gera um número básico de OS
+      customerId: data.customerId,
+      equipmentId: data.equipmentId,
+      technicianId: data.technicianId,
+      type: data.type,
+      description: data.description,
+      isEmergency: data.isEmergency || false,
+      status: 'OPEN', // CORREÇÃO: Usando string literal em vez de OSStatus.ABERTA
+      items: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      updatedBy: data.updatedBy || 'system',
+    };
+
+    this.orders.push(newOrder);
+    await this.saveToFile();
+    return newOrder;
+  }
+
+  async findById(id: string): Promise<ServiceOrder | null> {
+    return this.orders.find((o) => o.id === id) || null;
+  }
+
+  async findAll(
+    equipmentId?: string,
+    technicianId?: string,
+  ): Promise<ServiceOrder[]> {
+    let result = this.orders;
+
+    if (equipmentId) {
+      result = result.filter((o) => o.equipmentId === equipmentId);
+    }
+
+    if (technicianId) {
+      result = result.filter((o) => o.technicianId === technicianId);
+    }
+
+    return result;
+  }
+
+  async findByTechnician(technicianId: string): Promise<ServiceOrder[]> {
+    return this.orders.filter((o) => o.technicianId === technicianId);
+  }
+
+  async findByEquipment(equipmentId: string): Promise<ServiceOrder[]> {
+    return this.orders.filter((o) => o.equipmentId === equipmentId);
+  }
+
+  async updateStatus(id: string, status: OSStatus): Promise<ServiceOrder> {
+    const index = this.orders.findIndex((o) => o.id === id);
+    if (index !== -1) {
+      this.orders[index].status = status;
+      this.orders[index].updatedAt = new Date();
+
+      // CORREÇÃO: Usando 'COMPLETED' (string literal) para checar o status final
+      if (status === 'COMPLETED') {
+        this.orders[index].finishedAt = new Date();
+      }
+
+      await this.saveToFile();
+      return this.orders[index];
+    }
+    throw new NotFoundException('Ordem de Serviço não encontrada');
+  }
+
+  async addItem(osId: string, item: OSItemInput): Promise<ServiceOrder> {
+    const index = this.orders.findIndex((o) => o.id === osId);
+
+    if (index === -1) {
+      throw new NotFoundException(`Ordem de Serviço ${osId} não encontrada.`);
+    }
+
+    if (!this.orders[index].items) {
+      this.orders[index].items = [];
+    }
+
+    this.orders[index].items.push(item);
+    this.orders[index].updatedAt = new Date();
+
+    await this.saveToFile();
+    return this.orders[index];
+  }
+
+  async update(id: string, data: Partial<ServiceOrder>): Promise<ServiceOrder> {
+    const index = this.orders.findIndex((o) => o.id === id);
+    if (index !== -1) {
+      this.orders[index] = {
+        ...this.orders[index],
+        ...data,
+        updatedAt: new Date(),
+      };
+      await this.saveToFile();
+      return this.orders[index];
+    }
+    throw new NotFoundException('Ordem de Serviço não encontrada');
+  }
+}
+</file>
+
+<file path="src/modules/stock/entities/stock-item.entity.ts">
+import { IsOptional, IsString } from 'class-validator';
+
+export enum ABCCategory {
+  A = 'A', // 80% do valor/importância (Poucos itens, alto valor/impacto)
+  B = 'B', // 15% do valor/importância
+  C = 'C', // 5% do valor/importância (Muitos itens, baixo valor)
+}
+
+export class StockItem {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+  category: ABCCategory;
+  currentQuantity: number;
+  reservedQuantity: number;
+  minQuantity: number;
+  unit: string;
+  supplier?: string;
+  costPrice: number;
+  location?: string;
+
+  // Metadados
+  createdAt: Date;
+  createdBy?: string; // Auditoria: quem criou o item
+  updatedAt: Date;
+  updatedBy?: string; // Auditoria: quem fez a última atualização
+  isActive: boolean;
+  isCritical: boolean; // Se true, dispara alertas imediatos se chegar ao minQuantity
+  leadTimeDays: number; // Dias que o fornecedor demora para entregar
+
+  get availableQuantity(): number {
+    return this.currentQuantity - this.reservedQuantity;
+  }
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
+}
+</file>
+
+<file path="src/modules/stock/stock.module.ts">
+import { Module } from '@nestjs/common';
+import { DatabaseModule } from '../../core/database';
+import { StockService } from './stock.service';
+import { StockController } from './stock.controller';
+import { StockRepository } from './repositories/stock-repository.abstract';
+import { InMemoryStockRepository } from './repositories/in-memory-stock.repository';
+
+@Module({
+  imports: [DatabaseModule],
+  controllers: [StockController],
+  providers: [
+    StockService,
+    {
+      provide: StockRepository,
+      useClass: InMemoryStockRepository,
+    },
+  ],
+  exports: [StockService],
+})
+export class StockModule {}
+</file>
+
+<file path="src/modules/customers/entities/customer.entity.ts">
+// src/modules/customers/entities/customer.entity.ts
+import { Equipment } from 'src/modules/equipments/entities/equipment.entity';
+
+export class Customer {
+  id: string;
+  name: string; // Nome do Condomínio
+  document: string; // CNPJ
+  address: string;
+  contactName: string; // Síndico/Gestor
+  phone: string;
+  email: string;
+  isActive: boolean;
+
+  // No JSON, apenas definimos que o cliente pode ter uma lista de equipamentos
+  equipments?: Equipment[];
+
+  createdAt: Date;
+  updatedAt: Date;
+}
+</file>
+
+<file path="src/modules/equipments/entities/service-order.entity.ts">
+// src/modules/equipments/entities/service-order.entity.ts
+
+import { OSType, OSStatus } from '../dto/service-order.dto';
+
+export interface ServiceOrderPart {
+  id: string;
+  name: string;
+  requestedQuantity: number;
+}
+
+export class ServiceOrder {
+  id: string;
+  osNumber: string;
+  customerId: string;
+  equipmentId: string;
+  technicianId: string;
+  type: OSType;
+  status: OSStatus;
+  description: string;
+  isEmergency: boolean;
+
+  parts?: ServiceOrderPart[];
+
+  finishedAt?: Date; // Data de conclusão
+  items?: any[]; // Para futuras integrações com peças, pode ser detalhado depois
+
+  // Auditoria exigida pelo ARCHITECTURE.md
+  createdAt: Date;
+  updatedAt: Date;
+  updatedBy: string;
+}
+</file>
+
+<file path="src/modules/equipments/equipments.controller.ts">
+// src/modules/equipments/equipments.controller.ts
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
+import { EquipmentService } from './services/equipment.service';
+import * as Entity from './entities/equipment.entity';
+
+@Controller('equipments')
+export class EquipmentController {
+  constructor(private readonly service: EquipmentService) {}
+
+  @Get('customer/:customerId')
+  async findByCustomer(@Param('customerId') customerId: string) {
+    return this.service.findByCustomer(customerId);
+  }
+
+  @Post()
+  async create(@Body() data: any): Promise<Entity.Equipment> {
+    return this.service.create(data);
+  }
+
+  @Put(':id')
+  update(
+    @Param('id') id: string,
+    @Body() data: any,
+  ): Promise<Entity.Equipment> {
+    return this.service.update(id, data);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<void> {
+    return this.service.delete(id);
+  }
+}
+</file>
+
+<file path="src/modules/equipments/service-order.controller.ts">
+import { Controller, Post, Get, Body, Patch, Param } from '@nestjs/common';
+import { ServiceOrderService } from './services/service-order.service';
+import {
+  CreateServiceOrderDto,
+  UpdateServiceOrderDto,
+} from './dto/service-order.dto';
+
+@Controller('service-orders')
+export class ServiceOrderController {
+  constructor(private readonly service: ServiceOrderService) {}
+
+  @Post()
+  create(@Body() dto: CreateServiceOrderDto) {
+    return this.service.create(dto);
+  }
+
+  @Get()
+  findAll() {
+    return this.service.findAll();
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() dto: UpdateServiceOrderDto) {
+    return this.service.update(id, dto);
+  }
+}
+</file>
+
+<file path="src/modules/stock/repositories/in-memory-stock.repository.ts">
+// src/modules/stock/repositories/in-memory-stock.repository.ts
+import { Injectable, Logger } from '@nestjs/common';
+import { StockRepository } from './stock-repository.abstract';
+import { StockItem } from '../entities/stock-item.entity';
+import { StockMovement, MovementType } from '../entities/stock-movement.entity';
+import { JsonDbService } from '../../../core/database/json-db.service';
+
+@Injectable()
+export class InMemoryStockRepository implements StockRepository {
+  private items: StockItem[] = [];
+  private movements: StockMovement[] = [];
+  private readonly logger = new Logger(InMemoryStockRepository.name);
+  private readonly itemsFileName = 'stock.json';
+  private readonly movementsFileName = 'stock-movements.json';
+
+  constructor(private jsonDbService: JsonDbService) {
+    this.initializeData();
+  }
+
+  private async initializeData(): Promise<void> {
+    try {
+      const stockData = await this.jsonDbService.readFile<{
+        items: StockItem[];
+      }>(this.itemsFileName, { items: [] });
+      this.items = Array.isArray(stockData.items) ? stockData.items : [];
+
+      const movementsData = await this.jsonDbService.readFile<{
+        movements: StockMovement[];
+      }>(this.movementsFileName, { movements: [] });
+      this.movements = Array.isArray(movementsData.movements)
+        ? movementsData.movements
+        : [];
+
+      this.logger.debug('Dados de stock carregados com sucesso');
+    } catch (error) {
+      this.logger.error('Erro ao inicializar dados de stock:', error);
+      this.items = [];
+      this.movements = [];
+    }
+  }
+
+  private async saveItems(): Promise<void> {
+    try {
+      await this.jsonDbService.writeFile(this.itemsFileName, {
+        items: this.items,
+      });
+    } catch (error) {
+      this.logger.error('Erro ao salvar items:', error);
+      throw error;
+    }
+  }
+
+  private async saveMovements(): Promise<void> {
+    try {
+      await this.jsonDbService.writeFile(this.movementsFileName, {
+        movements: this.movements,
+      });
+    } catch (error) {
+      this.logger.error('Erro ao salvar movements:', error);
+      throw error;
+    }
+  }
+
+  async findByLocation(location: string): Promise<StockItem[]> {
+    return this.items.filter(
+      (item) =>
+        item.location?.toLowerCase().includes(location.toLowerCase()) &&
+        item.isActive,
+    );
+  }
+
+  async findAllItems(): Promise<StockItem[]> {
+    return this.items.filter((item) => item.isActive);
+  }
+
+  async findItemById(id: string): Promise<StockItem | null> {
+    return this.items.find((item) => item.id === id && item.isActive) || null;
+  }
+
+  async findItemByCode(code: string): Promise<StockItem | null> {
+    return (
+      this.items.find((item) => item.code === code && item.isActive) || null
+    );
+  }
+
+  async createItem(itemData: Omit<StockItem, 'id'>): Promise<StockItem> {
+    const newItem: StockItem = {
+      ...itemData,
+      id: this.generateId(),
+    };
+
+    this.items.push(newItem);
+    await this.saveItems();
+
+    this.logger.debug(`Item de stock criado: ${newItem.id}`);
+    return newItem;
+  }
+
+  async updateItem(
+    id: string,
+    itemData: Partial<StockItem>,
+    updatedBy: string = 'system',
+  ): Promise<StockItem> {
+    const index = this.items.findIndex((item) => item.id === id);
+    if (index === -1) {
+      throw new Error('Item não encontrado');
+    }
+
+    const oldItem = this.items[index];
+    this.items[index] = {
+      ...oldItem,
+      ...itemData,
+      updatedAt: new Date(),
+      availableQuantity:
+        itemData.availableQuantity ?? oldItem.availableQuantity,
+    };
+
+    await this.saveItems();
+
+    this.logger.debug(`Item de stock atualizado: ${id} por ${updatedBy}`);
+    return this.items[index];
+  }
+
+  async deleteItem(id: string): Promise<void> {
+    const index = this.items.findIndex((item) => item.id === id);
+    if (index === -1) {
+      throw new Error('Item não encontrado');
+    }
+
+    this.items[index].isActive = false;
+    this.items[index].updatedAt = new Date();
+    await this.saveItems();
+
+    this.logger.debug(`Item de stock marcado como inativo: ${id}`);
+  }
+
+  async createMovement(
+    movementData: Omit<StockMovement, 'id' | 'createdAt'>,
+    createdBy: string = 'system',
+  ): Promise<StockMovement> {
+    const newMovement: StockMovement = {
+      ...movementData,
+      id: this.generateId(),
+      createdAt: new Date(),
+    };
+
+    this.movements.push(newMovement);
+    await this.saveMovements();
+
+    this.logger.debug(
+      `Movimento de stock criado: ${newMovement.id} por ${createdBy}`,
+    );
+    return newMovement;
+  }
+
+  async findMovementsByItemId(itemId: string): Promise<StockMovement[]> {
+    return this.movements
+      .filter((movement) => movement.stockItemId === itemId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async findMovementsByDateRange(
+    start: Date,
+    end: Date,
+  ): Promise<StockMovement[]> {
+    return this.movements
+      .filter(
+        (movement) => movement.createdAt >= start && movement.createdAt <= end,
+      )
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  private generateId(): string {
+    return Date.now().toString(36) + Math.random().toString(36).substring(2);
+  }
+}
+</file>
+
+<file path="src/main.ts">
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { json, urlencoded } from 'express';
+import { ValidationPipe } from '@nestjs/common';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  const cors = require('cors');
+  app.use(cors());
+
+  app.enableCors({
+    origin: 'http://localhost:4200', // URL do seu frontend
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
+  app.use(json({ limit: '10mb' }));
+  app.use(urlencoded({ limit: '10mb', extended: true }));
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  await app.listen(3000);
+}
+
+bootstrap();
+</file>
+
+<file path="src/modules/equipments/dto/create-equipment.dto.ts">
+import {
+  IsString,
+  IsEnum,
+  IsUUID,
+  IsOptional,
+  IsDateString,
+  IsNumber,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import { EquipmentStatus } from '../entities/equipment.entity';
+
+// DTO interno para as especificações técnicas
+class TechnicalSpecsDto {
+  @IsNumber()
+  stops: number;
+
+  @IsNumber()
+  capacityKg: number;
+
+  @IsNumber()
+  capacityPersons: number;
+
+  @IsOptional()
+  @IsNumber()
+  speed?: number;
+
+  @IsOptional()
+  @IsNumber()
+  manufactureYear?: number;
+
+  @IsString()
+  driveType: 'GEARED' | 'GEARLESS' | 'HYDRAULIC';
+
+  @IsOptional()
+  @IsString()
+  controlPanel?: string;
+}
+
+export class CreateEquipmentDto {
+  @IsString()
+  name: string;
+
+  @IsUUID()
+  customerId: string; // Alterado para bater com o Model do Front
+
+  @IsString()
+  brand: string;
+
+  @IsString()
+  model: string;
+
+  @IsOptional()
+  @IsString()
+  serialNumber?: string;
+
+  @IsOptional()
+  @IsNumber()
+  manufactureYear?: number;
+
+  @IsOptional()
+  @IsString()
+  position?: string; // Alinhado com o Front
+
+  // Validação do objeto aninhado
+  @ValidateNested()
+  @Type(() => TechnicalSpecsDto)
+  technicalSpecs: TechnicalSpecsDto;
+
+  @IsOptional()
+  @IsEnum(EquipmentStatus)
+  status?: EquipmentStatus = EquipmentStatus.OPERATIONAL;
+
+  @IsOptional()
+  @IsDateString()
+  lastPreventiveDate?: Date;
+
+  @IsOptional()
+  @IsDateString()
+  nextPreventiveDate?: Date;
+}
+</file>
+
+<file path="src/modules/equipments/entities/equipment.entity.ts">
+export enum EquipmentStatus {
+  OPERATIONAL = 'OPERATIONAL',
+  MAINTENANCE = 'MAINTENANCE',
+  OUT_OF_SERVICE = 'OUT_OF_SERVICE',
+}
+
+export interface TechnicalSpecs {
+  stops: number;
+  capacityKg: number;
+  capacityPersons: number;
+  speed?: number;
+  manufactureyear?: number;
+  driveType: 'GEARED' | 'GEARLESS' | 'HYDRAULIC';
+  controlPanel?: string;
+}
+
+export interface Equipment {
+  id: string;
+  customerId: string;
+  name: string;
+  position?: string;
+  brand: string;
+  model: string;
+  serialNumber: string;
+  manufactureYear?: number;
+  technicalSpecs: TechnicalSpecs;
+  status: EquipmentStatus;
+  lastPreventiveDate?: Date;
+  nextPreventiveDate?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  updatedBy?: string; // Sistema de auditoria: quem fez a última atualização
+}
+</file>
+
+<file path="src/modules/equipments/services/service-order.service.ts">
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { JsonDbService } from '../../../core/database/json-db.service';
+import {
+  CreateServiceOrderDto,
+  UpdateServiceOrderDto,
+} from '../dto/service-order.dto';
+import { ServiceOrder } from '../entities/service-order.entity';
+import { StockService } from '../../stock/stock.service'; // Ajuste o caminho conforme seu projeto
+import { v4 as uuid } from 'uuid';
+
+@Injectable()
+export class ServiceOrderService {
+  private readonly logger = new Logger(ServiceOrderService.name);
+  private readonly fileName = 'service-orders.json';
+
+  constructor(
+    private readonly db: JsonDbService,
+    private readonly stockService: StockService, // Injetando o seu StockService robusto
+  ) {}
+
+  async create(dto: CreateServiceOrderDto): Promise<ServiceOrder> {
+    const newOrder: ServiceOrder = {
+      id: uuid(),
+      osNumber: `OS-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+      ...dto,
+      status: 'OPEN',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    // 1. Reservar peças no estoque antes de salvar a O.S.
+    if (dto.parts && dto.parts.length > 0) {
+      for (const part of dto.parts) {
+        await this.stockService.reserveForOS(part.id, part.requestedQuantity);
+        this.logger.log(`Peça ${part.name} reservada no estoque.`);
+      }
+    }
+
+    await this.db.updateFile<ServiceOrder[]>(
+      this.fileName,
+      (orders) => [...(orders || []), newOrder],
+      [],
+    );
+
+    return newOrder;
+  }
+
+  async update(id: string, dto: UpdateServiceOrderDto): Promise<ServiceOrder> {
+    // Declaramos com o tipo da Entidade para evitar o erro 'never'
+    let updatedOrder: ServiceOrder | null = null;
+    let oldStatus: string | null = null;
+
+    await this.db.updateFile<ServiceOrder[]>(
+      this.fileName,
+      (orders) => {
+        const index = orders.findIndex((o) => o.id === id);
+        if (index === -1)
+          throw new NotFoundException('Ordem de Serviço não encontrada');
+
+        oldStatus = orders[index].status;
+
+        // Filtra o DTO para remover undefined e evitar sobrescrever com null
+        const dtoFiltered = Object.fromEntries(
+          Object.entries(dto).filter(([_, value]) => value !== undefined),
+        );
+
+        // Criamos o objeto mesclando manualmente
+        // O spread de orders[index] garante que customerId, equipmentId, etc., permaneçam
+        updatedOrder = {
+          ...orders[index], // 1. Pega tudo que já existia
+          ...dtoFiltered, // 2. Sobrescreve APENAS o que veio no DTO (status, updatedBy)
+          updatedAt: new Date(), // 3. Força nova data
+        };
+
+        const newOrders = [...orders];
+        newOrders[index] = updatedOrder;
+        return newOrders;
+      },
+      [],
+    );
+
+    if (!updatedOrder || oldStatus === null) {
+      throw new BadRequestException('Erro ao processar a atualização da O.S.');
+    }
+
+    // Agora o TS sabe que é ServiceOrder e não 'never'
+    const finalOrder = updatedOrder as ServiceOrder;
+    const parts = finalOrder.parts || [];
+
+    if (parts.length > 0) {
+      // CASO A: CONCLUÍDA -> Baixa real
+      if (dto.status === 'COMPLETED' && oldStatus !== 'COMPLETED') {
+        for (const part of parts) {
+          await this.stockService.confirmReserveOut(
+            part.id,
+            part.requestedQuantity,
+            finalOrder.technicianId,
+          );
+        }
+        this.logger.log(
+          `Estoque baixado permanentemente para OS ${finalOrder.osNumber}`,
+        );
+      }
+
+      // CASO B: CANCELADA -> Devolve reserva
+      if (
+        dto.status === 'CANCELLED' &&
+        oldStatus !== 'CANCELLED' &&
+        oldStatus !== 'COMPLETED'
+      ) {
+        for (const part of parts) {
+          await this.stockService.cancelReservation(
+            part.id,
+            part.requestedQuantity,
+          );
+        }
+        this.logger.log(`Reserva cancelada para OS ${finalOrder.osNumber}`);
+      }
+    }
+
+    return finalOrder;
+  }
+
+  async findAll(): Promise<ServiceOrder[]> {
+    return this.db.readFile<ServiceOrder[]>(this.fileName, []);
+  }
+}
+</file>
+
+<file path="src/modules/equipments/equipments.module.ts">
+// src/modules/equipments/equipments.module.ts
+import { Module } from '@nestjs/common';
+import { DatabaseModule } from '../../core/database';
+import { StockModule } from '../stock/stock.module';
+import { EquipmentController } from './equipments.controller';
+import { ServiceOrderController } from './service-order.controller';
+import { EquipmentService } from './services/equipment.service';
+import { ServiceOrderService } from './services/service-order.service';
+
+@Module({
+  imports: [DatabaseModule, StockModule],
+  controllers: [EquipmentController, ServiceOrderController],
+  providers: [EquipmentService, ServiceOrderService],
+  exports: [EquipmentService],
+})
+export class EquipmentsModule {}
+</file>
+
+<file path="src/app.module.ts">
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { DatabaseModule } from './core/database';
+import { StockModule } from './modules/stock/stock.module';
+import { CustomersModule } from './modules/customers/customers.module';
+import { EquipmentsModule } from './modules/equipments/equipments.module';
+import { TechniciansModule } from './modules/technicians/technicians.module';
+
+@Module({
+  imports: [
+    DatabaseModule,
+    StockModule,
+    CustomersModule,
+    EquipmentsModule,
+    TechniciansModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+</file>
+
+</files>
