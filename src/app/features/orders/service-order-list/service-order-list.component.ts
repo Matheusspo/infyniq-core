@@ -8,6 +8,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TechniciansService } from '../../technicians/data-access/technicians.service';
 import { Technician } from '../../technicians/models/technician.model';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
+import { ActivatedRoute } from '@angular/router';
 
 import { PDFExportService } from '../../../core/services/pdf-export.service';
 
@@ -23,6 +24,7 @@ export class OSListComponent implements OnInit {
   private readonly techService = inject(TechniciansService);
   private readonly customersStore = inject(CustomersStore);
   private readonly pdfService = inject(PDFExportService);
+  private readonly route = inject(ActivatedRoute);
 
   isDrawerOpen = signal(false);
 
@@ -43,6 +45,7 @@ export class OSListComponent implements OnInit {
   // Filtro local, se quisermos desconectar da store, mas aqui mantemos sync
   // statusFilter = this.osStore.statusFilter; 
   searchQuery = signal('');
+  metricFilter = signal<'ALL' | 'EMERGENCY' | 'TODAY' | 'PENDING'>('ALL');
 
   // 3. Busca de Técnicos (Transforma o Observable em Signal para o computed)
   private technicians = toSignal(this.techService.getAll(), {
@@ -83,7 +86,23 @@ export class OSListComponent implements OnInit {
       result = result.filter((os: any) => os.status === filter);
     }
 
-    // 2. Filtro por Texto (Search)
+    // 2. Filtro de Métrica (Vindo do Dashboard)
+    const metric = this.metricFilter();
+    if (metric === 'EMERGENCY') {
+      result = result.filter((os: any) => os.isEmergency && os.status !== 'COMPLETED' && os.status !== 'CANCELLED');
+    } else if (metric === 'TODAY') {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      result = result.filter((os: any) => {
+        const osDate = new Date(os.createdAt);
+        osDate.setHours(0, 0, 0, 0);
+        return osDate.getTime() === today.getTime() && os.status !== 'CANCELLED';
+      });
+    } else if (metric === 'PENDING') {
+      result = result.filter((os: any) => os.status === 'OPEN' || os.status === 'IN_PROGRESS');
+    }
+
+    // 3. Filtro por Texto (Search)
     if (query) {
       result = result.filter((os: any) => 
         os.customerName?.toLowerCase().includes(query) ||
@@ -99,6 +118,13 @@ export class OSListComponent implements OnInit {
   ngOnInit() {
     this.osStore.loadOrders(); // Busca os dados do backend ao iniciar
     this.customersStore.loadAllCustomers(); // Garante que temos os clientes para o Join
+    this.route.queryParams.subscribe(params => {
+      if (params['filter']) {
+        this.metricFilter.set(params['filter'] as any);
+      } else {
+        this.metricFilter.set('ALL');
+      }
+    });
   }
 
   startAttendance(os: OrderService) {

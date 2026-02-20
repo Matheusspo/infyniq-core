@@ -11,6 +11,7 @@ import { CustomerFormComponent } from '../components/customer-form/customer-form
 import { Customer } from '../models/customer.model';
 import { CreateEquipmentDto, Equipment } from '../models/equipment.model';
 import { ToastService } from '../../../services/toast.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-customers-container',
@@ -29,6 +30,7 @@ export class CustomersContainerComponent {
   protected readonly customersStore = inject(CustomersStore);
   protected readonly equipmentsStore = inject(EquipmentsStore);
   private readonly toast = inject(ToastService);
+  private readonly route = inject(ActivatedRoute);
 
   // Signals para controlar a exibição dos formulários (Modais)
   showCustomerForm = signal(false);
@@ -39,14 +41,51 @@ export class CustomersContainerComponent {
   customerToEdit = signal<Customer | null>(null);
 
   viewMode = signal<'LIST' | 'DETAIL'>('LIST');
+  maintenanceFilter = signal<'ALL' | 'PENDING' | 'UPCOMING'>('ALL');
 
   // Atalhos para os Signals das Stores (para o HTML limpar os erros)
   readonly selectedCustomer = this.customersStore.selectedCustomer;
-  readonly customers = this.customersStore.filteredCustomers;
+  
+  // Custom filtered customers considering the maintenance filter
+  readonly customers = computed(() => {
+    let list = this.customersStore.filteredCustomers();
+    const filter = this.maintenanceFilter();
+    
+    if (filter !== 'ALL') {
+      const today = new Date();
+      const nextWeek = new Date();
+      nextWeek.setDate(today.getDate() + 7);
+      
+      const equipments = this.equipmentsStore.equipments();
+      
+      list = list.filter(customer => {
+        const customerEquips = equipments.filter(eq => eq.customerId === customer.id);
+        
+        return customerEquips.some(eq => {
+          if (!eq.nextPreventiveDate) return false;
+          const nextDate = new Date(eq.nextPreventiveDate);
+          
+          if (filter === 'PENDING') return nextDate < today;
+          if (filter === 'UPCOMING') return nextDate >= today && nextDate <= nextWeek;
+          return false;
+        });
+      });
+    }
+    
+    return list;
+  });
+  
   readonly equipments = computed(() => this.equipmentsStore.equipments());
 
   ngOnInit() {
     this.customersStore.loadAllCustomers();
+    this.route.queryParams.subscribe(params => {
+      if (params['maintenance']) {
+        this.maintenanceFilter.set(params['maintenance'] as any);
+      } else {
+        this.maintenanceFilter.set('ALL');
+      }
+    });
   }
 
   onCustomerSelect(customer: any) {
@@ -99,10 +138,16 @@ export class CustomersContainerComponent {
       // CRIAÇÃO
       const customerId = this.selectedCustomer()?.id;
       this.equipmentsStore.addEquipment({ ...formData, customerId });
-      this.toast.showToast('Novo elevador cadastrado com sucesso!', 'success'); // 👈 Chamando seu Toast
+      this.toast.showToast('Novo elevador cadastrado com sucesso!', 'success');
     }
 
     this.closeEquipmentModal();
+  }
+
+  onUpdateEquipmentStatus(event: {equipment: Equipment, newStatus: string}) {
+    // Adicionar chamada simples para a store
+    this.equipmentsStore.updateEquipment(event.equipment.id, { status: event.newStatus as any });
+    this.toast.showToast(`Status do elevador atualizado para ${event.newStatus}`, 'success');
   }
 
   openEditForm(equipment: Equipment) {

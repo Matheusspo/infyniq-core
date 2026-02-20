@@ -26,6 +26,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'elevadores',
+        loadComponent: () =>
+          import('./features/equipments/equipments-container/equipments-container.component').then(
+            (m) => m.EquipmentsContainerComponent,
+          ),
+      },
+      {
         path: 'estoque',
         loadComponent: () =>
           import('./features/estoque/estoque-list/estoque-list.component').then(

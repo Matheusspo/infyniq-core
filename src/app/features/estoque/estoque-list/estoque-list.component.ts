@@ -5,6 +5,7 @@ import { EstoqueFormComponent } from '../estoque-form/estoque-form.component';
 import { StockItem } from '../../../core/models/stock.interfaces';
 import localePt from '@angular/common/locales/pt';
 import { ToastService } from '../../../services/toast.service';
+import { ActivatedRoute } from '@angular/router';
 
 registerLocaleData(localePt);
 
@@ -18,8 +19,10 @@ registerLocaleData(localePt);
 export class EstoqueListComponent implements OnInit {
   protected readonly store = inject(StockStore);
   private readonly toast = inject(ToastService);
+  private readonly route = inject(ActivatedRoute);
 
   searchTerm = signal<string>('');
+  metricFilter = signal<'ALL' | 'CRITICAL'>('ALL');
   isModalOpen = signal(false);
 
   totalItens = computed(() => this.store.items().length);
@@ -31,7 +34,12 @@ export class EstoqueListComponent implements OnInit {
   );
   filteredItems = computed(() => {
     const term = this.searchTerm().toLowerCase();
-    const allItems = this.store.items();
+    let allItems = this.store.items();
+
+    const metric = this.metricFilter();
+    if (metric === 'CRITICAL') {
+      allItems = allItems.filter(i => i.currentQuantity <= i.minQuantity);
+    }
 
     if (!term) return allItems;
 
@@ -43,6 +51,13 @@ export class EstoqueListComponent implements OnInit {
 
   ngOnInit() {
     this.store.loadAll();
+    this.route.queryParams.subscribe(params => {
+      if (params['filter']) {
+        this.metricFilter.set(params['filter'] as any);
+      } else {
+        this.metricFilter.set('ALL');
+      }
+    });
   }
 
   openModal(item?: StockItem) {

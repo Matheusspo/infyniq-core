@@ -60,13 +60,14 @@
 
   } @else {
     <div class="animate-in fade-in slide-in-from-right-8 duration-500">
-      <app-equipment-dashboard
-        [customerName]="selectedCustomer()?.name || ''"
-        (back)="goBackToList()"
-        (addEquipment)="openEquipmentForm()"
-        (editEquipment)="onEditEquipment($event)"
-      >
-      </app-equipment-dashboard>
+        <app-equipment-dashboard
+          [customerName]="selectedCustomer()?.name || ''"
+          (back)="goBackToList()"
+          (addEquipment)="openEquipmentForm()"
+          (editEquipment)="onEditEquipment($event)"
+          (updateStatus)="onUpdateEquipmentStatus($event)"
+          class="flex-1 overflow-hidden"
+        ></app-equipment-dashboard>
     </div>
   }
 
@@ -89,15 +90,14 @@
     <div
       class="fixed inset-0 z-[110] flex items-center justify-center p-4 animate-in fade-in duration-300"
     >
-      <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-md"></div>
-      <div class="relative z-10 w-full max-w-[800px]">
+      <!-- Modal Formulário de Equipamento (Slide-over auto-contido) -->
+      @if (showEquipmentForm()) {
         <app-equipment-form
           [equipmentToEdit]="selectedEquipment()"
           (save)="onSaveEquipment($event)"
           (cancel)="closeEquipmentModal()"
-        >
-        </app-equipment-form>
-      </div>
+        ></app-equipment-form>
+      }
     </div>
   }
 </div>

@@ -41,7 +41,7 @@
           <!-- Mini KPIs Operacionais -->
           <div class="flex gap-6 w-full md:w-auto">
             <!-- Emergências -->
-            <div class="bg-white/5 rounded-[32px] border border-white/10 p-6 flex-1 md:w-40 text-center transition-all hover:bg-white/10 group">
+            <div (click)="navigateTo('orders', { filter: 'EMERGENCY' })" class="bg-white/5 rounded-[32px] border border-white/10 p-6 flex-1 md:w-40 text-center transition-all hover:bg-white/10 group cursor-pointer">
               <div class="w-10 h-10 rounded-2xl bg-rose-500/20 text-rose-500 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <i class="pi pi-bolt text-lg"></i>
               </div>
@@ -49,7 +49,7 @@
               <h3 class="text-3xl font-black text-rose-500">{{ emergencyCount() }}</h3>
             </div>
             <!-- Hoje -->
-            <div class="bg-white/5 rounded-[32px] border border-white/10 p-6 flex-1 md:w-40 text-center transition-all hover:bg-white/10 group">
+            <div (click)="navigateTo('orders', { filter: 'TODAY' })" class="bg-white/5 rounded-[32px] border border-white/10 p-6 flex-1 md:w-40 text-center transition-all hover:bg-white/10 group cursor-pointer">
               <div class="w-10 h-10 rounded-2xl bg-blue-500/20 text-blue-500 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <i class="pi pi-check-circle text-lg"></i>
               </div>
@@ -57,7 +57,7 @@
               <h3 class="text-3xl font-black text-white">{{ todayOS() }}</h3>
             </div>
             <!-- Pendentes -->
-            <div class="bg-white/5 rounded-[32px] border border-white/10 p-6 flex-1 md:w-40 text-center transition-all hover:bg-white/10 group">
+            <div (click)="navigateTo('orders', { filter: 'PENDING' })" class="bg-white/5 rounded-[32px] border border-white/10 p-6 flex-1 md:w-40 text-center transition-all hover:bg-white/10 group cursor-pointer">
               <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-500 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <i class="pi pi-clock text-lg"></i>
               </div>
@@ -105,14 +105,14 @@
           </div>
 
           <div class="space-y-6">
-            <div class="bg-slate-50/50 p-6 rounded-[32px] border border-slate-50 transition-all hover:bg-emerald-50/30">
+            <div (click)="navigateTo('estoque')" class="bg-slate-50/50 p-6 rounded-[32px] border border-slate-50 transition-all hover:bg-emerald-50/30 cursor-pointer">
               <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Valor Total em Peças</p>
               <h3 class="text-4xl font-black text-slate-900 tracking-tighter">
                 {{ stockValue() | currency:'BRL' }}
               </h3>
             </div>
             
-            <div class="bg-white p-6 rounded-[32px] border-2 border-slate-50 flex items-center justify-between transition-all hover:border-amber-500/20 group/alert">
+            <div (click)="navigateTo('estoque', { filter: 'CRITICAL' })" class="bg-white p-6 rounded-[32px] border-2 border-slate-50 flex items-center justify-between transition-all hover:border-amber-500/20 group/alert cursor-pointer">
               <div>
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 text-center md:text-left">Baixo Saldo</p>
                 <h3 class="text-3xl font-black text-slate-800 md:text-left">{{ criticalStock() }} <span class="text-xs font-bold text-slate-400 uppercase">Itens</span></h3>
@@ -138,11 +138,11 @@
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-          <div class="bg-slate-50/50 p-6 rounded-[32px] border border-slate-50 text-center">
+          <div (click)="navigateTo('clientes')" class="bg-slate-50/50 p-6 rounded-[32px] border border-slate-50 text-center cursor-pointer hover:bg-slate-100 transition-colors">
             <h3 class="text-4xl font-black text-slate-900 tracking-tighter mb-1">{{ totalCustomers() }}</h3>
             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Condomínios</p>
           </div>
-          <div class="bg-blue-600 p-6 rounded-[32px] text-center text-white shadow-xl shadow-blue-900/10">
+          <div (click)="navigateTo('elevadores')" class="bg-blue-600 p-6 rounded-[32px] text-center text-white shadow-xl shadow-blue-900/10 cursor-pointer hover:bg-blue-700 transition-colors">
             <h3 class="text-4xl font-black tracking-tighter mb-1">{{ totalEquipments() }}</h3>
             <p class="text-[9px] font-black text-blue-200 uppercase tracking-widest">Elevadores</p>
           </div>
@@ -150,7 +150,7 @@
 
         <!-- Centro de Alertas de Manutenção -->
         <div class="mt-8 space-y-4">
-          <div class="bg-rose-50 border border-rose-100 p-6 rounded-[32px] flex items-center justify-between group/warn transition-all hover:shadow-lg hover:shadow-rose-200/20">
+          <div (click)="navigateTo('clientes', { maintenance: 'PENDING' })" class="bg-rose-50 border border-rose-100 p-6 rounded-[32px] flex items-center justify-between group/warn transition-all hover:shadow-lg hover:shadow-rose-200/20 cursor-pointer">
             <div>
               <p class="text-[9px] font-black text-rose-600 uppercase tracking-widest mb-1">Manutenção Atrasada</p>
               <h4 class="text-2xl font-black text-slate-800 tracking-tighter">
@@ -162,7 +162,7 @@
             </div>
           </div>
 
-          <div class="bg-slate-50 border border-slate-100 p-6 rounded-[32px] flex items-center justify-between group/info transition-all hover:bg-white hover:shadow-xl hover:shadow-slate-200/50">
+          <div (click)="navigateTo('clientes', { maintenance: 'UPCOMING' })" class="bg-slate-50 border border-slate-100 p-6 rounded-[32px] flex items-center justify-between group/info transition-all hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 cursor-pointer">
             <div>
               <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Próximos 7 Dias</p>
               <h4 class="text-2xl font-black text-slate-800 tracking-tighter">

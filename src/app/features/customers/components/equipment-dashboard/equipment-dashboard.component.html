@@ -7,6 +7,7 @@
     <div>
       <div class="flex items-center gap-2 mb-2">
         <button
+          *ngIf="!isStandalone"
           (click)="onBack()"
           class="p-2 -ml-2 hover:bg-white rounded-full transition-all text-slate-400 hover:text-blue-600"
         >
@@ -21,7 +22,7 @@
         </button>
         <span
           class="px-3 py-1 bg-blue-100 text-blue-700 text-[10px] font-black uppercase tracking-tighter rounded-lg"
-          >Unidade Selecionada</span
+          >{{ isStandalone ? 'Visão Global' : 'Unidade Selecionada' }}</span
         >
       </div>
       <h2 class="text-3xl font-black text-slate-800 tracking-tight">{{ customerName }}</h2>
@@ -35,6 +36,7 @@
     </div>
 
     <button
+      *ngIf="!isStandalone"
       (click)="onAddEquipment()"
       class="bg-[#1e293b] hover:bg-blue-600 text-white px-6 py-3 rounded-2xl text-xs font-black transition-all flex items-center gap-3 shadow-xl shadow-slate-200 active:scale-95"
     >
@@ -51,7 +53,7 @@
     class="p-8 overflow-y-auto bg-white custom-scrollbar flex-1"
   >
     <!-- Tabs de Controle Premium -->
-    <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl w-fit mb-8 shadow-inner">
+    <div *ngIf="!isStandalone" class="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl w-fit mb-8 shadow-inner">
       <button
         (click)="activeTab.set('EQUIPMENTS')"
         [ngClass]="activeTab() === 'EQUIPMENTS' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'"
@@ -69,7 +71,7 @@
       </button>
     </div>
 
-    @if (activeTab() === 'EQUIPMENTS') {
+    @if (activeTab() === 'EQUIPMENTS' || isStandalone) {
       <div class="space-y-4 animate-in fade-in slide-in-from-left-4 duration-300">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
         <div class="relative flex-1 group max-w-md">
@@ -146,24 +148,24 @@
             </div>
 
             <div class="min-w-[140px]">
-              <span
+              <div
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/20 shadow-sm cursor-pointer hover:scale-105 active:scale-95 transition-all w-fit"
+                (click)="onEditStatus(item); $event.stopPropagation()"
                 [ngClass]="{
-                  'bg-emerald-50 text-emerald-600 border-emerald-100':
-                    item.status === 'OPERATIONAL',
-                  'bg-amber-50 text-amber-600 border-amber-100': item.status === 'MAINTENANCE',
-                  'bg-rose-50 text-rose-600 border-rose-100': item.status === 'OUT_OF_SERVICE',
+                  'bg-emerald-50 text-emerald-600': item.status === 'OPERATIONAL',
+                  'bg-amber-50 text-amber-600': item.status === 'MAINTENANCE',
+                  'bg-red-50 text-red-600': item.status === 'OUT_OF_SERVICE'
                 }"
-                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border shadow-sm"
               >
                 <span
                   [ngClass]="{
                     'bg-emerald-500': item.status === 'OPERATIONAL',
                     'bg-amber-500': item.status === 'MAINTENANCE',
-                    'bg-rose-500': item.status === 'OUT_OF_SERVICE',
+                    'bg-red-500': item.status === 'OUT_OF_SERVICE'
                   }"
-                  class="w-1.5 h-1.5 rounded-full animate-pulse"
+                  class="w-2 h-2 rounded-full animate-pulse"
                 ></span>
-                <span class="text-[10px] font-black uppercase tracking-wider">
+                <span class="text-[10px] font-black uppercase tracking-widest leading-none mt-0.5">
                   {{
                     item.status === 'OPERATIONAL'
                       ? 'Operacional'
@@ -172,7 +174,7 @@
                         : 'Fora de Serviço'
                   }}
                 </span>
-              </span>
+              </div>
             </div>
           </div>
 
@@ -218,3 +220,10 @@
     <span class="text-[8px] font-black uppercase tracking-tighter">Topo</span>
   </div>
 </button>
+
+<app-equipment-status-modal
+  *ngIf="statusModalEquipment()"
+  [equipment]="statusModalEquipment()"
+  (statusSelect)="onStatusSelect($event)"
+  (cancel)="closeStatusModal()"
+></app-equipment-status-modal>

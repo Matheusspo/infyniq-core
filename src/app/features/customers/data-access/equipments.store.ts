@@ -73,6 +73,28 @@ export class EquipmentsStore {
   }
 
   /**
+   * Carrega todos os equipamentos globalmente
+   */
+  loadAll() {
+    this._loading.set(true);
+    this._searchTerm.set('');
+    
+    this.service.getAll().subscribe({
+      next: (data) => {
+        const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
+        this._equipments.set(sortedData);
+        this._loading.set(false);
+      },
+      error: (err) => {
+        console.error('Erro na Store ao carregar todos:', err);
+        this._equipments.set([]);
+        this._loading.set(false);
+        this.toast.showToast('Erro ao carregar equipamentos.', 'error');
+      },
+    });
+  }
+
+  /**
    * Adiciona um novo elevador
    */
   addEquipment(equipmentDto: CreateEquipmentDto) {

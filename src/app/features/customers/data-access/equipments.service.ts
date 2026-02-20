@@ -13,6 +13,10 @@ export class EquipmentsService {
     return this.http.get<Equipment[]>(`${this.apiUrl}/customer/${customerId}`);
   }
 
+  getAll() {
+    return this.http.get<Equipment[]>(this.apiUrl);
+  }
+
   create(equipment: CreateEquipmentDto) {
     // O objeto enviado aqui já contém o technicalSpecs aninhado
     return this.http.post<Equipment>(this.apiUrl, equipment);

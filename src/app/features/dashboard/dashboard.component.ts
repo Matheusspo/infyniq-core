@@ -1,4 +1,5 @@
 import { Component, inject, computed, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CustomersStore } from '../customers/data-access/customers.store';
 import { OrderServiceStore } from '../orders/store/order-service.store';
@@ -15,6 +16,7 @@ export class DashboardComponent implements OnInit {
   protected readonly customersStore = inject(CustomersStore);
   protected readonly osStore = inject(OrderServiceStore);
   protected readonly stockStore = inject(StockStore);
+  private readonly router = inject(Router);
 
   // --- Métricas Consolidadas (Signals Reativos) ---
   
@@ -40,5 +42,9 @@ export class DashboardComponent implements OnInit {
     this.stockStore.loadAll();
     this.osStore.loadOrders();
     this.customersStore.loadAllCustomers();
+  }
+
+  navigateTo(route: string, queryParams: any = {}) {
+    this.router.navigate([route], { queryParams });
   }
 }
