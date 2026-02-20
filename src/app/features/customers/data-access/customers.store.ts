@@ -43,6 +43,28 @@ export class CustomersStore {
   // ✨ Integrado com a Store de O.S. para retornar o valor real de hoje
   readonly maintenancesToday = computed(() => this.osStore.maintenanceCountToday());
 
+  // ✨ Inteligência de Manutenção: Preventivas Pendentes e Próximas
+  readonly pendingPreventivesCount = computed(() => {
+    const today = new Date();
+    return this._equipments().filter(eq => {
+      if (!eq.nextPreventiveDate) return false;
+      const nextDate = new Date(eq.nextPreventiveDate);
+      return nextDate < today;
+    }).length;
+  });
+
+  readonly upcomingPreventivesCount = computed(() => {
+    const today = new Date();
+    const nextWeek = new Date();
+    nextWeek.setDate(today.getDate() + 7);
+
+    return this._equipments().filter(eq => {
+      if (!eq.nextPreventiveDate) return false;
+      const nextDate = new Date(eq.nextPreventiveDate);
+      return nextDate >= today && nextDate <= nextWeek;
+    }).length;
+  });
+
   // O motor de busca reativo
   readonly filteredCustomers = computed(() => {
     const term = this._searchTerm().toLowerCase().trim();

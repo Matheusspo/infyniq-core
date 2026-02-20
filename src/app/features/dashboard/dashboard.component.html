@@ -148,6 +148,33 @@
           </div>
         </div>
 
+        <!-- Centro de Alertas de Manutenção -->
+        <div class="mt-8 space-y-4">
+          <div class="bg-rose-50 border border-rose-100 p-6 rounded-[32px] flex items-center justify-between group/warn transition-all hover:shadow-lg hover:shadow-rose-200/20">
+            <div>
+              <p class="text-[9px] font-black text-rose-600 uppercase tracking-widest mb-1">Manutenção Atrasada</p>
+              <h4 class="text-2xl font-black text-slate-800 tracking-tighter">
+                {{ pendingPreventives() }} <span class="text-xs font-bold text-slate-400">PENDENTES</span>
+              </h4>
+            </div>
+            <div [class.animate-bounce]="pendingPreventives() > 0" class="w-12 h-12 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-lg shadow-rose-600/30">
+              <i class="pi pi-exclamation-circle text-lg"></i>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-100 p-6 rounded-[32px] flex items-center justify-between group/info transition-all hover:bg-white hover:shadow-xl hover:shadow-slate-200/50">
+            <div>
+              <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Próximos 7 Dias</p>
+              <h4 class="text-2xl font-black text-slate-800 tracking-tighter">
+                {{ upcomingPreventives() }} <span class="text-xs font-bold text-slate-400">AGENDADAS</span>
+              </h4>
+            </div>
+            <div class="w-12 h-12 rounded-full bg-white border border-slate-100 text-blue-600 flex items-center justify-center shadow-sm">
+              <i class="pi pi-calendar-plus text-lg"></i>
+            </div>
+          </div>
+        </div>
+
         <div class="mt-8 p-6 bg-slate-900 rounded-[32px] relative overflow-hidden">
           <div class="relative z-10 flex items-center justify-between">
             <div>

@@ -32,6 +32,8 @@ export class DashboardComponent implements OnInit {
   // Ativos (Clientes/Equipamentos)
   readonly totalCustomers = computed(() => this.customersStore.totalUnits());
   readonly totalEquipments = computed(() => this.customersStore.totalEquipments());
+  readonly pendingPreventives = computed(() => this.customersStore.pendingPreventivesCount());
+  readonly upcomingPreventives = computed(() => this.customersStore.upcomingPreventivesCount());
 
   ngOnInit(): void {
     // Orquestra a carga de dados para o Dash Executivo
