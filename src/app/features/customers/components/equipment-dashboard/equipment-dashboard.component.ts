@@ -10,11 +10,12 @@ import {
 import { CommonModule } from '@angular/common';
 import { EquipmentsStore } from '../../data-access/equipments.store';
 import { Equipment } from '../../models/equipment.model';
+import { CustomerHistoryComponent } from '../customer-history/customer-history.component';
 
 @Component({
   selector: 'app-equipment-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CustomerHistoryComponent],
   templateUrl: './equipment-dashboard.component.html',
   styles: [
     `
@@ -50,8 +51,9 @@ export class EquipmentDashboardComponent {
     HYDRAULIC: 'Hidráulico',
   };
 
-  // Signal para controlar a visibilidade
+  // Signal para controlar a visibilidade e abas
   readonly showScrollTop = signal(false);
+  readonly activeTab = signal<'EQUIPMENTS' | 'HISTORY'>('EQUIPMENTS');
 
   // Monitora o scroll da DIV interna
   onDivScroll(container: HTMLElement) {

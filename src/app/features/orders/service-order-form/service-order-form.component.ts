@@ -16,13 +16,15 @@ import { OrderServiceStore } from '../store/order-service.store';
 import { CustomersService } from '../../customers/data-access/customers.service';
 import { EquipmentsService } from '../../customers/data-access/equipments.service';
 import { TechniciansService } from '../../technicians/data-access/technicians.service';
-import { OrderService } from '../models/order-service.model';
+import { OrderService } from '../../../features/orders/models/order-service.model';
 import { StockStore } from '../../estoque/stock.store';
+
+import { SignaturePadComponent } from '../../../shared/components/signature-pad/signature-pad.component';
 
 @Component({
   selector: 'app-os-form',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, FormsModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule, SignaturePadComponent],
   templateUrl: './service-order-form.component.html',
 })
 export class OSFormComponent implements OnInit {
@@ -45,6 +47,7 @@ export class OSFormComponent implements OnInit {
   technicians = signal<any[]>([]);
   filteredEquipments = signal<any[]>([]);
   selectedParts = signal<any[]>([]);
+  customerSignature = signal<string | null>(null);
 
   private currentId?: string;
   private osToEdit: OrderService | null = null;
@@ -55,6 +58,7 @@ export class OSFormComponent implements OnInit {
       this.currentId = os.id;
       this.isEdit.set(true);
       this.selectedParts.set(os.parts || []);
+      this.customerSignature.set(os.customerSignature || null);
 
       // Se os dados já estão prontos, preenche agora
       // Senão, será preenchido no ngOnInit quando os dados chegarem
@@ -66,6 +70,7 @@ export class OSFormComponent implements OnInit {
       this.currentId = undefined;
       this.isEdit.set(false);
       this.selectedParts.set([]);
+      this.customerSignature.set(null);
       // Apenas limpa quando não há dados, evitando reset desnecessário
       if (!this.osForm.pristine) {
         this.osForm.reset({ type: 'PREVENTIVE', isEmergency: false });
@@ -152,6 +157,18 @@ export class OSFormComponent implements OnInit {
 
   removePart(id: string) {
     this.selectedParts.update((prev) => prev.filter((p) => p.id !== id));
+  }
+
+  updatePartQuantity(id: string, delta: number) {
+    this.selectedParts.update((prev) =>
+      prev.map((p) => {
+        if (p.id === id) {
+          const newQty = Math.max(1, (p.requestedQuantity || 1) + delta);
+          return { ...p, requestedQuantity: newQty };
+        }
+        return p;
+      }),
+    );
   }
 
   onSubmit() {

@@ -25,6 +25,7 @@ export interface OrderService {
 
   // Cache para UI (Evita lookups constantes para renderizar cards)
   customerName: string; // Nome do Condomínio
+  customerAddress?: string; // Endereço para o PDF
   equipmentName: string; // Nome do Elevador
   technicianName: string; // Nome do Técnico
 
@@ -38,6 +39,9 @@ export interface OrderService {
    * Lista de peças que serão reservadas ou baixadas
    */
   parts?: OrderServicePart[];
+
+  // Assinatura Digital ✨
+  customerSignature?: string; // Base64 String da assinatura
 
   // Auditoria (Conforme ARCHITECTURE.md)
   createdAt: Date;

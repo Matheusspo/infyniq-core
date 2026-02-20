@@ -13,27 +13,24 @@ import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { Customer } from '../../../customers/models/customer.model';
 import { GeocodingService } from '../../../../core/services/geocoding.service';
+import { OrderServiceStore } from '../../../orders/store/order-service.store';
 import { Subscription } from 'rxjs';
 
-// Fix para o ícone padrão do Leaflet quebrado em builds com webpack/esbuild
-const iconDefault = L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
-L.Marker.prototype.options.icon = iconDefault;
-
-const BLUE_ICON = L.divIcon({
-  html: `<div class="custom-marker-pin"></div>`,
+// Ícones Customizados com CSS Tailwind para os Pinos Operacionais
+const createIcon = (colorClass: string, isEmergency = false) => L.divIcon({
+  html: `<div class="relative">
+          ${isEmergency ? `<div class="absolute -inset-2 bg-rose-500/30 rounded-full animate-ping"></div>` : ''}
+          <div class="w-4 h-4 rounded-full border-2 border-white shadow-lg ${colorClass}"></div>
+         </div>`,
   className: '',
-  iconSize: [24, 24],
-  iconAnchor: [12, 12],
-  popupAnchor: [0, -14],
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
+  popupAnchor: [0, -10],
 });
+
+const ICON_STABLE = createIcon('bg-blue-500');         // Azul: Tudo OK
+const ICON_PENDING = createIcon('bg-amber-500');       // Amarelo: O.S. aberta
+const ICON_EMERGENCY = createIcon('bg-rose-600', true); // Vermelho: Emergência aberta
 
 @Component({
   selector: 'app-customers-map',
@@ -58,6 +55,7 @@ export class CustomersMapComponent implements AfterViewInit, OnDestroy {
   customers = input<Customer[]>([]);
 
   private readonly geocodingService = inject(GeocodingService);
+  protected readonly osStore = inject(OrderServiceStore);
 
   map: L.Map | null = null;
   private markers: L.Marker[] = [];
@@ -97,8 +95,6 @@ export class CustomersMapComponent implements AfterViewInit, OnDestroy {
       maxZoom: 18,
     }).addTo(this.map);
 
-    // ResizeObserver é a forma mais confiável: dispara quando o browser
-    // realmente conhece as dimensões finais do container (após flexbox resolver).
     this.resizeObserver = new ResizeObserver(() => {
       this.map?.invalidateSize();
     });
@@ -107,7 +103,6 @@ export class CustomersMapComponent implements AfterViewInit, OnDestroy {
 
   private updateMarkers(customers: Customer[]): void {
     console.log(`[Map] Recebeu ${customers.length} clientes para mapear.`);
-    // Limpa markers anteriores
     this.markers.forEach((m) => m.removeFrom(this.map!));
     this.markers = [];
     this.mappedCount.set(0);
@@ -118,44 +113,90 @@ export class CustomersMapComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
+    const alreadyGeocoded = customers.filter(c => c.lat !== undefined && c.lng !== undefined);
+    const needsGeocoding = customers.filter(c => c.lat === undefined || c.lng === undefined);
+
+    alreadyGeocoded.forEach(c => {
+      this.addMarker(c.lat!, c.lng!, c);
+      this.mappedCount.update(n => n + 1);
+    });
+
+    if (this.markers.length > 0) {
+      const group = L.featureGroup(this.markers);
+      this.map!.fitBounds(group.getBounds().pad(0.2));
+    }
+
+    if (needsGeocoding.length === 0) {
+      this.loading.set(false);
+      return;
+    }
+
     this.loading.set(true);
-    const items = customers.map((c) => ({ address: c.address, label: c.name }));
+    const itemsToGeocode = needsGeocoding.map((c) => ({ address: c.address, label: c.name, customer: c }));
 
     this.geocodeSub?.unsubscribe();
-    this.geocodeSub = this.geocodingService.geocodeAll(items).subscribe({
+    this.geocodeSub = this.geocodingService.geocodeAll(itemsToGeocode).subscribe({
       next: (results) => {
-        // Pega o último resultado adicionado
-        const latest = results[results.length - 1];
-        if (!latest) return;
+        const latestResult = results[results.length - 1] as any;
+        if (!latestResult) return;
 
-        console.log(`[Map] Adicionando marker para: ${latest.label}`);
-        const marker = L.marker([latest.lat, latest.lng], { icon: BLUE_ICON })
-          .bindPopup(
-            `<div style="font-family: inherit; min-width: 160px;">
-               <p style="font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#64748b; margin:0 0 4px">Cliente</p>
-               <p style="font-size:14px; font-weight:700; color:#1e293b; margin:0 0 6px">${latest.label}</p>
-               <p style="font-size:11px; color:#94a3b8; margin:0">${latest.address}</p>
-             </div>`,
-          )
-          .addTo(this.map!);
-
-        this.markers.push(marker);
-        this.mappedCount.update((n) => n + 1);
-
-        // Ajusta bounds ao adicionar pins
-        if (this.markers.length > 0) {
-          const group = L.featureGroup(this.markers);
-          this.map!.fitBounds(group.getBounds().pad(0.2));
+        // Recupera o cliente original para determinar o status
+        const originalCustomer = needsGeocoding.find(c => c.name === latestResult.label);
+        if (originalCustomer) {
+          this.addMarker(latestResult.lat, latestResult.lng, originalCustomer);
+          this.mappedCount.update((n) => n + 1);
         }
+
+        const group = L.featureGroup(this.markers);
+        this.map!.fitBounds(group.getBounds().pad(0.2));
       },
       complete: () => {
-        console.log(`[Map] Mapeamento concluído. Sucesso em ${this.mappedCount()} de ${this.totalCount()} clientes.`);
         this.loading.set(false);
       },
       error: () => {
         this.loading.set(false);
       },
     });
+  }
+
+  private addMarker(lat: number, lng: number, customer: Customer): void {
+    const status = this.getCustomerStatus(customer.id);
+    let icon = ICON_STABLE;
+    let label = 'Estável';
+    let color = 'text-blue-500';
+
+    if (status === 'emergency') {
+      icon = ICON_EMERGENCY;
+      label = 'EMERGÊNCIA';
+      color = 'text-rose-600 animate-pulse';
+    } else if (status === 'pending') {
+      icon = ICON_PENDING;
+      label = 'Manutenção';
+      color = 'text-amber-500';
+    }
+
+    const marker = L.marker([lat, lng], { icon })
+      .bindPopup(
+        `<div style="font-family: inherit; min-width: 180px;">
+           <div class="flex items-center justify-between mb-2">
+             <p style="font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#64748b; margin:0">Status</p>
+             <span class="text-[9px] font-black uppercase ${color}">${label}</span>
+           </div>
+           <p style="font-size:14px; font-weight:700; color:#1e293b; margin:0 0 4px">${customer.name}</p>
+           <p style="font-size:11px; color:#94a3b8; margin:0">${customer.address}</p>
+         </div>`,
+      )
+      .addTo(this.map!);
+    this.markers.push(marker);
+  }
+
+  private getCustomerStatus(customerId: string): 'stable' | 'pending' | 'emergency' {
+    const orders = this.osStore.getCustomerHistory(customerId);
+    const activeOrders = orders.filter(os => os.status === 'OPEN' || os.status === 'IN_PROGRESS');
+
+    if (activeOrders.some(os => os.isEmergency)) return 'emergency';
+    if (activeOrders.length > 0) return 'pending';
+    return 'stable';
   }
 
   ngOnDestroy(): void {

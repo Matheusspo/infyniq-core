@@ -9,6 +9,7 @@ export class OrderServiceStore {
   private toast = inject(ToastService);
 
   private ordersSignal = signal<OrderService[]>([]);
+  readonly orders = this.ordersSignal.asReadonly();
   readonly statusFilter = signal<OSStatus | 'ALL'>('ALL');
   readonly loading = signal(false);
 
@@ -25,14 +26,72 @@ export class OrderServiceStore {
     return orders.filter((os) => os.status === filter);
   });
 
-  // ✨ 2. CONTADOR DE EMERGÊNCIAS (O que estava faltando)
-  // Conta ordens marcadas como emergência que não estão concluídas nem canceladas
+  // ✨ 3. CONTADOR DE MANUTENÇÕES HOJE
+  // Conta ordens criadas ou agendadas para hoje
+  readonly maintenanceCountToday = computed(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return this.ordersSignal().filter((os) => {
+      const osDate = new Date(os.createdAt);
+      osDate.setHours(0, 0, 0, 0);
+      return osDate.getTime() === today.getTime() && os.status !== 'CANCELLED';
+    }).length;
+  });
+
+  // ✨ 4. CONTADOR DE EMERGÊNCIAS
   readonly emergencyCount = computed(
     () =>
       this.ordersSignal().filter(
         (os) => os.isEmergency && os.status !== 'COMPLETED' && os.status !== 'CANCELLED',
       ).length,
   );
+
+  // ✨ 5. HISTÓRICO E MÉTRICAS POR CLIENTE (Premium Metrics)
+  // Nota: Estas estatísticas são calculadas para o cliente selecionado
+  // Baseando-se no selectedCustomer da CustomersStore
+  readonly getCustomerHistory = (customerId: string) => {
+    return this.ordersSignal()
+      .filter((os) => {
+        const osCustomerId = (os.customerId as any)?.id || os.customerId;
+        return osCustomerId === customerId;
+      })
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  };
+
+  // Cálculo de MTBF (Mean Time Between Failures) simplificado:
+  // Média de dias entre ordens Corretivas/Emergência
+  readonly getCustomerMTBF = (customerId: string) => {
+    const history = this.getCustomerHistory(customerId).filter(
+      (os) => os.type === 'CORRECTIVE' || os.isEmergency,
+    );
+
+    if (history.length < 2) return null;
+
+    const dates = history.map((os) => new Date(os.createdAt).getTime());
+    let totalGap = 0;
+    for (let i = 0; i < dates.length - 1; i++) {
+      totalGap += Math.abs(dates[i] - dates[i + 1]);
+    }
+
+    const averageMs = totalGap / (dates.length - 1);
+    return Math.round(averageMs / (1000 * 60 * 60 * 24)); // Retorna em dias
+  };
+
+  // Distribuição de técnicos para este cliente
+  readonly getTechnicianDist = (customerId: string) => {
+    const history = this.getCustomerHistory(customerId);
+    const dist: Record<string, number> = {};
+
+    history.forEach((os) => {
+      const name = (os.technicianId as any)?.name || 'Desconhecido';
+      dist[name] = (dist[name] || 0) + 1;
+    });
+
+    return Object.entries(dist)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+  };
 
   loadOrders() {
     this.loading.set(true);
@@ -77,6 +136,28 @@ export class OrderServiceStore {
         this.loading.set(false);
         const errorMsg = err.error?.message || 'Erro ao atualizar O.S.';
         this.toast.showToast(Array.isArray(errorMsg) ? errorMsg[0] : errorMsg, 'error');
+      },
+    });
+  }
+
+  startOrder(id: string) {
+    this.loading.set(true);
+    const payload = {
+      status: 'IN_PROGRESS' as OSStatus,
+      updatedBy: 'Henrique (Admin)',
+    };
+
+    this.apiService.update(id, payload).subscribe({
+      next: (serverUpdatedOrder) => {
+        this.ordersSignal.update((prev) =>
+          prev.map((o) => (o.id === serverUpdatedOrder.id ? serverUpdatedOrder : o)),
+        );
+        this.loading.set(false);
+        this.toast.showToast(`O.S. #${serverUpdatedOrder.osNumber} iniciada! Atendimento em andamento.`, 'info');
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.toast.showToast('Erro ao iniciar atendimento.', 'error');
       },
     });
   }

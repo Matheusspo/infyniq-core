@@ -1,87 +1,91 @@
 <div
-  class="fixed inset-0 z-50 overflow-hidden"
-  aria-labelledby="slide-over-title"
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8"
+  aria-labelledby="modal-title"
   role="dialog"
   aria-modal="true"
 >
   <!-- Background backdrop -->
   <div 
-    class="absolute inset-0 bg-slate-900/40 backdrop-blur-md transition-opacity animate-in fade-in duration-500"
+    class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity animate-in fade-in duration-500"
     (click)="onClose()"
   ></div>
 
-  <div class="fixed inset-y-0 right-0 flex max-w-full pl-0 md:pl-10">
-    <div
-      class="w-screen max-w-2xl transform transition-all duration-500 ease-in-out animate-in slide-in-from-right duration-500"
+  <!-- Modal Container -->
+  <div
+    class="relative w-full max-w-5xl bg-white shadow-2xl rounded-[48px] overflow-hidden border border-white transform transition-all duration-500 ease-out animate-in zoom-in-95 fade-in duration-500 flex flex-col h-fit max-h-[85vh]"
+  >
+    <form
+      [formGroup]="osForm"
+      (ngSubmit)="onSubmit()"
+      class="flex-1 flex flex-col min-h-0 overflow-hidden"
     >
-      <form
-        [formGroup]="osForm"
-        (ngSubmit)="onSubmit()"
-        class="flex h-full flex-col bg-white shadow-2xl rounded-l-[48px] overflow-hidden border-l border-white"
-      >
-        <!-- Header -->
-        <header class="p-8 pb-6 flex justify-between items-start flex-shrink-0">
+      <!-- Header -->
+      <header class="p-8 pb-4 flex justify-between items-center bg-white border-b border-slate-50 flex-shrink-0 z-10">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+            <i class="pi pi-file-edit text-xl"></i>
+          </div>
           <div>
-            <span class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600 block mb-1">
-              Engenharia de Campo
+            <span class="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600 block mb-0.5">
+              Engenharia de Operações
             </span>
             <h2 class="text-3xl font-black text-slate-800 tracking-tighter">
-              {{ isEdit() ? 'Editar' : 'Nova' }} <span class="text-blue-600">O. S.</span>
+              {{ isEdit() ? 'Editar' : 'Abertura de' }} <span class="text-blue-600">O. S.</span>
             </h2>
           </div>
-          <button
-            type="button"
-            (click)="onClose()"
-            class="p-3 hover:bg-slate-50 rounded-2xl transition-all active:scale-95 group"
-          >
-            <i class="pi pi-times text-slate-400 group-hover:text-slate-900"></i>
-          </button>
-        </header>
+        </div>
+        <button
+          type="button"
+          (click)="onClose()"
+          class="p-3 hover:bg-slate-50 rounded-2xl transition-all active:scale-95 group border border-transparent hover:border-slate-100"
+        >
+          <i class="pi pi-times text-slate-400 group-hover:text-slate-900 transition-colors"></i>
+        </button>
+      </header>
 
-        <!-- Body con scroll independente -->
-        <div class="flex-1 overflow-y-auto p-8 pt-0 custom-scrollbar">
-          <div class="space-y-8">
+      <!-- Body com Grid System -->
+      <div class="flex-1 min-h-0 overflow-y-auto p-10 custom-scrollbar bg-slate-50/20">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          
+          <!-- Coluna da Esquerda: Dados Principais (7 colunas) -->
+          <div class="lg:col-span-7 space-y-8">
             
-            <!-- Tipo e Emergência -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="space-y-2">
-                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">
-                  Tipo de Serviço
-                </label>
-                <select
-                  formControlName="type"
-                  class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-4 focus:bg-white focus:border-blue-500/10 outline-none transition-all font-bold text-slate-700 active:scale-[0.98]"
-                >
-                  <option value="PREVENTIVE">Manutenção Preventiva</option>
-                  <option value="CORRECTIVE">Manutenção Corretiva</option>
-                  <option value="EMERGENCY">Atendimento Emergencial</option>
-                </select>
-              </div>
+            <section class="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm space-y-6">
+              <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                <i class="pi pi-info-circle"></i> Dados do Chamado
+              </h4>
 
-              <div class="flex flex-col space-y-2">
-                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">
-                  Prioridade
-                </label>
-                <div class="h-16 flex items-center bg-amber-50/50 rounded-2xl px-6 border-2 border-transparent hover:border-amber-100 transition-all">
-                  <label class="relative inline-flex items-center cursor-pointer group">
-                    <input type="checkbox" formControlName="isEmergency" class="sr-only peer" />
-                    <div class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:bg-amber-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
-                    <span class="ml-3 text-[10px] font-black text-amber-700 uppercase tracking-tight">Urgência</span>
-                  </label>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest block px-1">Tipo de Serviço</label>
+                  <select
+                    formControlName="type"
+                    class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-4 focus:bg-white focus:border-blue-500/10 outline-none transition-all font-bold text-slate-700 hover:border-slate-100"
+                  >
+                    <option value="PREVENTIVE">Manutenção Preventiva</option>
+                    <option value="CORRECTIVE">Manutenção Corretiva</option>
+                    <option value="EMERGENCY">Atendimento Emergencial</option>
+                  </select>
+                </div>
+
+                <div class="flex flex-col space-y-2">
+                  <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest block px-1">Prioridade Crítica</label>
+                  <div class="h-[60px] flex items-center bg-amber-50/30 rounded-2xl px-6 border-2 border-transparent hover:border-amber-100/50 transition-all">
+                    <label class="relative inline-flex items-center cursor-pointer group">
+                      <input type="checkbox" formControlName="isEmergency" class="sr-only peer" />
+                      <div class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:bg-amber-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
+                      <span class="ml-3 text-[10px] font-black text-amber-700 uppercase tracking-tight">Emergência</span>
+                    </label>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Cliente e Equipamento -->
-            <div class="space-y-4">
               <div class="space-y-2">
-                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">
-                  Condomínio / Cliente
-                </label>
+                <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest block px-1">Condomínio / Cliente</label>
                 <select
                   [compareWith]="compareFn"
                   formControlName="customerId"
-                  class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-4 font-bold text-slate-700 focus:bg-white focus:border-blue-500/10 outline-none transition-all"
+                  class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-4 font-bold text-slate-700 focus:bg-white focus:border-blue-500/10 outline-none transition-all hover:border-slate-100"
                 >
                   <option value="">Selecione o condomínio...</option>
                   @for (c of customers(); track c.id) {
@@ -90,30 +94,26 @@
                 </select>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
-                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">
-                    Equipamento
-                  </label>
+                  <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest block px-1">Equipamento</label>
                   <select
                     [compareWith]="compareFn"
                     formControlName="equipmentId"
-                    class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-4 font-bold text-slate-700 focus:bg-white focus:border-blue-500/10 outline-none transition-all"
+                    class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-4 font-bold text-slate-700 focus:bg-white focus:border-blue-500/10 outline-none transition-all hover:border-slate-100"
                   >
-                    <option value="">Selecione...</option>
+                    <option value="">Selecione ativo...</option>
                     @for (e of filteredEquipments(); track e.id) {
                       <option [value]="e.id">{{ e.name }}</option>
                     }
                   </select>
                 </div>
                 <div class="space-y-2">
-                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">
-                    Técnico
-                  </label>
+                  <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest block px-1">Técnico Responsável</label>
                   <select
                     [compareWith]="compareFn"
                     formControlName="technicianId"
-                    class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-4 font-bold text-slate-700 focus:bg-white focus:border-blue-500/10 outline-none transition-all"
+                    class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-4 font-bold text-slate-700 focus:bg-white focus:border-blue-500/10 outline-none transition-all hover:border-slate-100"
                   >
                     <option value="">Atribuir técnico...</option>
                     @for (t of technicians(); track t.id) {
@@ -122,82 +122,123 @@
                   </select>
                 </div>
               </div>
-            </div>
 
-            <!-- Descrição -->
-            <div class="space-y-2">
-              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block px-1">
-                Relato do Problema
-              </label>
-              <textarea
-                formControlName="description"
-                rows="4"
-                class="w-full bg-slate-50 border-2 border-transparent rounded-[32px] px-6 py-4 focus:bg-white focus:border-blue-500/10 outline-none transition-all resize-none font-medium text-slate-700"
-                placeholder="Descreva o defeito ou a tarefa preventiva..."
-              ></textarea>
-            </div>
-
-            <!-- Reserva de Peças -->
-            <div class="bg-slate-50 rounded-[40px] p-6 border border-slate-100 space-y-4">
-              <div class="flex items-center gap-2 mb-2">
-                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <i class="pi pi-box text-white text-xs"></i>
-                </div>
-                <label class="text-[10px] font-black text-slate-800 uppercase tracking-widest">Reserva de Peças</label>
+              <div class="space-y-2">
+                <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest block px-1">Relato Técnico / Observações</label>
+                <textarea
+                  formControlName="description"
+                  rows="5"
+                  class="w-full bg-slate-50 border-2 border-transparent rounded-[32px] px-6 py-4 focus:bg-white focus:border-blue-500/10 outline-none transition-all resize-none font-medium text-slate-700 hover:border-slate-100 shadow-inner"
+                  placeholder="Descreva detalhadamente a intervenção necessária..."
+                ></textarea>
               </div>
+            </section>
+          </div>
+
+          <!-- Coluna da Direita: Peças e Assinatura (5 colunas) -->
+          <div class="lg:col-span-5 space-y-8">
+            
+            <section class="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm space-y-6">
+              <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                <i class="pi pi-box"></i> Reserva de Materiais
+              </h4>
 
               <select
                 (change)="addPart($event)"
-                class="w-full bg-white border-2 border-slate-100 rounded-2xl px-4 py-3 font-bold text-slate-600 outline-none focus:border-blue-500 transition-all cursor-pointer"
+                class="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-4 py-3 font-bold text-slate-600 outline-none focus:bg-white focus:border-blue-500/10 transition-all cursor-pointer hover:border-slate-100"
               >
-                <option value="">+ Adicionar item do estoque</option>
+                <option value="">+ Vincular item do estoque</option>
                 @for (item of stockStore.items(); track item.id) {
                   <option [value]="item.id">
-                    {{ item.name }} (Qtd: {{ item.currentQuantity }})
+                    {{ item.name }} (Saldo: {{ item.currentQuantity }})
                   </option>
                 }
               </select>
 
-              <div class="space-y-2 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+              <div class="space-y-3 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
                 @for (part of selectedParts(); track part.id) {
-                  <div class="flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-slate-100 animate-in zoom-in duration-200">
-                    <div class="flex items-center gap-3">
-                      <span class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 font-bold text-xs">{{ part.requestedQuantity }}x</span>
-                      <span class="text-sm font-bold text-slate-700">{{ part.name }}</span>
+                  <div class="flex items-center justify-between bg-slate-50/50 p-4 rounded-2xl border border-slate-100 animate-in zoom-in duration-200">
+                    <div class="flex items-center gap-4">
+                      <!-- Controles de Quantidade -->
+                      <div class="flex items-center bg-white border border-slate-100 rounded-xl p-1 shadow-sm">
+                        <button 
+                          type="button"
+                          (click)="updatePartQuantity(part.id, -1)"
+                          class="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                        >
+                          <i class="pi pi-minus text-[8px]"></i>
+                        </button>
+                        <span class="w-8 text-center text-[10px] font-black text-slate-700">{{ part.requestedQuantity }}x</span>
+                        <button 
+                          type="button"
+                          (click)="updatePartQuantity(part.id, 1)"
+                          class="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                        >
+                          <i class="pi pi-plus text-[8px]"></i>
+                        </button>
+                      </div>
+                      <span class="text-[11px] font-bold text-slate-700 uppercase tracking-tight">{{ part.name }}</span>
                     </div>
-                    <button type="button" (click)="removePart(part.id)" class="text-slate-300 hover:text-red-500 transition-colors">
-                      <i class="pi pi-trash"></i>
+                    <button type="button" (click)="removePart(part.id)" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all">
+                      <i class="pi pi-trash text-xs"></i>
                     </button>
                   </div>
                 } @empty {
-                  <div class="py-10 flex flex-col items-center justify-center opacity-40">
-                    <i class="pi pi-search text-3xl mb-2"></i>
-                    <p class="text-[9px] font-black uppercase">Nenhum item reservado</p>
+                  <div class="py-8 flex flex-col items-center justify-center opacity-30 border-2 border-dashed border-slate-100 rounded-3xl">
+                    <i class="pi pi-shopping-bag text-2xl mb-2"></i>
+                    <p class="text-[8px] font-black uppercase tracking-widest">Nenhuma peça vinculada</p>
                   </div>
                 }
               </div>
-            </div>
+            </section>
+
+            <!-- Assinatura Digital -->
+            @if (isEdit()) {
+              <section class="bg-slate-900 p-8 rounded-[40px] shadow-xl space-y-6 animate-in slide-in-from-right-4 duration-500">
+                <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                  <i class="pi pi-pencil"></i> Confirmação do Cliente
+                </h4>
+                
+                <div class="bg-white/5 rounded-3xl p-2 border border-white/10">
+                  <app-signature-pad (signatureChange)="customerSignature.set($event)"></app-signature-pad>
+                </div>
+                
+                @if (customerSignature()) {
+                  <div class="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-2xl flex items-center gap-3 animate-in fade-in zoom-in duration-300">
+                    <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/40">
+                      <i class="pi pi-check text-white text-[10px]"></i>
+                    </div>
+                    <span class="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Validação Biométrica Capturada</span>
+                  </div>
+                }
+              </section>
+            }
           </div>
         </div>
+      </div>
 
-        <!-- Footer -->
-        <footer class="p-8 bg-slate-50/50 border-t border-slate-50 flex justify-end gap-4 flex-shrink-0">
+      <!-- Footer -->
+      <footer class="p-8 bg-white border-t border-slate-50 flex justify-end items-center bg-white relative z-10">
+        <div class="flex gap-4">
           <button
             type="button"
             (click)="onClose()"
-            class="px-6 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-all transition-all active:scale-95"
+            class="px-8 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all active:scale-95"
           >
-            Cancelar
+            Descartar
           </button>
           <button
             type="submit"
             [disabled]="loading() || osForm.invalid"
-            class="bg-[#1e293b] text-white px-10 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl hover:bg-blue-600 disabled:opacity-50 transition-all active:scale-95"
+            class="bg-[#1e293b] text-white px-12 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-2xl shadow-slate-900/20 hover:bg-blue-600 disabled:opacity-50 transition-all active:scale-95 flex items-center gap-2"
           >
-            {{ isEdit() ? 'Salvar' : 'Confirmar O.S.' }}
+            @if (loading()) {
+              <i class="pi pi-spin pi-spinner text-xs"></i>
+            }
+            {{ isEdit() ? 'Salvar Alterações' : 'Protocolar Ordem' }}
           </button>
-        </footer>
-      </form>
-    </div>
+        </div>
+      </footer>
+    </form>
   </div>
 </div>

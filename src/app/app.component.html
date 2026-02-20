@@ -4,30 +4,21 @@
   <div class="fixed bottom-5 right-5 z-[100] animate-bounce-in">
     <div
       [class]="
-        'flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl border backdrop-blur-md ' +
-        (toast.type() === 'success'
-          ? 'bg-emerald-500/90 border-emerald-400 text-white'
-          : 'bg-red-500/90 border-red-400 text-white')
+        'flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl border backdrop-blur-md transition-all duration-500 ' +
+        (toast.type() === 'success' ? 'bg-emerald-500/90 border-emerald-400 text-white' : 
+         toast.type() === 'info' ? 'bg-slate-900/90 border-blue-500/30 text-white' : 
+         'bg-red-500/90 border-red-400 text-white')
       "
     >
       @if (toast.type() === 'success') {
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-6 h-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 13l4 4L19 7"
-          />
-        </svg>
+        <i class="pi pi-check-circle text-xl"></i>
+      } @else if (toast.type() === 'info') {
+        <i class="pi pi-info-circle text-xl text-blue-400"></i>
+      } @else {
+        <i class="pi pi-exclamation-circle text-xl"></i>
       }
 
-      <span class="font-bold tracking-tight">{{ toast.message() }}</span>
+      <span class="font-bold tracking-tight text-sm">{{ toast.message() }}</span>
     </div>
   </div>
 }

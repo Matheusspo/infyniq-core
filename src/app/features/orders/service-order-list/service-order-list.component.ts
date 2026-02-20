@@ -9,6 +9,8 @@ import { TechniciansService } from '../../technicians/data-access/technicians.se
 import { Technician } from '../../technicians/models/technician.model';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 
+import { PDFExportService } from '../../../core/services/pdf-export.service';
+
 @Component({
   selector: 'app-os-list',
   standalone: true,
@@ -19,7 +21,8 @@ export class OSListComponent implements OnInit {
   // 1. Injeção de Dependências
   public readonly osStore = inject(OrderServiceStore);
   private readonly techService = inject(TechniciansService);
-  private readonly customersStore = inject(CustomersStore); // Injetando store de clientes
+  private readonly customersStore = inject(CustomersStore);
+  private readonly pdfService = inject(PDFExportService);
 
   isDrawerOpen = signal(false);
 
@@ -98,6 +101,10 @@ export class OSListComponent implements OnInit {
     this.customersStore.loadAllCustomers(); // Garante que temos os clientes para o Join
   }
 
+  startAttendance(os: OrderService) {
+    this.osStore.startOrder(os.id);
+  }
+
   initiateFinalizeOS(os: OrderService) {
     this.confirmationData.set({
       title: 'Finalizar O.S.?',
@@ -137,6 +144,10 @@ export class OSListComponent implements OnInit {
   closeForm() {
     this.showForm.set(false);
     this.selectedOS.set(null);
+  }
+
+  exportToPDF(os: OrderService) {
+    this.pdfService.generateOSReport(os);
   }
 
   /**

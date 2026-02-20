@@ -70,14 +70,14 @@
   <div class="flex flex-col gap-4">
     @for (os of filteredOrders(); track os.id) {
       <div
-        class="group bg-white border-2 border-slate-50 p-6 md:p-4 rounded-[32px] md:rounded-[28px] hover:border-blue-500/20 transition-all hover:shadow-xl hover:shadow-blue-900/5 flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 relative overflow-hidden"
+        class="group bg-white border-2 border-slate-100/80 p-6 md:p-4 rounded-[32px] md:rounded-[28px] shadow-sm hover:border-blue-500/20 transition-all hover:shadow-xl hover:shadow-blue-900/5 flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 relative overflow-hidden"
       >
         @if (os.isEmergency) {
           <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-amber-500 animate-pulse"></div>
         }
 
         <!-- Cabeçalho do Card (Mobile) / Lado Esquerdo (Desktop) -->
-        <div class="flex md:flex-col items-center justify-between w-full md:w-auto md:min-w-[110px] md:border-r-2 md:border-slate-50 md:pr-6">
+        <div class="flex md:flex-col items-center justify-between w-full md:w-auto md:min-w-[110px] md:border-r-2 md:border-slate-100 md:pr-6">
           <div class="flex flex-col md:items-center">
             <span class="text-[10px] font-black text-blue-600 uppercase tracking-tighter opacity-70">
               #{{ os.osNumber || 'OS-24' }}
@@ -120,13 +120,33 @@
             </span>
           </div>
 
-          <p class="text-[11px] text-slate-600 font-bold leading-tight">
+          <p class="text-[11px] text-slate-600 font-bold leading-tight mb-4">
             {{ os.description || 'Sem descrição detalhada' }}
           </p>
+
+          <!-- Timeline de Status (Premium) -->
+          <div class="flex items-center gap-2 mb-1">
+            <div class="flex-1 h-1 rounded-full bg-slate-100 overflow-hidden flex">
+              <div 
+                class="h-full transition-all duration-1000"
+                [class.w-1/3]="os.status === 'OPEN'"
+                [class.w-2/3]="os.status === 'IN_PROGRESS'"
+                [class.w-full]="os.status === 'COMPLETED'"
+                [class.bg-blue-500]="os.status === 'OPEN'"
+                [class.bg-amber-500]="os.status === 'IN_PROGRESS'"
+                [class.bg-emerald-500]="os.status === 'COMPLETED'"
+              ></div>
+            </div>
+          </div>
+          <div class="flex justify-between px-1">
+             <span class="text-[8px] font-black uppercase tracking-widest text-slate-400" [class.text-blue-600]="os.status === 'OPEN'">Aberto</span>
+             <span class="text-[8px] font-black uppercase tracking-widest text-slate-400" [class.text-amber-600]="os.status === 'IN_PROGRESS'">Andamento</span>
+             <span class="text-[8px] font-black uppercase tracking-widest text-slate-400" [class.text-emerald-600]="os.status === 'COMPLETED'">Concluído</span>
+          </div>
         </div>
 
         <!-- Responsável (Desktop Only) -->
-        <div class="hidden lg:flex items-center gap-4 min-w-[200px] border-l-2 border-slate-50 pl-6">
+        <div class="hidden lg:flex items-center gap-4 min-w-[200px] border-l-2 md:border-slate-100 pl-6">
           <div class="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center text-[10px] font-black text-white shadow-md shrink-0">
             {{ (os.technicianName ? os.technicianName.substring(0, 2) : 'TK').toUpperCase() }}
           </div>
@@ -137,19 +157,43 @@
         </div>
 
         <!-- Ações -->
-        <div class="flex items-center justify-end w-full md:w-auto gap-3 pt-4 md:pt-0 border-t md:border-0 border-slate-50 mt-2 md:mt-0">
+        <div class="flex items-center justify-end w-full md:w-auto gap-2 pt-4 md:pt-0 border-t md:border-0 border-slate-100 mt-2 md:mt-0">
+          
+          @if (os.status === 'COMPLETED') {
+            <button
+              (click)="exportToPDF(os)"
+              class="p-2.5 bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white rounded-xl transition-all active:scale-95 group flex items-center gap-2"
+              title="Exportar PDF"
+            >
+              <i class="pi pi-file-pdf"></i>
+              <span class="md:hidden lg:inline text-[9px] font-black uppercase">PDF</span>
+            </button>
+          }
+
           <button
             (click)="editOS(os)"
-            class="flex-1 md:flex-none p-3 md:p-2 bg-slate-50 md:bg-transparent hover:bg-slate-100 rounded-xl md:rounded-lg text-slate-400 hover:text-blue-600 transition-all flex items-center justify-center"
+            class="p-2.5 bg-slate-50 hover:bg-slate-200 text-slate-400 hover:text-slate-900 rounded-xl transition-all active:scale-95 flex items-center gap-2"
+            title="Editar O.S."
           >
-            <i class="pi pi-pencil mr-2 md:mr-0"></i>
-            <span class="md:hidden text-[10px] font-black uppercase">Editar</span>
+            <i class="pi pi-pencil"></i>
+            <span class="md:hidden lg:inline text-[9px] font-black uppercase">Editar</span>
           </button>
 
-          @if (os.status !== 'COMPLETED' && os.status !== 'CANCELLED') {
+          <!-- Botão de Ação Inteligente -->
+          @if (os.status === 'OPEN') {
+            <button
+              (click)="startAttendance(os)"
+              class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-[#1e293b] hover:bg-blue-600 px-4 py-2.5 rounded-xl transition-all active:scale-95 group shadow-lg shadow-slate-200"
+            >
+              <i class="pi pi-play text-white text-[10px]"></i>
+              <span class="text-[10px] font-black uppercase tracking-widest text-white">
+                Iniciar
+              </span>
+            </button>
+          } @else if (os.status === 'IN_PROGRESS') {
             <button
               (click)="initiateFinalizeOS(os)"
-              class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-500 px-4 py-2.5 md:px-3 md:py-1.5 rounded-xl border border-emerald-100 transition-all group"
+              class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-500 px-4 py-2.5 rounded-xl border border-emerald-100 transition-all active:scale-95 group"
             >
               <i class="pi pi-check text-emerald-600 group-hover:text-white text-xs"></i>
               <span class="text-[10px] font-black uppercase tracking-widest text-emerald-700 group-hover:text-white">
@@ -157,7 +201,7 @@
               </span>
             </button>
           } @else if (os.status === 'COMPLETED') {
-            <div class="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 md:px-3 md:py-1.5 bg-slate-100 rounded-xl opacity-60">
+            <div class="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-100 rounded-xl opacity-60">
               <i class="pi pi-lock text-slate-400 text-xs"></i>
               <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Concluída</span>
             </div>

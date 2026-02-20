@@ -50,7 +50,27 @@
     (scroll)="onDivScroll(scrollContainer)"
     class="p-8 overflow-y-auto bg-white custom-scrollbar flex-1"
   >
-    <div class="space-y-4">
+    <!-- Tabs de Controle Premium -->
+    <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl w-fit mb-8 shadow-inner">
+      <button
+        (click)="activeTab.set('EQUIPMENTS')"
+        [ngClass]="activeTab() === 'EQUIPMENTS' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'"
+        class="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all active:scale-95"
+      >
+        Equipamentos
+      </button>
+      <button
+        (click)="activeTab.set('HISTORY')"
+        [ngClass]="activeTab() === 'HISTORY' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'"
+        class="px-6 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all active:scale-95 flex items-center gap-2"
+      >
+        <i class="pi pi-bolt text-[10px]" [class.text-amber-500]="activeTab() === 'HISTORY'"></i>
+        Histórico Inteligente
+      </button>
+    </div>
+
+    @if (activeTab() === 'EQUIPMENTS') {
+      <div class="space-y-4 animate-in fade-in slide-in-from-left-4 duration-300">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
         <div class="relative flex-1 group max-w-md">
           <span
@@ -173,7 +193,9 @@
         </div>
       }
     </div>
-  </div>
+  } @else {
+    <app-customer-history></app-customer-history>
+  }
 </div>
 
 <button

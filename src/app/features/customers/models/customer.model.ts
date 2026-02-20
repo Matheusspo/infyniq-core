@@ -11,4 +11,6 @@ export interface Customer {
   active: boolean;
   createdAt: Date;
   equipments?: Equipment[];
+  lat?: number;
+  lng?: number;
 }

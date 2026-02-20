@@ -3,16 +3,25 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { CustomersService } from './customers.service';
 import { Customer } from '../models/customer.model';
+import { Equipment } from '../models/equipment.model';
+import { OrderServiceStore } from '../../orders/store/order-service.store';
 import { ToastService } from '../../../services/toast.service';
-import { finalize } from 'rxjs';
+import { finalize, switchMap, catchError, of, map } from 'rxjs';
+import { GeocodingService, GeoResult } from '../../../core/services/geocoding.service';
 
 @Injectable({ providedIn: 'root' })
 export class CustomersStore {
   private readonly service = inject(CustomersService);
   private readonly toast = inject(ToastService);
-
-  // Estados (Signals Privados para controle)
+  private readonly osStore = inject(OrderServiceStore);
+  private readonly geocodingService = inject(GeocodingService);
+  
+  // Nota: O inject acima com promise é apenas ilustrativo para o Antigravity.
+  // Em um cenário real de Angular 17+, usaríamos:
+  // private readonly geocodingService = inject(GeocodingService);
+  // Mas como GeocodingService não estava no topo dos imports, vou adicionar o import.
   private readonly _customers = signal<Customer[]>([]);
+  private readonly _equipments = signal<Equipment[]>([]); // ✨ NOVO: Todos os equipamentos
   private readonly _searchTerm = signal<string>('');
 
   readonly selectedCustomer = signal<Customer | null>(null);
@@ -23,18 +32,16 @@ export class CustomersStore {
   readonly customers = computed(() => this._customers());
   readonly searchTerm = computed(() => this._searchTerm());
   readonly totalUnits = computed(() => this._customers().length);
-  readonly totalEquipments = computed(() => {
-    return this._customers().reduce((acc, customer) => acc + (customer.equipments?.length || 0), 0);
-  });
+  
+  // ✨ Agora conta o total real de todos os equipamentos cadastrados no sistema
+  readonly totalEquipments = computed(() => this._equipments().length);
+  
   readonly displayedCustomers = computed(() => {
     return this.filteredCustomers().slice(0, this.displayLimit());
   });
 
-  readonly maintenancesToday = computed(() => {
-    // Por enquanto retornamos um valor fixo ou baseado em alguma flag
-    // Exemplo: return this._customers().filter(c => c.hasPendingService).length;
-    return 8;
-  });
+  // ✨ Integrado com a Store de O.S. para retornar o valor real de hoje
+  readonly maintenancesToday = computed(() => this.osStore.maintenanceCountToday());
 
   // O motor de busca reativo
   readonly filteredCustomers = computed(() => {
@@ -52,8 +59,19 @@ export class CustomersStore {
     this._searchTerm.set(term);
   }
 
+  loadAllEquipments() {
+    this.service.getAllEquipments().subscribe({
+      next: (data) => this._equipments.set(data),
+      error: (err) => console.error('Erro ao carregar equipamentos globais:', err)
+    });
+  }
+
   loadAllCustomers() {
     this.loading.set(true);
+
+    // Carrega tudo que é necessário para as estatísticas reais
+    this.osStore.loadOrders();
+    this.loadAllEquipments();
 
     this.service
       .getCustomers()
@@ -72,31 +90,50 @@ export class CustomersStore {
 
   addCustomer(customerData: Partial<Customer>) {
     this.loading.set(true);
-    this.service.createCustomer(customerData).subscribe({
+    
+    // Geocodificação automática antes de salvar
+    const obs$ = customerData.address 
+      ? this.geocodingService.geocode(customerData.address).pipe(
+          map((coords: { lat: number; lng: number } | null) => ({ ...customerData, ...coords })),
+          catchError(() => of(customerData)) // Se falhar, salva sem coords
+        )
+      : of(customerData);
+
+    obs$.pipe(
+      switchMap((data: Partial<Customer>) => this.service.createCustomer(data)),
+      finalize(() => this.loading.set(false))
+    ).subscribe({
       next: (newCustomer) => {
-        // Adiciona à lista mantendo o filtro ativo se houver
         this._customers.update((all) => [...all, newCustomer]);
         this.toast.showToast(`${newCustomer.name} cadastrado!`, 'success');
       },
-      error: (err) => this.toast.showToast('Erro ao salvar condomínio', 'error'),
-      complete: () => this.loading.set(false),
+      error: (err) => this.toast.showToast('Erro ao salvar condomínio', 'error')
     });
   }
 
   updateCustomer(id: string, data: Partial<Customer>) {
     this.loading.set(true);
-    this.service
-      .updateCustomer(id, data)
-      .pipe(finalize(() => this.loading.set(false)))
-      .subscribe({
-        next: (updated) => {
-          this._customers.update((list) =>
-            list.map((c) => (c.id === id ? { ...c, ...updated } : c)),
-          );
-          this.toast.showToast('Condomínio atualizado!', 'success');
-        },
-        error: (err) => this.toast.showToast('Erro ao atualizar', 'error'),
-      });
+
+    // Se o endereço mudou, re-geocodifica
+    const obs$ = data.address 
+      ? this.geocodingService.geocode(data.address).pipe(
+          map((coords: { lat: number; lng: number } | null) => ({ ...data, ...coords })),
+          catchError(() => of(data))
+        )
+      : of(data);
+
+    obs$.pipe(
+      switchMap((payload: Partial<Customer>) => this.service.updateCustomer(id, payload)),
+      finalize(() => this.loading.set(false))
+    ).subscribe({
+      next: (updated) => {
+        this._customers.update((list) =>
+          list.map((c) => (c.id === id ? { ...c, ...updated } : c)),
+        );
+        this.toast.showToast('Condomínio atualizado!', 'success');
+      },
+      error: (err) => this.toast.showToast('Erro ao atualizar', 'error'),
+    });
   }
 
   selectCustomer(customer: Customer | null) {

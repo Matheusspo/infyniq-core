@@ -30,4 +30,8 @@ export class CustomersService {
   getEquipmentsByCustomer(customerId: string): Observable<Equipment[]> {
     return this.http.get<Equipment[]>(`${this.apiUrl}/equipments/customer/${customerId}`);
   }
+
+  getAllEquipments(): Observable<Equipment[]> {
+    return this.http.get<Equipment[]>(`${this.apiUrl}/equipments`);
+  }
 }
