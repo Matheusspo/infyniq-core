@@ -99,3 +99,36 @@ body {
 .leaflet-popup-tip {
   background: white !important;
 }
+
+/* Custom Scrollbar - Premium Aesthetic */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+/* Fallback para animações caso plugin não esteja presente */
+@keyframes slide-in-from-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-in.slide-in-from-right {
+  animation: slide-in-from-right 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+body {
+  overflow-x: hidden;
+  width: 100vw;
+}

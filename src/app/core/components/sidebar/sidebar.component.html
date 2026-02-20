@@ -1,23 +1,30 @@
 <aside
-  [class.w-64]="isExpanded()"
-  [class.w-20]="!isExpanded()"
-  class="bg-[#0a0f1c] h-screen flex flex-col border-r border-slate-800 transition-all duration-300 relative shadow-2xl"
+  [class.w-64]="ui.isSidebarExpanded() || ui.isMobile()"
+  [class.w-20]="!ui.isSidebarExpanded() && !ui.isMobile()"
+  class="bg-[#0a0f1c] h-screen flex flex-col border-r border-slate-800 transition-all duration-300 shadow-2xl z-[50]"
+  [class.fixed]="ui.isMobile()"
+  [class.relative]="!ui.isMobile()"
+  [class.translate-x-0]="!ui.isMobile() || ui.isSidebarOpenMobile()"
+  [class.-translate-x-full]="ui.isMobile() && !ui.isSidebarOpenMobile()"
 >
-  <button
-    (click)="toggleSidebar()"
-    class="absolute -right-3 top-10 bg-blue-600 text-white rounded-full p-1 shadow-lg hover:bg-blue-700 transition-all z-50 active:scale-90"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="w-4 h-4 transition-transform duration-500"
-      [class.rotate-180]="!isExpanded()"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
+  <!-- Botão de Toggle (Desktop Only) -->
+  @if (!ui.isMobile()) {
+    <button
+      (click)="ui.toggleSidebar()"
+      class="absolute -right-3 top-10 bg-blue-600 text-white rounded-full p-1 shadow-lg hover:bg-blue-700 transition-all z-50 active:scale-90"
     >
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
-    </svg>
-  </button>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-4 h-4 transition-transform duration-500"
+        [class.rotate-180]="!ui.isSidebarExpanded()"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+  }
 
   <div
     class="p-6 flex flex-col items-center border-b border-slate-800/50 overflow-hidden min-h-[140px] justify-center"
@@ -26,7 +33,7 @@
       <img src="logo-infyniq-icon.png" alt="Logo" class="w-full h-auto object-contain" />
     </div>
 
-    @if (isExpanded()) {
+    @if (ui.isSidebarExpanded() || ui.isMobile()) {
       <div class="text-center mt-4 animate-in fade-in zoom-in duration-300">
         <h2 class="text-white font-black text-lg tracking-[0.2em]">INFYNIQ</h2>
         <p
@@ -38,10 +45,11 @@
     }
   </div>
 
-  <nav class="flex-1 mt-6 px-3 space-y-2">
+  <nav class="flex-1 mt-6 px-3 space-y-2 overflow-y-auto custom-scrollbar">
     <a
       routerLink="/dashboard"
       routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+      (click)="ui.isMobile() && ui.closeMobileSidebar()"
       class="flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-slate-100 transition-all group"
     >
       <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -52,7 +60,7 @@
           d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z"
         />
       </svg>
-      @if (isExpanded()) {
+      @if (ui.isSidebarExpanded() || ui.isMobile()) {
         <span
           class="text-[11px] font-black uppercase tracking-widest animate-in slide-in-from-left-2"
           >Dashboard</span
@@ -63,6 +71,7 @@
     <a
       routerLink="/clientes"
       routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+      (click)="ui.isMobile() && ui.closeMobileSidebar()"
       class="flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-slate-100 transition-all group"
     >
       <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -73,7 +82,7 @@
           d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
         />
       </svg>
-      @if (isExpanded()) {
+      @if (ui.isSidebarExpanded() || ui.isMobile()) {
         <span
           class="text-[11px] font-black uppercase tracking-widest animate-in slide-in-from-left-2"
           >Unidades</span
@@ -84,6 +93,7 @@
     <a
       routerLink="/orders"
       routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+      (click)="ui.isMobile() && ui.closeMobileSidebar()"
       class="flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-slate-100 transition-all group"
     >
       <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -94,7 +104,7 @@
           d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
         />
       </svg>
-      @if (isExpanded()) {
+      @if (ui.isSidebarExpanded() || ui.isMobile()) {
         <span
           class="text-[11px] font-black uppercase tracking-widest animate-in slide-in-from-left-2"
           >Ordens de Serviço</span
@@ -105,6 +115,7 @@
     <a
       routerLink="/estoque"
       routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+      (click)="ui.isMobile() && ui.closeMobileSidebar()"
       class="flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-slate-100 transition-all group"
     >
       <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -115,7 +126,7 @@
           d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"
         />
       </svg>
-      @if (isExpanded()) {
+      @if (ui.isSidebarExpanded() || ui.isMobile()) {
         <span
           class="text-[11px] font-black uppercase tracking-widest animate-in slide-in-from-left-2"
           >Estoque</span
@@ -126,6 +137,7 @@
     <a
       routerLink="/technicians"
       routerLinkActive="bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+      (click)="ui.isMobile() && ui.closeMobileSidebar()"
       class="flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-slate-800/50 hover:text-slate-100 transition-all group"
     >
       <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -136,7 +148,7 @@
           d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
         />
       </svg>
-      @if (isExpanded()) {
+      @if (ui.isSidebarExpanded() || ui.isMobile()) {
         <span
           class="text-[11px] font-black uppercase tracking-widest animate-in slide-in-from-left-2"
           >Técnicos</span
@@ -152,7 +164,7 @@
       >
         AD
       </div>
-      @if (isExpanded()) {
+      @if (ui.isSidebarExpanded() || ui.isMobile()) {
         <div class="animate-in fade-in duration-500">
           <p class="text-[10px] font-black text-white uppercase tracking-tighter leading-none">
             Administrador
