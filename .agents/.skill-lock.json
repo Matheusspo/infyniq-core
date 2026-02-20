@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "skills": {
+    "tlc-spec-driven": {
+      "name": "tlc-spec-driven",
+      "source": "local",
+      "contentHash": "1879205e8a56503b2093a9e5fa4fad0253431aca753cdde7e32762ca39469a0b",
+      "installedAt": "2026-02-20T16:30:55.175Z",
+      "updatedAt": "2026-02-20T16:30:55.278Z",
+      "agents": [
+        "windsurf"
+      ],
+      "method": "copy",
+      "global": false
+    }
+  }
+}

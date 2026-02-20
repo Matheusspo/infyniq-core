@@ -1,5 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CustomersStore } from '../customers/data-access/customers.store';
+import { CustomersMapComponent } from './components/customers-map/customers-map.component';
 
 // 1. Definimos a interface para o objeto de estatísticas
 interface DashboardData {
@@ -21,10 +23,15 @@ interface KpiItem {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CustomersMapComponent],
   templateUrl: './dashboard.component.html',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+  private readonly customersStore = inject(CustomersStore);
+
+  // Expõe a lista de clientes para o template (reativo via Signal)
+  customers = this.customersStore.customers;
+
   // Tipamos o Signal com a interface
   stats = signal<DashboardData>({
     todayOS: 12,
@@ -74,6 +81,14 @@ export class DashboardComponent {
     { day: 'Sáb', value: 20 },
     { day: 'Dom', value: 10 },
   ]);
+
+  ngOnInit(): void {
+    // Carrega a lista de clientes para popular o mapa.
+    // O store é providedIn: 'root', então se já foi carregado, a lista já está disponível.
+    if (this.customersStore.customers().length === 0) {
+      this.customersStore.loadAllCustomers();
+    }
+  }
 
   // Função para calcular a altura da barra (normalização em %)
   getBarHeight(value: number): string {

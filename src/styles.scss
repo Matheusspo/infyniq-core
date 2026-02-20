@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import 'primeicons/primeicons.css';
+@import 'leaflet/dist/leaflet.css';
 
 /* Seus estilos globais abaixo */
 body {
@@ -68,4 +69,33 @@ body {
 
 .animate-error {
   animation: slideDown 0.2s ease-out forwards;
+}
+
+/* Estilos para o Mapa de Clientes (Leaflet Custom Markers) */
+.custom-marker-pin {
+  width: 22px;
+  height: 22px;
+  border-radius: 50% 50% 50% 0;
+  background: #2563eb;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.5);
+  transform: rotate(-45deg);
+  transition: all 0.3s ease;
+}
+
+.custom-marker-pin:hover {
+  transform: rotate(-45deg) scale(1.15);
+  background: #1d4ed8;
+  z-index: 1000 !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 16px !important;
+  box-shadow: 0 4px 24px rgba(30, 41, 59, 0.12) !important;
+  font-family: inherit !important;
+  padding: 8px !important;
+}
+
+.leaflet-popup-tip {
+  background: white !important;
 }
