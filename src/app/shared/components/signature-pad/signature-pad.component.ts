@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, Output, EventEmitter, signal } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, Output, EventEmitter, signal, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -49,6 +49,14 @@ import { CommonModule } from '@angular/common';
 })
 export class SignaturePadComponent implements AfterViewInit {
   @ViewChild('sigCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
+  private _initialSignature: string | null = null;
+  @Input() set initialSignature(value: string | null) {
+    this._initialSignature = value;
+    if (this.ctx && value) {
+      this.loadSignature(value);
+    }
+  }
+  get initialSignature() { return this._initialSignature; }
   @Output() signatureChange = new EventEmitter<string | null>();
 
   height = 200;
@@ -58,6 +66,9 @@ export class SignaturePadComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.initCanvas();
+    if (this.initialSignature) {
+      this.loadSignature(this.initialSignature);
+    }
   }
 
   private initCanvas() {
@@ -120,6 +131,16 @@ export class SignaturePadComponent implements AfterViewInit {
     this.ctx.clearRect(0, 0, this.canvasRef.nativeElement.width, this.canvasRef.nativeElement.height);
     this.isEmpty.set(true);
     this.signatureChange.emit(null);
+  }
+
+  private loadSignature(dataUrl: string) {
+    const img = new Image();
+    img.onload = () => {
+      this.ctx.clearRect(0, 0, this.canvasRef.nativeElement.width, this.canvasRef.nativeElement.height);
+      this.ctx.drawImage(img, 0, 0);
+      this.isEmpty.set(false);
+    };
+    img.src = dataUrl;
   }
 
   private emitSignature() {
