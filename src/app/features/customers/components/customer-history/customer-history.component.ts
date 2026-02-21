@@ -134,17 +134,17 @@ import { OrderService } from '../../../orders/models/order-service.model';
           <!-- Decorativo sutil de fundo -->
           <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(30,58,138,0.1),transparent)] pointer-events-none"></div>
 
-          <div class="px-8 py-6 border-b border-white/5 bg-white/5 flex justify-between items-center relative z-10">
+          <div class="px-8 py-4 border-b border-white/5 bg-white/5 flex justify-between items-center relative z-10">
             <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-500">Cronologia Técnica</h4>
             <span class="text-[10px] font-bold text-slate-500 uppercase italic">Digital Technical Logbook</span>
           </div>
 
-          <div class="p-8 relative z-10">
-            <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent">
+          <div class="p-6 relative z-10">
+            <div class="space-y-4 relative before:absolute before:inset-0 before:ml-4 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent">
               @for (os of history(); track os.id) {
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
                   <!-- Dot -->
-                  <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-slate-900 shadow-xl shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 transition-all group-hover:scale-125 z-10"
+                  <div class="flex items-center justify-center w-8 h-8 rounded-full border-4 border-slate-900 shadow-xl shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 transition-all group-hover:scale-125 z-10"
                     [ngClass]="{
                       'bg-blue-500 shadow-blue-500/20': os.type === 'PREVENTIVE',
                       'bg-amber-500 shadow-amber-500/20': os.type === 'CORRECTIVE',
@@ -156,18 +156,18 @@ import { OrderService } from '../../../orders/models/order-service.model';
                   </div>
 
                   <!-- Card -->
-                  <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 rounded-[32px] border border-white/5 bg-white shadow-2xl transition-all group-hover:scale-[1.02] group-hover:-translate-y-1 relative">
-                    <div class="flex items-center justify-between mb-2">
+                  <div class="w-[calc(100%-3.5rem)] md:w-[calc(50%-2rem)] px-5 py-3 rounded-[32px] border border-white/5 bg-white shadow-2xl transition-all group-hover:scale-[1.01] group-hover:-translate-y-0.5 relative">
+                    <div class="flex items-center justify-between mb-1">
                       <span class="text-[10px] font-black text-blue-600 uppercase tracking-tighter">#{{ os.osNumber }}</span>
                       <time class="text-[10px] font-bold text-slate-400 uppercase">{{ os.createdAt | date:'dd MMM, yyyy' }}</time>
                     </div>
-                    <h5 class="text-sm font-black text-slate-800 uppercase tracking-tight mb-1 truncate" [title]="os.description">{{ os.description }}</h5>
-                    <div class="flex items-center gap-1.5 mb-2">
+                    <h5 class="text-sm font-black text-slate-800 uppercase tracking-tight mb-0.5 truncate" [title]="os.description">{{ os.description }}</h5>
+                    <div class="flex items-center gap-1.5 mb-1">
                       <i class="pi pi-box text-[8px] text-blue-500"></i>
                       <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">{{ getEquipName(os) }}</span>
                     </div>
                     
-                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-slate-100">
+                    <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-100">
                       <div class="flex items-center gap-2">
                         <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center">
                           <i class="pi pi-user text-[8px] text-slate-500"></i>

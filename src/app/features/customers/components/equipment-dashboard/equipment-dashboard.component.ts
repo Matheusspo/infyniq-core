@@ -7,6 +7,7 @@ import {
   signal,
   OnInit,
   computed,
+  HostListener,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EquipmentsStore } from '../../data-access/equipments.store';
@@ -65,15 +66,16 @@ export class EquipmentDashboardComponent implements OnInit {
   readonly showScrollTop = signal(false);
   readonly activeTab = signal<'EQUIPMENTS' | 'HISTORY'>('EQUIPMENTS');
 
-  // Monitora o scroll da DIV interna
-  onDivScroll(container: HTMLElement) {
-    // Aparece após rolar 300px para baixo
-    this.showScrollTop.set(container.scrollTop > 300);
+  // Monitora o scroll da página (Window)
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const scrollOffset = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    this.showScrollTop.set(scrollOffset > 500);
   }
 
-  // Faz o scroll suave de volta ao topo da DIV
-  scrollToTop(container: HTMLElement) {
-    container.scrollTo({
+  // Faz o scroll suave de volta ao topo da página
+  scrollToTop() {
+    window.scrollTo({
       top: 0,
       behavior: 'smooth',
     });

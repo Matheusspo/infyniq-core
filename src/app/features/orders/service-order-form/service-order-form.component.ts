@@ -177,6 +177,7 @@ export class OSFormComponent implements OnInit {
     const data = {
       ...this.osForm.getRawValue(),
       parts: this.selectedParts(),
+      customerSignature: this.customerSignature(),
       updatedBy: 'Henrique (Admin)',
     };
 
